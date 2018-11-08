@@ -58,7 +58,7 @@ namespace basecross {
 
 		void DrawStrings();
 
-	}
+	};
 }
 //end basecross
 

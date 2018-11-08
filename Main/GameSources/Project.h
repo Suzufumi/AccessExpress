@@ -15,8 +15,13 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 #include "GameStage.h"
+#include "FixedGameObject.h"
+#include "ShapeObject.h"
 #include "PlayerSupport.h"
 #include "Player.h"
+#include "AccessObject.h"
+#include "SearchObject.h"
+#include "LinkObject.h"
 
 
 
