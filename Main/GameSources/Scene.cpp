@@ -14,6 +14,7 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	void Scene::OnCreate(){
 		try {
+			CreateResources();
 			//クリアする色を設定
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
@@ -28,6 +29,18 @@ namespace basecross{
 	}
 
 	Scene::~Scene() {
+	}
+
+	void Scene::CreateResources()
+	{
+		wstring dataDir;
+		// mediaディレクトリを取得
+		App::GetApp()->GetDataDirectory(dataDir);
+
+		dataDir += L"Model\\";
+		auto playerModelMesh = MeshResource::CreateStaticModelMesh(dataDir, L"PlayerChara.bmf");
+		App::GetApp()->RegisterResource(L"PLAYER_MODEL", playerModelMesh);
+
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
