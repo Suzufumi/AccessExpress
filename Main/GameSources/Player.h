@@ -10,6 +10,7 @@
 namespace basecross {
 	class Player : public GameObject {
 		unique_ptr< StateMachine<Player> >  m_StateMachine;	//ステートマシーン
+		wstring state = L"walk";
 
 		float m_nowWalkSpeed = 5.0f;			//現在の移動のスピード
 		float m_standardWalkSpeed = 5.0f;		//基本の移動スピード
@@ -24,7 +25,7 @@ namespace basecross {
 		bool m_isFloa = false;					//浮遊してる
 		bool m_isHaveFile = false;
 		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
-		Vec3 p0, p1;							//ベジエ曲線のための位置情報
+		Vec3 p0, p1,p2;							//ベジエ曲線のための位置情報
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -38,7 +39,7 @@ namespace basecross {
 
 		Vec3 m_padDir;									//左スティックの向きを入れる
 		Vec3 m_forward;									//カメラの方向を踏まえたプレイヤーの向いている方向
-		Vec3 m_velocity;								//現在のvelocityの値を持つ
+		Vec3 m_velocity = Vec3(0,0,0);					//現在のvelocityの値を持つ
 
 	public:
 		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);
@@ -59,6 +60,7 @@ namespace basecross {
 		void SetRadioTowerHitJudgment(weak_ptr<RadioTowerHitJudgment> hit) {
 			m_RadioTowerHitJudgment = hit;
 		}
+		//ベジエ曲線で飛ぶ処理
 		void LinkGo();
 		//アクセサ
 		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
