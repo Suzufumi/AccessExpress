@@ -37,7 +37,7 @@ namespace basecross
 
 	}
 
-	void SearchObject::Access(AppType type)
+	void SearchObject::Access()
 	{
 
 	}
