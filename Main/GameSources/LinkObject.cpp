@@ -23,6 +23,7 @@ namespace basecross
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		drawComp->SetDiffuse(Col4(0.0f, 1.0f, 0.0f, 1.0f));
 	}
 
 	void LinkObject::OnUpdate()

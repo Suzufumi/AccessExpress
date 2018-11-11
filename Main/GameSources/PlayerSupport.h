@@ -43,12 +43,14 @@ namespace basecross {
 	class AddlessCertificate : public OBBObject {
 		//このオブジェクトが取得されたときにゴールを開錠するためにゴールを持つ
 		weak_ptr<Goal> m_goal;
+		bool m_isUnlockGoal = false;
 	public:
 		AddlessCertificate(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
 		virtual ~AddlessCertificate() {};
 		virtual void OnCreate() override;
 		//ゴールの情報を与える
 		void SetGoal(weak_ptr<Goal> goal) { m_goal = goal; }
+		bool GetUnlockGoal() { return m_isUnlockGoal; }
 		void FindGoal();
 	};
 }

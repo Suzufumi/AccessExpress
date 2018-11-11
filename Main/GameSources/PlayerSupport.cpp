@@ -109,9 +109,11 @@ namespace basecross {
 		OBBObject::OnCreate();
 		Col4 Color(1.0f, 0.3f, 0.7f, 0.7f);
 		GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
+		GetComponent<CollisionObb>()->SetDrawActive(true);
 	}
 	void AddlessCertificate::FindGoal() {
 		auto goal = m_goal.lock();
 		goal->OpenGoal();
+		m_isUnlockGoal = true;
 	}
 }
