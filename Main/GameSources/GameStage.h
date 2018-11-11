@@ -18,6 +18,8 @@ namespace basecross {
 		void CreateFloor();
 		//プレイヤーとプレイヤー回り
 		void CreatePlayerRelationship();
+
+		void CreateStage();
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}
