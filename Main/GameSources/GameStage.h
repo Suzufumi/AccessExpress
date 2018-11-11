@@ -19,7 +19,7 @@ namespace basecross {
 		//プレイヤーとプレイヤー回り
 		void CreatePlayerRelationship();
 
-		void CreateStage();
+		void CreateBill();
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}

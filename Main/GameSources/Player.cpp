@@ -138,7 +138,11 @@ namespace basecross{
 		}
 		auto addless = dynamic_pointer_cast<AddlessCertificate>(Other);
 		if (addless) {
-			addless->FindGoal();
+			if (!addless->GetUnlockGoal())
+			{
+				addless->FindGoal();
+				addless->SetDrawActive(false);
+			}
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------

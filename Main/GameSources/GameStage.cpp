@@ -69,7 +69,7 @@ namespace basecross {
 		player->SetRadioTowerHitJudgment(radioTowerHitJudgment);
 	}
 
-	void GameStage::CreateStage()
+	void GameStage::CreateBill()
 	{
 		struct BillTrans
 		{
@@ -77,7 +77,7 @@ namespace basecross {
 			Vec3 m_scale;
 		};
 		// 配列のサイズ(建物の数)
-		const int BILL_COUNT = 36;
+		const int BILL_COUNT = 35;
 		BillTrans billParam[BILL_COUNT] = 
 		{
 			{ Vec3(-35.0f, 4.0f, -35.0f), Vec3(5.0f, 8.0f, 5.0f) }, //0
@@ -110,7 +110,6 @@ namespace basecross {
 
 			{ Vec3(20.0f, 3.0f, -35.0f),  Vec3(6.0f, 6.0f, 6.0f) }, //26
 			{ Vec3(20.0f, 2.5f, -25.0f),  Vec3(6.0f, 5.0f, 4.0f) }, //27
-			{ Vec3(20.0f, 4.0f, -15.0f),  Vec3(4.0f, 8.0f, 5.0f) }, //28
 			{ Vec3(20.0f, 3.0f, -5.0f),   Vec3(4.0f, 6.0f, 4.0f) }, //29
 			{ Vec3(20.0f, 3.5f, 5.0f),    Vec3(6.0f, 7.0f, 5.0f) }, //30
 			{ Vec3(20.0f, 3.5f, 15.0f),   Vec3(5.0f, 7.0f, 5.0f) }, //31
@@ -141,20 +140,15 @@ namespace basecross {
 			CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
-			//壁
-			//for (int i = 0; i < 5; i++)
-			//{
-			//	for (int j = 0; j < 5; j++)
-			//	{
-			//		AddGameObject<Wall>(Vec3(-30.0 + ((float)i*10.0), 4.5, -30.0 + ((float)j * 10.0f)), Vec3(3, 8, 3));
-			//	}
-			//}
+			auto goal = AddGameObject<Goal>(Vec3(20.0f, 4.0f, -15.0f), Vec3(4.0f, 8.0f, 5.0f));
+			// 建物の配置
+			CreateBill();
+			auto addless = AddGameObject<AddlessCertificate>(Vec3(-3.0f, 1.0f, 5.0f), Vec3(1, 1, 1));
+			addless->SetGoal(goal);
 
-			CreateStage();
 
-			Quat qt;
-
-			AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
+			//Quat qt;
+			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
 
 			auto linkA = AddGameObject<LinkObject>(Vec3(-4, 1, 0), Vec3(1, 1, 1));
 			auto linkB = AddGameObject<LinkObject>(Vec3(-4, 1, 10), Vec3(1, 1, 1));
@@ -162,23 +156,6 @@ namespace basecross {
 			linkB->SetGoPosition(linkA->GetComponent<Transform>()->GetWorldPosition());
 
 			AddGameObject<RemainingTimer>();
-			//電波塔
-			//for (int i = 0; i < 3; i++)
-			//{
-			//	for (int j = 0; j < 3; j++)
-			//	{
-			//		AddGameObject<RadioTower>(Vec3(-10.0f + ((float)i * 10.0f), 5.0f, -10.0f + ((float)j * 10.0f)), Vec3(1.5, 1.5, 1.5), float(15.0f));
-			//	}
-			//}
-
-			//ドライブ
-			//AddGameObject<Drive>(Vec3(-3.0f, 1.0f, 2.0f), Vec3(1, 1, 1));
-			//AddGameObject<Drive>(Vec3(-6.0f, 1.0f, 10.0f), Vec3(1, 1, 1));
-			//AddGameObject<Drive>(Vec3(7.0f, 1.0f, 5.0f), Vec3(1, 1, 1));
-			//AddGameObject<Drive>(Vec3(-12.0f, 1.0f, 10.0f), Vec3(1, 1, 1));
-			//AddGameObject<Drive>(Vec3(-7.0f, 1.0f, 40.0f), Vec3(1, 1, 1));
-			////ファイル
-			//AddGameObject<File>(Vec3(-4.0f, 1.0f, 2.0f), Vec3(1, 1, 1));
 		}
 		catch (...) {
 			throw;
