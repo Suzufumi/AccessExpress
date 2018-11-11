@@ -87,7 +87,7 @@ namespace basecross {
 			linkA->SetGoPosition(linkB->GetComponent<Transform>()->GetWorldPosition());
 			linkB->SetGoPosition(linkA->GetComponent<Transform>()->GetWorldPosition());
 
-
+			AddGameObject<RemainingTimer>();
 			//“d”g“ƒ
 			//for (int i = 0; i < 3; i++)
 			//{
