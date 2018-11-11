@@ -162,12 +162,14 @@ namespace basecross{
 
 		auto access = dynamic_pointer_cast<LinkObject>(Other);
 		if (access) {
-			if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-				SetBezierPoint(access->SetGoPosition());
-				m_Lerp = 0;
-				state = L"Link";
-				m_velocity = Vec3(0, 0, 0);
-				m_StateMachine->ChangeState(LinkState::Instance());
+			if (state != L"Link") {
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+					SetBezierPoint(access->SetGoPosition());
+					m_Lerp = 0;
+					state = L"Link";
+					m_velocity = Vec3(0, 0, 0);
+					//m_StateMachine->ChangeState(LinkState::Instance());
+				}
 			}
 		}
 		//ドライブに変換できた
@@ -286,7 +288,7 @@ namespace basecross{
 		//計算のための時間加算
 		m_Lerp += App::GetApp()->GetElapsedTime();
 		if (m_Lerp >= 1.0f) {
-			//m_Lerp = 1.0f;
+			m_Lerp = 1.0f;
 			state = L"walk";
 			//飛び終わったらステートを歩きにする
 			//m_StateMachine->ChangeState(WalkState::Instance());
@@ -300,7 +302,7 @@ namespace basecross{
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p1 = p0 + Vec3(0, 10, 0);
-		p2 = point + Vec3(0,2,0);
+		p2 = point + Vec3(0,1,0);
 	}
 
 	void Player::DrawStrings()
