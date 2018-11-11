@@ -19,6 +19,15 @@ namespace basecross {
 		ptrString->SetTextBlockWidth(200.0f);
 	}
 	void RemainingTimer::OnUpdate() {
-
+		auto ptrString = GetComponent<StringSprite>();
+		wstring str(L"Žc‚èŽžŠÔ: ");
+		m_remainingTime += -App::GetApp()->GetElapsedTime();
+		if (m_remainingTime >= 0.0f) {
+			int t = (int)m_remainingTime;
+			ptrString->SetText(str + Util::IntToWStr(t));
+		}
+		else {
+			ptrString->SetText(L"”z‘—Ž¸”s");
+		}
 	}
 }

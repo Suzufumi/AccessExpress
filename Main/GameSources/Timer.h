@@ -5,7 +5,7 @@
 
 namespace basecross {
 	class RemainingTimer : public GameObject {
-		float m_remainingTime;
+		float m_remainingTime = 40.0f;
 	public:
 		RemainingTimer(const shared_ptr<Stage>& stage);
 		virtual ~RemainingTimer() {}
