@@ -51,7 +51,7 @@ namespace basecross {
 
 	}
 	void Goal::OpenGoal() {
-		MessageBox(NULL, L"ゴールのアドレスを特定", L"", MB_OK);
+		//MessageBox(NULL, L"ゴールのアドレスを特定", L"", MB_OK);
 		Col4 color(1.0f, 1.0f, 0.0f, 0.7f);
 		GetComponent<PNTStaticDraw>()->SetDiffuse(color);
 	}

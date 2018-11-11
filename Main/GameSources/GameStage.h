@@ -20,6 +20,7 @@ namespace basecross {
 		void CreatePlayerRelationship();
 
 		void CreateBill();
+		void CreateLinkObject();
 	public:
 		//\’z‚Æ”jŠü
 		GameStage() :Stage() {}
