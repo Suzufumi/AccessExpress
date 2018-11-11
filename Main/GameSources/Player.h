@@ -9,6 +9,9 @@
 
 namespace basecross {
 	class Player : public GameObject {
+		unique_ptr< StateMachine<Player> >  m_StateMachine;	//ステートマシーン
+		wstring state = L"walk";
+
 		float m_nowWalkSpeed = 5.0f;			//現在の移動のスピード
 		float m_standardWalkSpeed = 5.0f;		//基本の移動スピード
 		/*プレイヤーのY軸基準回転
@@ -21,6 +24,8 @@ namespace basecross {
 		bool m_isFall = false;					//Y軸方向の力を加えるかどうか
 		bool m_isFloa = false;					//浮遊してる
 		bool m_isHaveFile = false;
+		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
+		Vec3 p0, p1,p2;							//ベジエ曲線のための位置情報
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -34,7 +39,7 @@ namespace basecross {
 
 		Vec3 m_padDir;									//左スティックの向きを入れる
 		Vec3 m_forward;									//カメラの方向を踏まえたプレイヤーの向いている方向
-		Vec3 m_velocity;								//現在のvelocityの値を持つ
+		Vec3 m_velocity = Vec3(0,0,0);					//現在のvelocityの値を持つ
 
 	public:
 		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);
@@ -55,10 +60,52 @@ namespace basecross {
 		void SetRadioTowerHitJudgment(weak_ptr<RadioTowerHitJudgment> hit) {
 			m_RadioTowerHitJudgment = hit;
 		}
+		//ベジエ曲線で飛ぶ処理
+		void LinkGo();
+		//アクセサ
+		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
+			return m_StateMachine;
+		}
+		void SetBezierPoint(Vec3 point);
 
 		void DrawStrings();
-
 	};
+
+	//--------------------------------------------------------------------------------------
+	//class WalkState : public ObjState<Player>;
+	//用途: 歩いている状態
+	//--------------------------------------------------------------------------------------
+	class WalkState : public ObjState<Player> {
+		WalkState() {}
+	public:
+		//ステートのインスタンス取得
+		static shared_ptr<WalkState> Instance();
+		//ステートに入ったときに呼ばれる関数
+		virtual void Enter(const shared_ptr<Player>& Obj)override;
+		//ステート実行中に毎ターン呼ばれる関数
+		virtual void Execute(const shared_ptr<Player>& Obj)override;
+		//ステートにから抜けるときに呼ばれる関数
+		virtual void Exit(const shared_ptr<Player>& Obj)override;
+	};
+
+
+	//--------------------------------------------------------------------------------------
+	//class LinkState : public ObjState<Player>;
+	//用途: リンク上を飛んでいる状態
+	//--------------------------------------------------------------------------------------
+	class LinkState : public ObjState<Player> {
+		LinkState() {}
+	public:
+		//ステートのインスタンス取得
+		static shared_ptr<LinkState> Instance();
+		//ステートに入ったときに呼ばれる関数
+		virtual void Enter(const shared_ptr<Player>& Obj)override;
+		//ステート実行中に毎ターン呼ばれる関数
+		virtual void Execute(const shared_ptr<Player>& Obj)override;
+		//ステートにから抜けるときに呼ばれる関数
+		virtual void Exit(const shared_ptr<Player>& Obj)override;
+	};
+
 }
 //end basecross
 

@@ -22,4 +22,5 @@ namespace basecross {
 		//Ž©•ª‚É‰e‚ª‰f‚è‚±‚Þ‚æ‚¤‚É‚·‚é
 		drawComp->SetOwnShadowActive(true);
 	}
+	void OBBObject::OnUpdate(){}
 }

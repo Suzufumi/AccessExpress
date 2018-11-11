@@ -16,7 +16,7 @@ namespace basecross
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		void Access(AppType type) override;
+		void Access() override;
 
 	};
 }

@@ -53,7 +53,7 @@ namespace basecross {
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-3.0f, 0.25f, 0.0f), Quat(0, 0, 0, 1), Vec3(1, 1, 1));
+		auto player = AddGameObject<Player>(Vec3(-3.0f, 1.0f, 0.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		//プレイヤーが使う電波塔との判定専門の当たり判定
 		auto radioTowerHitJudgment = AddGameObject<RadioTowerHitJudgment>(player);
 		//プレイヤーに電波塔との当たり判定を認知させる
@@ -81,6 +81,12 @@ namespace basecross {
 			Quat qt;
 
 			AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
+
+			auto linkA = AddGameObject<LinkObject>(Vec3(-4, 1, 0), Vec3(1, 1, 1));
+			auto linkB = AddGameObject<LinkObject>(Vec3(-4, 1, 10), Vec3(1, 1, 1));
+			linkA->SetGoPosition(linkB->GetComponent<Transform>()->GetWorldPosition());
+			linkB->SetGoPosition(linkA->GetComponent<Transform>()->GetWorldPosition());
+
 
 			//電波塔
 			//for (int i = 0; i < 3; i++)

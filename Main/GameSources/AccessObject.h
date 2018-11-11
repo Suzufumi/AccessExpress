@@ -20,7 +20,7 @@ namespace basecross {
 		{}
 		virtual ~AccessObject()
 		{}
-		virtual void Access(AppType type)
+		virtual void Access()
 		{}
 		virtual void OnCreate() override {}
 		virtual void OnUpdate() override {}

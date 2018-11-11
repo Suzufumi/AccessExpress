@@ -9,6 +9,8 @@ namespace basecross{
 		Vec3 m_scale;
 	public:
 		OBBObject(const shared_ptr<Stage>& stage,Vec3 pos,Vec3 scale);
+		virtual ~OBBObject(){}
 		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
 	};
 }
