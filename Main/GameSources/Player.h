@@ -22,7 +22,6 @@ namespace basecross {
 		float m_cameraHeight = 3.0f;			//カメラの初期高さ
 		float m_cameraDistance = 10.0f;			//カメラのプレイヤーからの距離
 		bool m_isFall = false;					//Y軸方向の力を加えるかどうか
-		bool m_isFloa = false;					//浮遊してる
 		bool m_isHaveFile = false;
 		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
 		Vec3 p0, p1,p2;							//ベジエ曲線のための位置情報
@@ -53,7 +52,6 @@ namespace basecross {
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		//衝突が解除されたとき
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
-		void Floating();
 		void Walk();
 		void CameraRoll();
 		//子オブジェクトしてもっている電波塔との当たり判定をプレイヤーのほうでも認知する
