@@ -12,7 +12,7 @@ namespace basecross {
 		unique_ptr< StateMachine<Player> >  m_StateMachine;	//ステートマシーン
 		wstring state = L"walk";
 
-		float m_nowWalkSpeed = 5.0f;			//現在の移動のスピード
+		float m_nowWalkSpeed = 10.0f;			//現在の移動のスピード
 		float m_standardWalkSpeed = 5.0f;		//基本の移動スピード
 		/*プレイヤーのY軸基準回転
 		270度から始めることでXの+方向を右、Zの+方向を奥にする*/
@@ -38,7 +38,7 @@ namespace basecross {
 
 		Vec3 m_padDir;									//左スティックの向きを入れる
 		Vec3 m_forward;									//カメラの方向を踏まえたプレイヤーの向いている方向
-		Vec3 m_velocity = Vec3(0,0,0);					//現在のvelocityの値を持つ
+
 
 	public:
 		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);

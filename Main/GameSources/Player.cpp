@@ -31,6 +31,7 @@ namespace basecross{
 		auto psPtr = AddComponent<RigidbodyBox>(Ps);
 		//自動の重力を使わない
 		psPtr->SetAutoGravity(false);
+		psPtr->SetAutoTransform(false);
 		//四角形の当たり判定をセット
 		auto col = AddComponent<CollisionObb>();
 		col->SetDrawActive(true);
@@ -108,7 +109,6 @@ namespace basecross{
 		//m_nowWalkSpeed = hitJud->GetAcceleration();
 		////当たり判定のスピードを初期化
 		//hitJud->Rset();
-		GetComponent<RigidbodyBox>()->SetLinearVelocity(m_velocity);
 
 		// トランスフォームコンポーネントから座標を取得する
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -151,8 +151,6 @@ namespace basecross{
 		auto otherTrans = Other->GetComponent<Transform>();
 		//playerの下面と衝突した物体の上面が当たっていたら
 		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
-			//Y軸方向のvelocityを0にする
-			m_velocity.y = 0;
 			//オブジェクトの上にポジションをずらす
 			auto pos = trans->GetWorldPosition();
 			pos.y = otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2 + trans->GetScale().y / 2;
@@ -168,7 +166,6 @@ namespace basecross{
 					SetBezierPoint(access->SetGoPosition());
 					m_Lerp = 0;
 					state = L"Link";
-					m_velocity = Vec3(0, 0, 0);
 					//m_StateMachine->ChangeState(LinkState::Instance());
 				}
 			}
@@ -211,19 +208,22 @@ namespace basecross{
 	//XZ平面の移動処理
 	//--------------------------------------------------------------------------------------------
 	void Player::Walk() {
+		auto playerTrans = GetComponent<Transform>();
+		auto playerPos = playerTrans->GetWorldPosition();
 		//左スティックに値が入力されていたら
 		if (m_padDir.x > 0.4f || m_padDir.x < -0.4f ||
 			m_padDir.z > 0.4f || m_padDir.z < -0.4f) {
 			//方向と移動スピードを掛け算してVelocityに与える
-			m_velocity.x = m_nowWalkSpeed * m_forward.x;
-			m_velocity.z = m_nowWalkSpeed * m_forward.z;
+			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime();
+			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime();
 		}
 		//左スティックが入力されてなかったら
-		else {
-			//Velocity値をだんだん小さくする
-			m_velocity.x = m_velocity.x * 0.9f;
-			m_velocity.z = m_velocity.x * 0.9f;
-		}
+		//else {
+		//	//Velocity値をだんだん小さくする
+		//	m_velocity.x = m_velocity.x * 0.9f;
+		//	m_velocity.z = m_velocity.x * 0.9f;
+		//}
+		playerTrans->SetWorldPosition(playerPos);
 	}
 	//--------------------------------------------------------------------------------------------
 	//カメラの回転処理
@@ -262,6 +262,7 @@ namespace basecross{
 		m_Lerp += App::GetApp()->GetElapsedTime();
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
+			GetComponent<RigidbodyBox>()->SetPosition(pos);
 			state = L"walk";
 			//飛び終わったらステートを歩きにする
 			//m_StateMachine->ChangeState(WalkState::Instance());
@@ -274,7 +275,7 @@ namespace basecross{
 	}
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
-		p1 = p0 + Vec3(0, 10, 0);
+		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
 	}
 
