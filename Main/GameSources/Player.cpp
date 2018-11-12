@@ -97,8 +97,6 @@ namespace basecross{
 	void Player::OnUpdate2() {
 		if (state == L"walk") {
 			Walk();
-			//上昇下降の処理
-			Floating();
 		}
 		else if (state == L"Link") {
 			LinkGo();
@@ -161,7 +159,6 @@ namespace basecross{
 			trans->SetWorldPosition(pos);
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
-
 		}
 
 		auto access = dynamic_pointer_cast<LinkObject>(Other);
@@ -209,34 +206,6 @@ namespace basecross{
 		m_isFall = true;
 	}
 
-	//-------------------------------------------------------------------------------------------------
-	//上昇下降の処理
-	//------------------------------------------------------------------------------------------------
-	void Player::Floating() {
-		//Aボタン押された
-		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-			//上昇実行フラグtrue
-			m_isFloa = true;
-		}
-		//Aボタン離れた
-		if (m_pad.wReleasedButtons & XINPUT_GAMEPAD_A) {
-			//上昇実行フラグfalse
-			m_isFloa = false;
-		}
-		//上昇中なら
-		if (m_isFloa == true) {
-			//Y軸方向の力を固定値に
-			m_velocity.y += m_nowWalkSpeed * App::GetApp()->GetElapsedTime();
-			if (m_velocity.y > 5.0f) {
-				m_velocity.y = 5.0f;
-			}
-		}
-		//上昇中じゃなくて空中にいる
-		else if (m_isFall == true) {
-			//だんだん下方向へ力が加わっていく
-			m_velocity.y += -m_nowWalkSpeed * App::GetApp()->GetElapsedTime();
-		}
-	}
 
 	//--------------------------------------------------------------------------------------------
 	//XZ平面の移動処理
