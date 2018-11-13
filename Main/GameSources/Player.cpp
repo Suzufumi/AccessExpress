@@ -84,20 +84,13 @@ namespace basecross{
 		CameraRoll();
 
 		//ステートマシンのアップデート
-		//m_StateMachine->Update();
+		m_StateMachine->Update();
 	};
 
 	//--------------------------------------------------------------------------------------------------------------------
 	//
 	//-------------------------------------------------------------------------------------------------------------------
 	void Player::OnUpdate2() {
-		if (state == L"walk") {
-			Walk();
-		}
-		else if (state == L"Link") {
-			LinkGo();
-		}
-
 		////当たり判定を取り出す
 		//auto hitJud = m_RadioTowerHitJudgment.lock();
 		////当たり判定から速度を持ってくる
@@ -159,7 +152,7 @@ namespace basecross{
 					SetBezierPoint(access->GetGoPosition());
 					m_Lerp = 0;
 					state = L"Link";
-					//m_StateMachine->ChangeState(LinkState::Instance());
+					m_StateMachine->ChangeState(LinkState::Instance());
 				}
 			}
 		}
@@ -260,7 +253,7 @@ namespace basecross{
 			m_Lerp = 1.0f;
 			state = L"walk";
 			//飛び終わったらステートを歩きにする
-			//m_StateMachine->ChangeState(WalkState::Instance());
+			m_StateMachine->ChangeState(WalkState::Instance());
 		}
 		//ベジエ曲線の計算
 		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * p0.x + 2 * (1 - m_Lerp) * m_Lerp * p1.x + m_Lerp * m_Lerp * p2.x;
@@ -354,7 +347,7 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
-
+		Obj->Walk();
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void WalkState::Exit(const shared_ptr<Player>& Obj) {
@@ -373,6 +366,7 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
+		Obj->LinkGo();
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
