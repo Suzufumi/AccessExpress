@@ -27,11 +27,6 @@ namespace basecross{
 
 		//物理を使うために渡す
 		PsBoxParam Ps(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
-		//物理コンポーネントをセット
-		auto psPtr = AddComponent<RigidbodyBox>(Ps);
-		//自動の重力を使わない
-		psPtr->SetAutoGravity(false);
-		psPtr->SetAutoTransform(false);
 		//四角形の当たり判定をセット
 		auto col = AddComponent<CollisionObb>();
 		col->SetDrawActive(true);
@@ -223,6 +218,9 @@ namespace basecross{
 		//	m_velocity.x = m_velocity.x * 0.9f;
 		//	m_velocity.z = m_velocity.x * 0.9f;
 		//}
+		if (m_isFall) {
+			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
+		}
 		playerTrans->SetWorldPosition(playerPos);
 	}
 	//--------------------------------------------------------------------------------------------
@@ -262,7 +260,6 @@ namespace basecross{
 		m_Lerp += App::GetApp()->GetElapsedTime();
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
-			GetComponent<RigidbodyBox>()->SetPosition(pos);
 			state = L"walk";
 			//飛び終わったらステートを歩きにする
 			//m_StateMachine->ChangeState(WalkState::Instance());
