@@ -146,19 +146,17 @@ namespace basecross{
 		auto otherTrans = Other->GetComponent<Transform>();
 		//playerの下面と衝突した物体の上面が当たっていたら
 		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
-			//オブジェクトの上にポジションをずらす
-			auto pos = trans->GetWorldPosition();
-			pos.y = otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2 + trans->GetScale().y / 2;
-			trans->SetWorldPosition(pos);
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
 		}
+
+		Extrusion(Other);
 
 		auto access = dynamic_pointer_cast<LinkObject>(Other);
 		if (access) {
 			if (state != L"Link") {
 				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-					SetBezierPoint(access->SetGoPosition());
+					SetBezierPoint(access->GetGoPosition());
 					m_Lerp = 0;
 					state = L"Link";
 					//m_StateMachine->ChangeState(LinkState::Instance());
@@ -274,6 +272,59 @@ namespace basecross{
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
+	}
+	void Player::Extrusion(const weak_ptr<GameObject>& Other) {
+		//playerの情報
+		auto trans = GetComponent<Transform>();
+		auto pos = trans->GetWorldPosition();
+		auto scale = trans->GetScale();
+		auto half = scale * 0.5f;
+		//衝突したオブジェクトの情報
+		auto other = Other.lock();
+		auto otherTrans = other->GetComponent<Transform>();
+		auto otherPos = otherTrans->GetWorldPosition();
+		auto otherScale = otherTrans->GetScale();
+		auto otherHalf = otherScale * 0.5f;
+		// 衝突しているので応答を行う
+		float diff[6] = {
+			(otherPos.x + otherHalf.x) - (pos.x - half.x), // 右
+			(pos.x + half.x) - (otherPos.x - otherHalf.x), // 左
+			(otherPos.y + otherHalf.y) - (pos.y - half.y), // 上
+			(pos.y + half.y) - (otherPos.y - otherHalf.y), // 下
+			(otherPos.z + otherHalf.z) - (pos.z - half.z), // 奥
+			(pos.z + half.z) - (otherPos.z - otherHalf.z), // 手前
+		};
+		// 側面の距離が最小になっている要素を見つける
+		int min = 0;
+		for (int i = 0; i < 6; i++) {
+			if (diff[i] < diff[min]) {
+				min = i;
+			}
+		}
+		// 最小になっている方向に対して押し出しを行う
+		switch (min) {
+		case 0:
+			pos.x += diff[min];
+			break;
+		case 1:
+			pos.x -= diff[min];
+			break;
+		case 2:
+			pos.y += diff[min];
+			break;
+		case 3:
+			pos.y -= diff[min];
+			break;
+		case 4:
+			pos.z += diff[min];
+			break;
+		case 5:
+			pos.z -= diff[min];
+			break;
+		default:
+			break;
+		}
+		trans->SetWorldPosition(pos);
 	}
 
 	void Player::DrawStrings()

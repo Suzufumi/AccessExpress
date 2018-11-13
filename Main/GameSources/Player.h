@@ -24,6 +24,7 @@ namespace basecross {
 		float m_cameraDistance = 10.0f;			//カメラのプレイヤーからの距離
 		bool m_isFall = false;					//Y軸方向の力を加えるかどうか
 		bool m_isHaveFile = false;
+		bool m_isHit = false;					//オブジェクトに当たっているかどうか
 		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
 		Vec3 p0, p1,p2;							//ベジエ曲線のための位置情報
 
@@ -66,6 +67,7 @@ namespace basecross {
 			return m_StateMachine;
 		}
 		void SetBezierPoint(Vec3 point);
+		void Extrusion(const weak_ptr<GameObject>& Other);
 
 		void DrawStrings();
 	};
