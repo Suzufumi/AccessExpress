@@ -15,6 +15,7 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 #include "GameStage.h"
+#include "ProjectCamera.h"
 #include "FixedGameObject.h"
 #include "ShapeObject.h"
 #include "PlayerSupport.h"
