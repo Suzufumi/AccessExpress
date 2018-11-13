@@ -12,6 +12,7 @@ namespace basecross {
 		unique_ptr< StateMachine<Player> >  m_StateMachine;	//ステートマシーン
 		wstring state = L"walk";
 
+		float m_nowFallSpeed = 8.0f;
 		float m_nowWalkSpeed = 10.0f;			//現在の移動のスピード
 		float m_standardWalkSpeed = 5.0f;		//基本の移動スピード
 		/*プレイヤーのY軸基準回転
