@@ -3,18 +3,18 @@
 
 namespace basecross
 {
-	ProjectCamera::ProjectCamera()
+	TpsCamera::TpsCamera()
 	{}
 
-	ProjectCamera::~ProjectCamera()
+	TpsCamera::~TpsCamera()
 	{}
 
-	void ProjectCamera::OnCreate()
+	void TpsCamera::OnCreate()
 	{
 
 	}
 
-	void ProjectCamera::OnUpdate()
+	void TpsCamera::OnUpdate()
 	{
 
 	}

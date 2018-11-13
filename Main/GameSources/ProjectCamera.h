@@ -3,11 +3,11 @@
 
 namespace basecross
 {
-	class ProjectCamera : public Camera
+	class TpsCamera : public Camera
 	{
 	public:
-		ProjectCamera();
-		virtual ~ProjectCamera();
+		TpsCamera();
+		virtual ~TpsCamera();
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
