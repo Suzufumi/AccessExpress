@@ -14,6 +14,7 @@ namespace basecross {
 	void GameStage::CreateViewLight() {
 		auto ptrView = CreateView<SingleView>();
 
+		auto camera = ObjectFactory::Create<TpsCamera>();
 		auto ptrCamera = ObjectFactory::Create<Camera>();
 		// デバッグ用アングル(ステージ全体を見る)
 		//ptrView->SetCamera(ptrCamera);
