@@ -14,17 +14,17 @@ namespace basecross {
 	void GameStage::CreateViewLight() {
 		auto ptrView = CreateView<SingleView>();
 
-		auto ptrCamera = ObjectFactory::Create<TpsCamera>();
+		//auto ptrCamera = ObjectFactory::Create<Camera>();
 		// デバッグ用アングル(ステージ全体を見る)
 		//ptrView->SetCamera(ptrCamera);
 		//ptrCamera->SetEye(Vec3(0.0f, 60.0f, -100.0f));
 		//ptrCamera->SetAt(Vec3(0.0f, -30.0f, 50.0f));
 
 		//ビューのカメラの設定
-		//auto ptrCamera = ObjectFactory::Create<Camera>();
+		auto ptrCamera = ObjectFactory::Create<TpsCamera>();
 		ptrView->SetCamera(ptrCamera);
-		ptrCamera->SetEye(Vec3(0.0f, 10.0f, -5.0f));
-		ptrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+		//ptrCamera->SetEye(Vec3(0.0f, 10.0f, -5.0f));
+		//ptrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 		//マルチライトの作成
 		auto ptrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定x

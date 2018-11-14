@@ -111,11 +111,11 @@ namespace basecross{
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 
 		// カメラの注視点をプレイヤーの座標に合わせる
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance, 
-			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
-		camera->SetEye(eye);
+		//auto camera = GetStage()->GetView()->GetTargetCamera();
+		//camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
+		//auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance, 
+		//	m_cameraHeight, sin(m_angleY) * m_cameraDistance);
+		//camera->SetEye(eye);
 
 
 		// デバッグ文字の表示
@@ -232,7 +232,6 @@ namespace basecross{
 		// スティックの傾きを角度に変換する
 		float padRad = atan2f(m_padDir.z, m_padDir.x);
 
-		auto camera = GetStage()->GetView()->GetTargetCamera();
 		m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
 		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
 		//360度を越えたら0にする
@@ -330,6 +329,16 @@ namespace basecross{
 		trans->SetWorldPosition(pos);
 	}
 
+	void Player::CameraControll()
+	{
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
+		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
+			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
+		camera->SetEye(eye);
+	}
+
 	void Player::DrawStrings()
 	{
 		// FPSの取得
@@ -368,6 +377,7 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
+		Obj->CameraControll();
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void WalkState::Exit(const shared_ptr<Player>& Obj) {
@@ -383,16 +393,15 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
+		//auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
+		//auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		//camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
+		//camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
-		// カメラオブジェクトの取得
-		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
-		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
-		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		//auto eye = pos + Vec3(0.0f, )
-		//camera->SetEye()
+		//Obj->CameraControll();
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
