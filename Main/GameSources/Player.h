@@ -65,8 +65,11 @@ namespace basecross {
 		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
 			return m_StateMachine;
 		}
+		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
+		//押し出し処理
 		void Extrusion(const weak_ptr<GameObject>& Other);
+
 
 		void DrawStrings();
 	};

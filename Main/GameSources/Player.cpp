@@ -33,8 +33,6 @@ namespace basecross{
 		ptrTrans->SetQuaternion(m_quaternion);
 		ptrTrans->SetScale(m_scale);
 
-		//物理を使うために渡す
-		PsBoxParam Ps(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//四角形の当たり判定をセット
 		auto col = AddComponent<CollisionObb>();
 		col->SetDrawActive(true);
