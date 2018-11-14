@@ -104,6 +104,14 @@ namespace basecross{
 		//m_nowWalkSpeed = hitJud->GetAcceleration();
 		////当たり判定のスピードを初期化
 		//hitJud->Rset();
+		if (state != L"Link") {
+			if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				//SetBezierPoint(access->GetGoPosition());
+				m_Lerp = 0;
+				state = L"Link";
+				m_StateMachine->ChangeState(LinkState::Instance());
+			}
+		}
 
 		// トランスフォームコンポーネントから座標を取得する
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -155,14 +163,6 @@ namespace basecross{
 
 		auto access = dynamic_pointer_cast<LinkObject>(Other);
 		if (access) {
-			if (state != L"Link") {
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-					SetBezierPoint(access->GetGoPosition());
-					m_Lerp = 0;
-					state = L"Link";
-					m_StateMachine->ChangeState(LinkState::Instance());
-				}
-			}
 		}
 		//ドライブに変換できた
 		//auto drive = dynamic_pointer_cast<Drive>(Other);
