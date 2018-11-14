@@ -69,6 +69,7 @@ namespace basecross {
 		void SetBezierPoint(Vec3 point);
 		//‰Ÿ‚µo‚µˆ—
 		void Extrusion(const weak_ptr<GameObject>& Other);
+		void CameraControll();
 
 
 		void DrawStrings();

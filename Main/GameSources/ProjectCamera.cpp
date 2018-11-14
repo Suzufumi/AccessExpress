@@ -25,4 +25,8 @@ namespace basecross
 
 	}
 
+	void TpsCamera::SetTarget(const shared_ptr<Transform>& target)
+	{
+	}
+
 }
