@@ -67,6 +67,8 @@ namespace basecross {
 		auto radioTowerHitJudgment = AddGameObject<RadioTowerHitJudgment>(player);
 		//プレイヤーに電波塔との当たり判定を認知させる
 		player->SetRadioTowerHitJudgment(radioTowerHitJudgment);
+		//Ray
+		AddGameObject<Ray>(player);
 	}
 
 	void GameStage::CreateBill()
@@ -139,11 +141,11 @@ namespace basecross {
 		linkC->SetGoPosition(linkD->GetComponent<Transform>()->GetWorldPosition());
 
 
-
 	}
 
 	void GameStage::OnCreate() {
 		try {
+			CreateSharedObjectGroup(L"Link");
 			//物理計算有効
 			SetPhysicsActive(true);
 			//ビューとライトの作成
