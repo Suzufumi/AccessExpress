@@ -399,7 +399,7 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
-		//Obj->CameraControll();
+		Obj->CameraControll();
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
