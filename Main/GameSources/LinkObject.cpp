@@ -24,6 +24,7 @@ namespace basecross
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		drawComp->SetDiffuse(Col4(0.0f, 1.0f, 0.0f, 1.0f));
+		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
 	}
 
 	void LinkObject::OnUpdate()

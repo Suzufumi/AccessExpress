@@ -14,8 +14,7 @@ namespace basecross {
 	void GameStage::CreateViewLight() {
 		auto ptrView = CreateView<SingleView>();
 
-		auto camera = ObjectFactory::Create<TpsCamera>();
-		auto ptrCamera = ObjectFactory::Create<Camera>();
+		auto ptrCamera = ObjectFactory::Create<TpsCamera>();
 		// デバッグ用アングル(ステージ全体を見る)
 		//ptrView->SetCamera(ptrCamera);
 		//ptrCamera->SetEye(Vec3(0.0f, 60.0f, -100.0f));
@@ -54,7 +53,7 @@ namespace basecross {
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		drawComp->SetFogEnabled(true);
 		//自分に影が映りこむようにする
-		drawComp->SetOwnShadowActive(true);
+		drawComp->SetOwnShadowActive(false);
 		Col4 Color(1.0f, 1.0f, 1.0f, 0.7f);
 		drawComp->SetColorAndAlpha(Color);
 	}
@@ -63,11 +62,13 @@ namespace basecross {
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-3.0f, 1.0f, -38.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
+		auto player = AddGameObject<Player>(Vec3(-35.0f, 9.0f, -35.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		//プレイヤーが使う電波塔との判定専門の当たり判定
 		auto radioTowerHitJudgment = AddGameObject<RadioTowerHitJudgment>(player);
 		//プレイヤーに電波塔との当たり判定を認知させる
 		player->SetRadioTowerHitJudgment(radioTowerHitJudgment);
+		//Ray
+		AddGameObject<Ray>(player);
 	}
 
 	void GameStage::CreateBill()
@@ -81,7 +82,7 @@ namespace basecross {
 		const int BILL_COUNT = 35;
 		BillTrans billParam[BILL_COUNT] = 
 		{
-			{ Vec3(-35.0f, 4.0f, -35.0f), Vec3(5.0f, 8.0f, 5.0f) }, //0
+			{ Vec3(-35.0f, 4.0f, -35.0f), Vec3(5.0f, 8.0f, 7.0f) }, //0
 			{ Vec3(-35.0f, 4.0f, -20.0f), Vec3(4.0f, 8.0f, 5.0f) }, //1
 			{ Vec3(-35.0f, 2.5f, -10.0f), Vec3(4.0f, 5.0f, 3.0f) },	//2
 			{ Vec3(-35.0f, 3.0f, 0.0f),   Vec3(4.0f, 6.0f, 4.0f) },	//3
@@ -131,28 +132,20 @@ namespace basecross {
 
 	void GameStage::CreateLinkObject()
 	{
-		auto linkA = AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
-		auto linkB = AddGameObject<LinkObject>(Vec3(-18.0f, 2.0f, -25.0f), Vec3(1.0f, 1.0f, 1.0f));
+		auto linkA = AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -33.0f), Vec3(1.0f, 1.0f, 1.0f));
+		auto linkB = AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
 		linkA->SetGoPosition(linkB->GetComponent<Transform>()->GetWorldPosition());
-		linkB->SetGoPosition(linkA->GetComponent<Transform>()->GetWorldPosition());
-		auto linkC = AddGameObject<LinkObject>(Vec3(-23.0f, 8.5f, -15.0f), Vec3(1.0f, 1.0f, 1.0f));
-		auto linkD = AddGameObject<LinkObject>(Vec3(-30.0f, 3.0f, 0.0f), Vec3(1.0f, 1.0f, 1.0f));
+		auto linkC = AddGameObject<LinkObject>(Vec3(-35.0f, 5.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
+		linkB->SetGoPosition(linkC->GetComponent<Transform>()->GetWorldPosition());
+		auto linkD = AddGameObject<LinkObject>(Vec3(-23.0f, 7.5f, 5.0f), Vec3(1.0f, 1.0f, 1.0f));
 		linkC->SetGoPosition(linkD->GetComponent<Transform>()->GetWorldPosition());
-		linkD->SetGoPosition(linkC->GetComponent<Transform>()->GetWorldPosition());
-		auto linkE = AddGameObject<LinkObject>(Vec3(-28.0f, 1.0f, 15.0f), Vec3(1.0f, 1.0f, 1.0f));
-		auto linkF = AddGameObject<LinkObject>(Vec3(-4.0f, 1.5f, 10.0f), Vec3(1.0f, 1.0f, 1.0f));
-		linkE->SetGoPosition(linkF->GetComponent<Transform>()->GetWorldPosition());
-		linkF->SetGoPosition(linkE->GetComponent<Transform>()->GetWorldPosition());
-		auto linkG = AddGameObject<LinkObject>(Vec3(7.0f, 6.5f, -15.0f), Vec3(1.0f, 1.0f, 1.0f));
-		auto linkH = AddGameObject<LinkObject>(Vec3(7.0f, 5.5f, 20.0f), Vec3(1.0f, 1.0f, 1.0f));
-		linkG->SetGoPosition(linkH->GetComponent<Transform>()->GetWorldPosition());
-		linkH->SetGoPosition(linkG->GetComponent<Transform>()->GetWorldPosition());
 
 
 	}
 
 	void GameStage::OnCreate() {
 		try {
+			CreateSharedObjectGroup(L"Link");
 			//物理計算有効
 			SetPhysicsActive(true);
 			//ビューとライトの作成

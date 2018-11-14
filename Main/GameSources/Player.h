@@ -15,13 +15,11 @@ namespace basecross {
 		float m_nowFallSpeed = 8.0f;
 		float m_nowWalkSpeed = 10.0f;			//現在の移動のスピード
 		float m_standardWalkSpeed = 5.0f;		//基本の移動スピード
-		/*プレイヤーのY軸基準回転
-		270度から始めることでXの+方向を右、Zの+方向を奥にする*/
-		float m_AngleY = Deg2Rad(270);
-		float m_AngleX = 0;						//プレイヤーのX軸基準回転
-		float m_maxAngleSpeed = 3.141592f;		//カメラが回転するスピード
-		float m_cameraHeight = 3.0f;			//カメラの初期高さ
-		float m_cameraDistance = 10.0f;			//カメラのプレイヤーからの距離
+		float m_angleX;
+		float m_angleY;
+		float m_maxAngleSpeed;		//カメラが回転するスピード
+		float m_cameraHeight;			//カメラの初期高さ
+		float m_cameraDistance;			//カメラのプレイヤーからの距離
 		bool m_isFall = false;					//Y軸方向の力を加えるかどうか
 		bool m_isHaveFile = false;
 		bool m_isHit = false;					//オブジェクトに当たっているかどうか
@@ -41,6 +39,7 @@ namespace basecross {
 		Vec3 m_padDir;									//左スティックの向きを入れる
 		Vec3 m_forward;									//カメラの方向を踏まえたプレイヤーの向いている方向
 
+		weak_ptr<TpsCamera> m_tpsCamera; // カメラのインスタンスを受け取る
 
 	public:
 		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);
@@ -66,8 +65,11 @@ namespace basecross {
 		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
 			return m_StateMachine;
 		}
+		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
+		//押し出し処理
 		void Extrusion(const weak_ptr<GameObject>& Other);
+
 
 		void DrawStrings();
 	};

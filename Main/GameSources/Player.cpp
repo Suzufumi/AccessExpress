@@ -14,6 +14,14 @@ namespace basecross{
 	Player::Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca)
 		:GameObject(StagePtr), m_position(pos), m_quaternion(quat), m_scale(sca)
 	{
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		m_tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+		m_angleX = m_tpsCamera.lock()->GetCameraAngleX();
+		m_angleY = m_tpsCamera.lock()->GetCameraAngleY();
+		m_maxAngleSpeed = m_tpsCamera.lock()->GetMaxAngleSpeed();
+		m_cameraHeight = m_tpsCamera.lock()->GetCameraHeight();
+		m_cameraDistance = m_tpsCamera.lock()->GetCameraDistance();
+
 	}
 	//-------------------------------------------------------------------------------------------------
 	//初期化
@@ -25,8 +33,6 @@ namespace basecross{
 		ptrTrans->SetQuaternion(m_quaternion);
 		ptrTrans->SetScale(m_scale);
 
-		//物理を使うために渡す
-		PsBoxParam Ps(ptrTrans->GetWorldMatrix(), 1.0f, false, PsMotionType::MotionTypeActive);
 		//四角形の当たり判定をセット
 		auto col = AddComponent<CollisionObb>();
 		col->SetDrawActive(true);
@@ -38,6 +44,7 @@ namespace basecross{
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 640.0f, 480.0f));
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
@@ -97,6 +104,14 @@ namespace basecross{
 		//m_nowWalkSpeed = hitJud->GetAcceleration();
 		////当たり判定のスピードを初期化
 		//hitJud->Rset();
+		if (state != L"Link") {
+			if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				//SetBezierPoint(access->GetGoPosition());
+				m_Lerp = 0;
+				state = L"Link";
+				m_StateMachine->ChangeState(LinkState::Instance());
+			}
+		}
 
 		// トランスフォームコンポーネントから座標を取得する
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -104,7 +119,8 @@ namespace basecross{
 		// カメラの注視点をプレイヤーの座標に合わせる
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		auto eye = pos + Vec3(cos(m_AngleY) * m_cameraDistance, m_cameraHeight, sin(m_AngleY) * m_cameraDistance);
+		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance, 
+			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
 
 
@@ -147,14 +163,6 @@ namespace basecross{
 
 		auto access = dynamic_pointer_cast<LinkObject>(Other);
 		if (access) {
-			if (state != L"Link") {
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-					SetBezierPoint(access->GetGoPosition());
-					m_Lerp = 0;
-					state = L"Link";
-					m_StateMachine->ChangeState(LinkState::Instance());
-				}
-			}
 		}
 		//ドライブに変換できた
 		//auto drive = dynamic_pointer_cast<Drive>(Other);
@@ -222,21 +230,21 @@ namespace basecross{
 		// スティックの傾きを角度に変換する
 		float padRad = atan2f(m_padDir.z, m_padDir.x);
 
-		m_AngleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
 		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
-
 		//360度を越えたら0にする
-		if (m_AngleX > 360) {
-			m_AngleX = 0;
+		if (m_angleX > 360) {
+			m_angleX = 0;
 		}
 		//0度よりも小さくなったら
-		if (m_AngleX < 0) {
-			m_AngleX = 360;
+		if (m_angleX < 0) {
+			m_angleX = 360;
 		}
 
 		if (m_padDir.length() != 0.0f) {
 			// スティックの角度にカメラの角度を加える
-			padRad += m_AngleY + XM_PIDIV2;  // カメラの角度に９０度加える
+			padRad += m_angleY + XM_PIDIV2;  // カメラの角度に９０度加える
 			// 角度をXZ成分に分解してベクトルを作り直す
 			m_padDir.x = cosf(padRad); // 新しい角度を X 成分に分解する
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
@@ -326,8 +334,18 @@ namespace basecross{
 		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
 		wstring strFps(L"FPS: ");
 		strFps += Util::UintToWStr(fps);
-		wstring str = strFps+state;
+		strFps += L"\n";
+		auto cameraPos = GetStage()->GetView()->GetTargetCamera();
+		wstring cameraStr(L"Camera :");
+		cameraStr += L"X:" + Util::FloatToWStr(cameraPos->GetEye().x, 6, Util::FloatModify::Fixed) + L"\t";
+		cameraStr += L"Y:" + Util::FloatToWStr(cameraPos->GetEye().y, 6, Util::FloatModify::Fixed) + L"\t";
+		cameraStr += L"Z:" + Util::FloatToWStr(cameraPos->GetEye().z, 6, Util::FloatModify::Fixed) + L"\n";
+		cameraStr += L"X:" + Util::FloatToWStr(cameraPos->GetAt().x, 6, Util::FloatModify::Fixed) + L"\t";
+		cameraStr += L"Y:" + Util::FloatToWStr(cameraPos->GetAt().y, 6, Util::FloatModify::Fixed) + L"\t";
+		cameraStr += L"Z:" + Util::FloatToWStr(cameraPos->GetAt().z, 6, Util::FloatModify::Fixed) + L"\n";
+
 		//文字列をつける
+		wstring str = strFps + cameraStr;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 
@@ -367,6 +385,12 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
+		// カメラオブジェクトの取得
+		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
+		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
+		//auto eye = pos + Vec3(0.0f, )
+		//camera->SetEye()
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {

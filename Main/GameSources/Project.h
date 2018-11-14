@@ -24,5 +24,5 @@
 #include "SearchObject.h"
 #include "LinkObject.h"
 #include "Timer.h"
-
+#include "Ray.h"
 
