@@ -22,6 +22,7 @@ namespace basecross {
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		drawComp->SetTextureResource(L"Building1_TX");
 		Col4 Color(0.4f, 0.4f, 0.4f, 1.0f);
 		drawComp->SetDiffuse(Color);
 	}
