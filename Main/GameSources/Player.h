@@ -69,8 +69,8 @@ namespace basecross {
 		void SetBezierPoint(Vec3 point);
 		//押し出し処理
 		void Extrusion(const weak_ptr<GameObject>& Other);
-
-
+		//Rayとリンクオブジェクトが当たっているかを見る処理
+		void RayHitLink();
 		void DrawStrings();
 	};
 

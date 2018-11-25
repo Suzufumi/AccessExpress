@@ -104,13 +104,10 @@ namespace basecross{
 		//m_nowWalkSpeed = hitJud->GetAcceleration();
 		////当たり判定のスピードを初期化
 		//hitJud->Rset();
+
+
 		if (state != L"Link") {
-			if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-				//SetBezierPoint(access->GetGoPosition());
-				m_Lerp = 0;
-				state = L"Link";
-				m_StateMachine->ChangeState(LinkState::Instance());
-			}
+			RayHitLink();
 		}
 
 		// トランスフォームコンポーネントから座標を取得する
@@ -232,7 +229,7 @@ namespace basecross{
 
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
-		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
+		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
 		//360度を越えたら0にする
 		if (m_angleX > 360) {
 			m_angleX = 0;
@@ -269,10 +266,40 @@ namespace basecross{
 		pos.z = (1 - m_Lerp) * (1 - m_Lerp) * p0.z + 2 * (1 - m_Lerp) * m_Lerp * p1.z + m_Lerp * m_Lerp * p2.z;
 		GetComponent<Transform>()->SetWorldPosition(pos);
 	}
+	//ベジエ曲線の制御点設定
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
+	}
+	//RayとLinkオブジェクトが当たっているかを調べる
+	void Player::RayHitLink() {
+		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+			auto pos = GetComponent<Transform>()->GetWorldPosition();
+			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+			//playerとカメラの位置から飛ばす方向を求める
+			auto dir = pos - m_cameraPos;
+			dir = dir.normalize();
+			//リンクオブジェクトの入っているグループを持ってくる
+			auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
+			//一つずつ取り出す
+			for (auto& link : linkGroup->GetGroupVector()) {
+				auto linkObj = link.lock();
+				auto linkTrans = linkObj->GetComponent<Transform>();
+				//リンクオブジェクトのOBBを作る
+				OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
+				//プレイヤーからでるRayとOBBで判定
+				bool hit = HitTest::SEGMENT_OBB(pos, pos + dir * 30.0f, obb);
+
+				if (hit && (p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition())) {
+					SetBezierPoint(linkTrans->GetWorldPosition());
+					m_Lerp = 0;
+					state = L"Link";
+					m_StateMachine->ChangeState(LinkState::Instance());
+					break;
+				}
+			}
+		}
 	}
 	void Player::Extrusion(const weak_ptr<GameObject>& Other) {
 		//playerの情報
