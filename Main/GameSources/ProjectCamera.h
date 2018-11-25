@@ -19,6 +19,8 @@ namespace basecross
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		// 引数で入ってきたトランスフォームを取得
+		void SetTarget(const shared_ptr<Transform>& target);
 
 		float GetCameraAngleX() const
 		{ return m_AngleX; }

@@ -71,6 +71,9 @@ namespace basecross {
 		void Extrusion(const weak_ptr<GameObject>& Other);
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void RayHitLink();
+		void CameraControll();
+
+
 		void DrawStrings();
 	};
 
