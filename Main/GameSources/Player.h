@@ -72,7 +72,8 @@ namespace basecross {
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void RayHitLink();
 		void CameraControll();
-
+		bool CheckAButton();
+		void Fall();
 
 		void DrawStrings();
 	};
@@ -104,6 +105,23 @@ namespace basecross {
 	public:
 		//ステートのインスタンス取得
 		static shared_ptr<LinkState> Instance();
+		//ステートに入ったときに呼ばれる関数
+		virtual void Enter(const shared_ptr<Player>& Obj)override;
+		//ステート実行中に毎ターン呼ばれる関数
+		virtual void Execute(const shared_ptr<Player>& Obj)override;
+		//ステートにから抜けるときに呼ばれる関数
+		virtual void Exit(const shared_ptr<Player>& Obj)override;
+	};
+
+	//--------------------------------------------------------------------------------------
+	//class DateState : public ObjState<Player>;
+	//用途: データ体状態
+	//--------------------------------------------------------------------------------------
+	class DateState : public ObjState<Player> {
+		DateState() {}
+	public:
+		//ステートのインスタンス取得
+		static shared_ptr<DateState> Instance();
 		//ステートに入ったときに呼ばれる関数
 		virtual void Enter(const shared_ptr<Player>& Obj)override;
 		//ステート実行中に毎ターン呼ばれる関数

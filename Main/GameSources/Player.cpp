@@ -204,7 +204,7 @@ namespace basecross{
 		//左スティックに値が入力されていたら
 		if (m_padDir.x > 0.4f || m_padDir.x < -0.4f ||
 			m_padDir.z > 0.4f || m_padDir.z < -0.4f) {
-			//方向と移動スピードを掛け算してVelocityに与える
+			//方向と移動スピードを掛け算してpositonを変更する
 			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime();
 			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime();
 		}
@@ -214,10 +214,19 @@ namespace basecross{
 		//	m_velocity.x = m_velocity.x * 0.9f;
 		//	m_velocity.z = m_velocity.x * 0.9f;
 		//}
+		playerTrans->SetWorldPosition(playerPos);
+	}
+	//---------------------------------------------------------------------------------------------
+	//Y方向の移動処理
+	//---------------------------------------------------------------------------------------------
+	void Player::Fall() {
+		auto playerTrans = GetComponent<Transform>();
+		auto playerPos = playerTrans->GetWorldPosition();
 		if (m_isFall) {
 			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
 		}
 		playerTrans->SetWorldPosition(playerPos);
+
 	}
 	//--------------------------------------------------------------------------------------------
 	//カメラの回転処理
@@ -256,8 +265,8 @@ namespace basecross{
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
 			state = L"walk";
-			//飛び終わったらステートを歩きにする
-			m_StateMachine->ChangeState(WalkState::Instance());
+			//飛び終わったらステートをデータ体にする
+			m_StateMachine->ChangeState(DateState::Instance());
 		}
 		//ベジエ曲線の計算
 		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * p0.x + 2 * (1 - m_Lerp) * m_Lerp * p1.x + m_Lerp * m_Lerp * p2.x;
@@ -363,6 +372,13 @@ namespace basecross{
 			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
 	}
+	//Aボタンが押されたかどうかを返す
+	bool Player::CheckAButton() {
+		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_A) {
+			return true;
+		}
+		return false;
+	}
 
 	void Player::DrawStrings()
 	{
@@ -402,7 +418,11 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
+		Obj->Fall();
 		Obj->CameraControll();
+		if (Obj->CheckAButton()) {
+			Obj->GetStateMachine()->ChangeState(DateState::Instance());
+		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void WalkState::Exit(const shared_ptr<Player>& Obj) {
@@ -431,6 +451,30 @@ namespace basecross{
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
 	}
+	//--------------------------------------------------------------------------------------
+	//	class DateState : public ObjState<Player>;
+	//	用途: データ体状態
+	//--------------------------------------------------------------------------------------
+	//ステートのインスタンス取得
+	shared_ptr<DateState> DateState::Instance() {
+		static shared_ptr<DateState> instance(new DateState);
+		return instance;
+	}
+	//ステートに入ったときに呼ばれる関数
+	void DateState::Enter(const shared_ptr<Player>& Obj) {
+	}
+	//ステート実行中に毎ターン呼ばれる関数
+	void DateState::Execute(const shared_ptr<Player>& Obj) {
+		Obj->Walk();
+		Obj->CameraControll();
+		if (Obj->CheckAButton()) {
+			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+		}
+	}
+	//ステートにから抜けるときに呼ばれる関数
+	void DateState::Exit(const shared_ptr<Player>& Obj) {
+	}
+
 }
 //end basecross
 
