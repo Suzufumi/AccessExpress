@@ -105,11 +105,6 @@ namespace basecross{
 		////当たり判定のスピードを初期化
 		//hitJud->Rset();
 
-
-		if (state != L"Link") {
-			RayHitLink();
-		}
-
 		// トランスフォームコンポーネントから座標を取得する
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 
@@ -257,7 +252,9 @@ namespace basecross{
 			m_forward = m_padDir;
 		}
 	}
+	//---------------------------------------------------------------------------------------------
 	//リンクからリンクへ飛ぶ処理
+	//---------------------------------------------------------------------------------------------
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		//計算のための時間加算
@@ -280,7 +277,9 @@ namespace basecross{
 		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
 	}
+	//---------------------------------------------------------------------------------------------
 	//RayとLinkオブジェクトが当たっているかを調べる
+	//---------------------------------------------------------------------------------------------
 	void Player::RayHitLink() {
 		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
 			auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -309,6 +308,9 @@ namespace basecross{
 			}
 		}
 	}
+	//---------------------------------------------------------------------------------------------
+	//押し出しの判定
+	//---------------------------------------------------------------------------------------------
 	void Player::Extrusion(const weak_ptr<GameObject>& Other) {
 		//playerの情報
 		auto trans = GetComponent<Transform>();
@@ -372,14 +374,18 @@ namespace basecross{
 			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
 	}
+	//---------------------------------------------------------------------------------------------
 	//Aボタンが押されたかどうかを返す
+	//---------------------------------------------------------------------------------------------
 	bool Player::CheckAButton() {
 		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_A) {
 			return true;
 		}
 		return false;
 	}
-
+	//---------------------------------------------------------------------------------------------
+	//情報の表示
+	//---------------------------------------------------------------------------------------------
 	void Player::DrawStrings()
 	{
 		// FPSの取得
@@ -466,6 +472,7 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void DateState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
+		Obj->RayHitLink();
 		Obj->CameraControll();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
