@@ -98,24 +98,12 @@ namespace basecross{
 	//
 	//-------------------------------------------------------------------------------------------------------------------
 	void Player::OnUpdate2() {
-		////当たり判定を取り出す
-		//auto hitJud = m_RadioTowerHitJudgment.lock();
-		////当たり判定から速度を持ってくる
-		//m_nowWalkSpeed = hitJud->GetAcceleration();
-		////当たり判定のスピードを初期化
-		//hitJud->Rset();
-
-		// トランスフォームコンポーネントから座標を取得する
-		auto pos = GetComponent<Transform>()->GetWorldPosition();
-
-		// カメラの注視点をプレイヤーの座標に合わせる
-		//auto camera = GetStage()->GetView()->GetTargetCamera();
-		//camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		//auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance, 
-		//	m_cameraHeight, sin(m_angleY) * m_cameraDistance);
-		//camera->SetEye(eye);
-
-
+		m_energy += m_changeEnergy * 5.0f * App::GetApp()->GetElapsedTime();
+		if (m_energy >= m_maxEnergy) {
+			m_energy = m_maxEnergy;
+			;
+		}
+		
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -401,9 +389,11 @@ namespace basecross{
 		cameraStr += L"X:" + Util::FloatToWStr(cameraPos->GetAt().x, 6, Util::FloatModify::Fixed) + L"\t";
 		cameraStr += L"Y:" + Util::FloatToWStr(cameraPos->GetAt().y, 6, Util::FloatModify::Fixed) + L"\t";
 		cameraStr += L"Z:" + Util::FloatToWStr(cameraPos->GetAt().z, 6, Util::FloatModify::Fixed) + L"\n";
-
+		wstring energy(L"Energy : ");
+		energy += Util::FloatToWStr(m_energy) + L"\n";
 		//文字列をつける
-		wstring str = strFps + cameraStr;
+		//wstring str = strFps + cameraStr + energy;
+		wstring str = energy;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 
@@ -420,6 +410,7 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void WalkState::Enter(const shared_ptr<Player>& Obj) {
+		Obj->ChengeEnergyPur();
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
@@ -453,6 +444,9 @@ namespace basecross{
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
 		Obj->CameraControll();
+		if (Obj->GetEnergy() <= 0.0f) {
+			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
@@ -468,6 +462,7 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void DateState::Enter(const shared_ptr<Player>& Obj) {
+		Obj->ChengeEnergyMai();
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void DateState::Execute(const shared_ptr<Player>& Obj) {
@@ -475,6 +470,9 @@ namespace basecross{
 		Obj->RayHitLink();
 		Obj->CameraControll();
 		if (Obj->CheckAButton()) {
+			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+		}
+		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
 		}
 	}

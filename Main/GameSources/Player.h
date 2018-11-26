@@ -25,6 +25,9 @@ namespace basecross {
 		bool m_isHit = false;					//オブジェクトに当たっているかどうか
 		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
 		Vec3 p0, p1,p2;							//ベジエ曲線のための位置情報
+		float m_energy = 100.0f;
+		float m_changeEnergy = 1.0f;
+		float m_maxEnergy = 100.0f;
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -74,6 +77,9 @@ namespace basecross {
 		void CameraControll();
 		bool CheckAButton();
 		void Fall();
+		void ChengeEnergyMai() { m_changeEnergy = -1.0f; }
+		void ChengeEnergyPur() { m_changeEnergy = 1.0f; }
+		float GetEnergy() { return m_energy; }
 
 		void DrawStrings();
 	};
