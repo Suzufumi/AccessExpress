@@ -51,7 +51,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectCamera.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Ray.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,7 +95,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectCamera.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Ray.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
