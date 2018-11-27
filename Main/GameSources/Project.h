@@ -15,6 +15,7 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 #include "GameStage.h"
+#include "TitleStage.h"
 #include "ProjectCamera.h"
 #include "FixedGameObject.h"
 #include "ShapeObject.h"
@@ -24,5 +25,4 @@
 #include "SearchObject.h"
 #include "LinkObject.h"
 #include "Timer.h"
-#include "Ray.h"
 
