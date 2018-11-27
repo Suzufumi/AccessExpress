@@ -57,7 +57,8 @@ namespace basecross{
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<PNTStaticModelDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
-		drawComp->SetMeshResource(L"PLAYER_MODEL");
+		drawComp->SetMultiMeshResource(L"PLAYER_MODEL");
+		drawComp->SetTextureResource(L"PLAYER_TX");
 		// 変換した行列を代入
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);

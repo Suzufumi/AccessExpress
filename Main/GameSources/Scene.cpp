@@ -37,12 +37,14 @@ namespace basecross{
 		// mediaディレクトリを取得
 		App::GetApp()->GetDataDirectory(dataDir);
 
-		//dataDir += L"Model\\";
-		auto playerModelMesh = MeshResource::CreateStaticModelMesh(dataDir + L"Model\\", L"PlayerChara.bmf");
-		App::GetApp()->RegisterResource(L"PLAYER_MODEL", playerModelMesh);
-
 		wstring strTexture = dataDir + L"Building1.png";
 		App::GetApp()->RegisterTexture(L"Building1_TX", strTexture);
+		
+		auto modelDir = dataDir + L"Model\\";
+		auto playerModelMesh = MultiMeshResource::CreateStaticModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
+		App::GetApp()->RegisterResource(L"PLAYER_MODEL", playerModelMesh);
+		auto modelTex = modelDir + L"Player\\" + L"UV_Player.png";
+		App::GetApp()->RegisterTexture(L"PLAYER_TX", modelTex);
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
