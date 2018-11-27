@@ -98,32 +98,12 @@ namespace basecross{
 	//
 	//-------------------------------------------------------------------------------------------------------------------
 	void Player::OnUpdate2() {
-		////当たり判定を取り出す
-		//auto hitJud = m_RadioTowerHitJudgment.lock();
-		////当たり判定から速度を持ってくる
-		//m_nowWalkSpeed = hitJud->GetAcceleration();
-		////当たり判定のスピードを初期化
-		//hitJud->Rset();
-		if (state != L"Link") {
-			if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-				//SetBezierPoint(access->GetGoPosition());
-				m_Lerp = 0;
-				state = L"Link";
-				m_StateMachine->ChangeState(LinkState::Instance());
-			}
+		m_energy += m_changeEnergy * 5.0f * App::GetApp()->GetElapsedTime();
+		if (m_energy >= m_maxEnergy) {
+			m_energy = m_maxEnergy;
+			;
 		}
-
-		// トランスフォームコンポーネントから座標を取得する
-		auto pos = GetComponent<Transform>()->GetWorldPosition();
-
-		// カメラの注視点をプレイヤーの座標に合わせる
-		//auto camera = GetStage()->GetView()->GetTargetCamera();
-		//camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		//auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance, 
-		//	m_cameraHeight, sin(m_angleY) * m_cameraDistance);
-		//camera->SetEye(eye);
-
-
+		
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -207,7 +187,7 @@ namespace basecross{
 		//左スティックに値が入力されていたら
 		if (m_padDir.x > 0.4f || m_padDir.x < -0.4f ||
 			m_padDir.z > 0.4f || m_padDir.z < -0.4f) {
-			//方向と移動スピードを掛け算してVelocityに与える
+			//方向と移動スピードを掛け算してpositonを変更する
 			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime();
 			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime();
 		}
@@ -217,10 +197,19 @@ namespace basecross{
 		//	m_velocity.x = m_velocity.x * 0.9f;
 		//	m_velocity.z = m_velocity.x * 0.9f;
 		//}
+		playerTrans->SetWorldPosition(playerPos);
+	}
+	//---------------------------------------------------------------------------------------------
+	//Y方向の移動処理
+	//---------------------------------------------------------------------------------------------
+	void Player::Fall() {
+		auto playerTrans = GetComponent<Transform>();
+		auto playerPos = playerTrans->GetWorldPosition();
 		if (m_isFall) {
 			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
 		}
 		playerTrans->SetWorldPosition(playerPos);
+
 	}
 	//--------------------------------------------------------------------------------------------
 	//カメラの回転処理
@@ -231,7 +220,7 @@ namespace basecross{
 		float padRad = atan2f(m_padDir.z, m_padDir.x);
 
 		m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
-		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
+		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
 		//360度を越えたら0にする
 		if (m_angleX > 360) {
 			m_angleX = 0;
@@ -251,7 +240,9 @@ namespace basecross{
 			m_forward = m_padDir;
 		}
 	}
+	//---------------------------------------------------------------------------------------------
 	//リンクからリンクへ飛ぶ処理
+	//---------------------------------------------------------------------------------------------
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		//計算のための時間加算
@@ -259,8 +250,8 @@ namespace basecross{
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
 			state = L"walk";
-			//飛び終わったらステートを歩きにする
-			m_StateMachine->ChangeState(WalkState::Instance());
+			//飛び終わったらステートをデータ体にする
+			m_StateMachine->ChangeState(DateState::Instance());
 		}
 		//ベジエ曲線の計算
 		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * p0.x + 2 * (1 - m_Lerp) * m_Lerp * p1.x + m_Lerp * m_Lerp * p2.x;
@@ -268,11 +259,46 @@ namespace basecross{
 		pos.z = (1 - m_Lerp) * (1 - m_Lerp) * p0.z + 2 * (1 - m_Lerp) * m_Lerp * p1.z + m_Lerp * m_Lerp * p2.z;
 		GetComponent<Transform>()->SetWorldPosition(pos);
 	}
+	//ベジエ曲線の制御点設定
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
 	}
+	//---------------------------------------------------------------------------------------------
+	//RayとLinkオブジェクトが当たっているかを調べる
+	//---------------------------------------------------------------------------------------------
+	void Player::RayHitLink() {
+		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+			auto pos = GetComponent<Transform>()->GetWorldPosition();
+			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+			//playerとカメラの位置から飛ばす方向を求める
+			auto dir = pos - m_cameraPos;
+			dir = dir.normalize();
+			//リンクオブジェクトの入っているグループを持ってくる
+			auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
+			//一つずつ取り出す
+			for (auto& link : linkGroup->GetGroupVector()) {
+				auto linkObj = link.lock();
+				auto linkTrans = linkObj->GetComponent<Transform>();
+				//リンクオブジェクトのOBBを作る
+				OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
+				//プレイヤーからでるRayとOBBで判定
+				bool hit = HitTest::SEGMENT_OBB(pos, pos + dir * 30.0f, obb);
+
+				if (hit && (p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition())) {
+					SetBezierPoint(linkTrans->GetWorldPosition());
+					m_Lerp = 0;
+					state = L"Link";
+					m_StateMachine->ChangeState(LinkState::Instance());
+					break;
+				}
+			}
+		}
+	}
+	//---------------------------------------------------------------------------------------------
+	//押し出しの判定
+	//---------------------------------------------------------------------------------------------
 	void Player::Extrusion(const weak_ptr<GameObject>& Other) {
 		//playerの情報
 		auto trans = GetComponent<Transform>();
@@ -336,7 +362,18 @@ namespace basecross{
 			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
 	}
-
+	//---------------------------------------------------------------------------------------------
+	//Aボタンが押されたかどうかを返す
+	//---------------------------------------------------------------------------------------------
+	bool Player::CheckAButton() {
+		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_A) {
+			return true;
+		}
+		return false;
+	}
+	//---------------------------------------------------------------------------------------------
+	//情報の表示
+	//---------------------------------------------------------------------------------------------
 	void Player::DrawStrings()
 	{
 		// FPSの取得
@@ -352,9 +389,11 @@ namespace basecross{
 		cameraStr += L"X:" + Util::FloatToWStr(cameraPos->GetAt().x, 6, Util::FloatModify::Fixed) + L"\t";
 		cameraStr += L"Y:" + Util::FloatToWStr(cameraPos->GetAt().y, 6, Util::FloatModify::Fixed) + L"\t";
 		cameraStr += L"Z:" + Util::FloatToWStr(cameraPos->GetAt().z, 6, Util::FloatModify::Fixed) + L"\n";
-
+		wstring energy(L"Energy : ");
+		energy += Util::FloatToWStr(m_energy) + L"\n";
 		//文字列をつける
-		wstring str = strFps + cameraStr;
+		//wstring str = strFps + cameraStr + energy;
+		wstring str = energy;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 
@@ -371,11 +410,16 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void WalkState::Enter(const shared_ptr<Player>& Obj) {
+		Obj->ChengeEnergyPur();
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
+		Obj->Fall();
 		Obj->CameraControll();
+		if (Obj->CheckAButton()) {
+			Obj->GetStateMachine()->ChangeState(DateState::Instance());
+		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void WalkState::Exit(const shared_ptr<Player>& Obj) {
@@ -400,10 +444,42 @@ namespace basecross{
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
 		Obj->CameraControll();
+		if (Obj->GetEnergy() <= 0.0f) {
+			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
 	}
+	//--------------------------------------------------------------------------------------
+	//	class DateState : public ObjState<Player>;
+	//	用途: データ体状態
+	//--------------------------------------------------------------------------------------
+	//ステートのインスタンス取得
+	shared_ptr<DateState> DateState::Instance() {
+		static shared_ptr<DateState> instance(new DateState);
+		return instance;
+	}
+	//ステートに入ったときに呼ばれる関数
+	void DateState::Enter(const shared_ptr<Player>& Obj) {
+		Obj->ChengeEnergyMai();
+	}
+	//ステート実行中に毎ターン呼ばれる関数
+	void DateState::Execute(const shared_ptr<Player>& Obj) {
+		Obj->Walk();
+		Obj->RayHitLink();
+		Obj->CameraControll();
+		if (Obj->CheckAButton()) {
+			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+		}
+		if (Obj->GetEnergy() <= 0.0f) {
+			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+		}
+	}
+	//ステートにから抜けるときに呼ばれる関数
+	void DateState::Exit(const shared_ptr<Player>& Obj) {
+	}
+
 }
 //end basecross
 

@@ -68,7 +68,7 @@ namespace basecross {
 		//プレイヤーに電波塔との当たり判定を認知させる
 		player->SetRadioTowerHitJudgment(radioTowerHitJudgment);
 		//Ray
-		AddGameObject<Ray>(player);
+		//AddGameObject<Ray>(player);
 	}
 
 	void GameStage::CreateBill()

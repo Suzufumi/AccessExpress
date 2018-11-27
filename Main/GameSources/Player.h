@@ -25,6 +25,9 @@ namespace basecross {
 		bool m_isHit = false;					//オブジェクトに当たっているかどうか
 		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
 		Vec3 p0, p1,p2;							//ベジエ曲線のための位置情報
+		float m_energy = 100.0f;
+		float m_changeEnergy = 1.0f;
+		float m_maxEnergy = 100.0f;
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -69,8 +72,14 @@ namespace basecross {
 		void SetBezierPoint(Vec3 point);
 		//押し出し処理
 		void Extrusion(const weak_ptr<GameObject>& Other);
+		//Rayとリンクオブジェクトが当たっているかを見る処理
+		void RayHitLink();
 		void CameraControll();
-
+		bool CheckAButton();
+		void Fall();
+		void ChengeEnergyMai() { m_changeEnergy = -1.0f; }
+		void ChengeEnergyPur() { m_changeEnergy = 1.0f; }
+		float GetEnergy() { return m_energy; }
 
 		void DrawStrings();
 	};
@@ -102,6 +111,23 @@ namespace basecross {
 	public:
 		//ステートのインスタンス取得
 		static shared_ptr<LinkState> Instance();
+		//ステートに入ったときに呼ばれる関数
+		virtual void Enter(const shared_ptr<Player>& Obj)override;
+		//ステート実行中に毎ターン呼ばれる関数
+		virtual void Execute(const shared_ptr<Player>& Obj)override;
+		//ステートにから抜けるときに呼ばれる関数
+		virtual void Exit(const shared_ptr<Player>& Obj)override;
+	};
+
+	//--------------------------------------------------------------------------------------
+	//class DateState : public ObjState<Player>;
+	//用途: データ体状態
+	//--------------------------------------------------------------------------------------
+	class DateState : public ObjState<Player> {
+		DateState() {}
+	public:
+		//ステートのインスタンス取得
+		static shared_ptr<DateState> Instance();
 		//ステートに入ったときに呼ばれる関数
 		virtual void Enter(const shared_ptr<Player>& Obj)override;
 		//ステート実行中に毎ターン呼ばれる関数
