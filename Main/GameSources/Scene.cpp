@@ -55,6 +55,9 @@ namespace basecross{
 		else if (event->m_MsgStr == L"ToTitleStage") {
 			ResetActiveStage<TitleStage>();
 		}
+		else if (event->m_MsgStr == L"ToStageSelect") {
+			ResetActiveStage<StageSelect>();
+		}
 	}
 
 }

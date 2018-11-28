@@ -2,16 +2,16 @@
 #include "Project.h"
 
 namespace basecross {
-	void TitleStage::OnCreate() {
+	void StageSelect::OnCreate() {
 		CreateViewLight();
 	}
-	void TitleStage::OnUpdate() {
+	void StageSelect::OnUpdate() {
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		if (CntlVec[0].wPressedButtons) {
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToStageSelect");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}
 	}
-	void TitleStage::CreateViewLight(){
+	void StageSelect::CreateViewLight() {
 		auto ptrView = CreateView<SingleView>();
 
 	}

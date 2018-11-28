@@ -27,6 +27,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SearchObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShapeObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageSelect.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Timer.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
   </ItemGroup>
@@ -42,6 +43,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SearchObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShapeObject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageSelect.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Timer.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
