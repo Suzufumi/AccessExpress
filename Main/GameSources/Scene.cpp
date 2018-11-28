@@ -43,6 +43,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"Title_TX", strTexture);
 		strTexture = dataDir + L"StageSelect.png";
 		App::GetApp()->RegisterTexture(L"StageSelect_TX", strTexture);
+		strTexture = dataDir + L"ResultStage.png";
+		App::GetApp()->RegisterTexture(L"ResultStage_TX", strTexture);
 
 		auto modelDir = dataDir + L"Model\\";
 		auto playerModelMesh = MultiMeshResource::CreateStaticModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
@@ -61,6 +63,9 @@ namespace basecross{
 		}
 		else if (event->m_MsgStr == L"ToStageSelect") {
 			ResetActiveStage<StageSelect>();
+		}
+		else if (event->m_MsgStr == L"ToResultStage") {
+			ResetActiveStage<ResultStage>();
 		}
 	}
 

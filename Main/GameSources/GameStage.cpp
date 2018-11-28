@@ -171,5 +171,11 @@ namespace basecross {
 			throw;
 		}
 	}
+	void GameStage::OnUpdate() {
+		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		if (CntlVec[0].wPressedButtons & XINPUT_GAMEPAD_START) {
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+		}
+	}
 }
 //end basecross
