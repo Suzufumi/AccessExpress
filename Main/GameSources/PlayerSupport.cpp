@@ -113,7 +113,7 @@ namespace basecross {
 	}
 	void AddlessCertificate::FindGoal() {
 		auto goal = m_goal.lock();
-		goal->OpenGoal();
+		//goal->OpenGoal();
 		m_isUnlockGoal = true;
 	}
 	//--------------------------------------------------------------------------------
