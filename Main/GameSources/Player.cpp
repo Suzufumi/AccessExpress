@@ -102,7 +102,6 @@ namespace basecross{
 		m_energy += m_changeEnergy * 5.0f * App::GetApp()->GetElapsedTime();
 		if (m_energy >= m_maxEnergy) {
 			m_energy = m_maxEnergy;
-			;
 		}
 		
 		// デバッグ文字の表示
@@ -145,31 +144,6 @@ namespace basecross{
 		auto access = dynamic_pointer_cast<LinkObject>(Other);
 		if (access) {
 		}
-		//ドライブに変換できた
-		//auto drive = dynamic_pointer_cast<Drive>(Other);
-		//if (drive) {
-		//	if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-		//		//playerの持っているファイルを取り出す
-		//		auto file = m_File.lock();
-		//		//取り出せたら
-		//		if (file != nullptr) {
-		//			//ファイルを持っている(見えている)
-		//			if (m_isHaveFile) {
-		//				//見えなくする
-		//				file->UnLookFile();
-		//				//持ってなくする
-		//				m_isHaveFile = false;
-		//			}
-		//			//ファイルを持ってない(見えない)
-		//			else {
-		//				//見えるようにする
-		//				file->LookFile();
-		//				//持っている
-		//				m_isHaveFile = true;
-		//			}
-		//		}
-		//	}
-		//}
 	}
 	//--------------------------------------------------------------------------------------------------------------
 	//衝突が解除されたとき
@@ -267,11 +241,33 @@ namespace basecross{
 		p2 = point + Vec3(0,1,0);
 	}
 	//---------------------------------------------------------------------------------------------
+	//照準の位置をカメラとプレイヤーの位置から求め変更する
+	//---------------------------------------------------------------------------------------------
+	void Player::SightingDiviceChangePosition() {
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+		//playerとカメラの位置から照準がある方向を求める
+		//playerの少し上のほうに置くためplayerのpositionに調整を入れる
+		auto dir = (pos + Vec3(0.0f, 5.0f, 0.0f)) - m_cameraPos;
+		dir = dir.normalize();
+
+		auto sightingDivice = m_SightingDivice.lock();
+		//playerの頭辺りに、被らないようカメラからの方向を加味して置く
+		sightingDivice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, 2.0f, 0.0f)) + (dir * 2.0f));
+
+		Quat rot;
+		rot.rotationRollPitchYawFromVector(Vec3(0.0f,atan2f(dir.x, dir.z), 0.0f));
+		
+		sightingDivice->GetComponent<Transform>()->SetQuaternion(rot);
+	}
+	//---------------------------------------------------------------------------------------------
 	//RayとLinkオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::RayHitLink() {
 		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-			auto pos = GetComponent<Transform>()->GetWorldPosition();
+			auto sightingDivice = m_SightingDivice.lock();
+
+			auto pos = sightingDivice->GetComponent<Transform>()->GetWorldPosition();
 			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
 			//playerとカメラの位置から飛ばす方向を求める
 			auto dir = pos - m_cameraPos;
@@ -286,7 +282,7 @@ namespace basecross{
 				OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
 				//プレイヤーからでるRayとOBBで判定
 				bool hit = HitTest::SEGMENT_OBB(pos, pos + dir * 30.0f, obb);
-
+				
 				if (hit && (p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition())) {
 					SetBezierPoint(linkTrans->GetWorldPosition());
 					m_Lerp = 0;
@@ -393,8 +389,8 @@ namespace basecross{
 		wstring energy(L"Energy : ");
 		energy += Util::FloatToWStr(m_energy) + L"\n";
 		//文字列をつける
-		//wstring str = strFps + cameraStr + energy;
-		wstring str = energy;
+		wstring str = strFps + cameraStr + energy;
+		//wstring str = energy;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 
@@ -418,6 +414,7 @@ namespace basecross{
 		Obj->Walk();
 		Obj->Fall();
 		Obj->CameraControll();
+		Obj->SightingDiviceChangePosition();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(DateState::Instance());
 		}
@@ -445,6 +442,7 @@ namespace basecross{
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
 		Obj->CameraControll();
+		Obj->SightingDiviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
 		}
@@ -470,6 +468,7 @@ namespace basecross{
 		Obj->Walk();
 		Obj->RayHitLink();
 		Obj->CameraControll();
+		Obj->SightingDiviceChangePosition();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
 		}

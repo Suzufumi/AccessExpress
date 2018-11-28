@@ -38,9 +38,10 @@ namespace basecross {
 
 		weak_ptr<RadioTowerHitJudgment> m_RadioTowerHitJudgment;
 		weak_ptr<File> m_File;
+		weak_ptr<SightingDevice> m_SightingDivice;
 
-		Vec3 m_padDir;									//左スティックの向きを入れる
-		Vec3 m_forward;									//カメラの方向を踏まえたプレイヤーの向いている方向
+		Vec3 m_padDir;							//左スティックの向きを入れる
+		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
 
 		weak_ptr<TpsCamera> m_tpsCamera; // カメラのインスタンスを受け取る
 
@@ -50,35 +51,51 @@ namespace basecross {
 		virtual void OnCreate() override; // 初期化
 		virtual void OnUpdate() override; // 更新
 		virtual void OnUpdate2() override; // 後更新
+		//アクセサ
+		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
+			return m_StateMachine;
+		}
+
 		//衝突したとき
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		//衝突している
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		//衝突が解除されたとき
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
+		//押し出し処理
+		void Extrusion(const weak_ptr<GameObject>& Other);
+
+		//XZ平面の移動処理
 		void Walk();
+		//落ちる処理
+		void Fall();
+
 		void CameraRoll();
+		void CameraControll();
+
 		//子オブジェクトしてもっている電波塔との当たり判定をプレイヤーのほうでも認知する
 		void SetRadioTowerHitJudgment(weak_ptr<RadioTowerHitJudgment> hit) {
 			m_RadioTowerHitJudgment = hit;
 		}
+		//照準のオブジェクトを管理する
+		void SetSightingDivice(weak_ptr<SightingDevice> dev) {
+			m_SightingDivice = dev;
+		}
+		void SightingDiviceChangePosition();
 		//ベジエ曲線で飛ぶ処理
 		void LinkGo();
-		//アクセサ
-		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
-			return m_StateMachine;
-		}
 		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
-		//押し出し処理
-		void Extrusion(const weak_ptr<GameObject>& Other);
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void RayHitLink();
-		void CameraControll();
+		//Aボタンが押された
 		bool CheckAButton();
-		void Fall();
+
+		//エネルギーが減るようにする
 		void ChengeEnergyMai() { m_changeEnergy = -1.0f; }
+		//エネルギーが増えるようにする
 		void ChengeEnergyPur() { m_changeEnergy = 1.0f; }
+		//エネルギーの量を返す
 		float GetEnergy() { return m_energy; }
 
 		void DrawStrings();

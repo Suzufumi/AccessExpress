@@ -63,10 +63,8 @@ namespace basecross {
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
 		auto player = AddGameObject<Player>(Vec3(-35.0f, 9.0f, -35.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
-		//プレイヤーが使う電波塔との判定専門の当たり判定
-		auto radioTowerHitJudgment = AddGameObject<RadioTowerHitJudgment>(player);
-		//プレイヤーに電波塔との当たり判定を認知させる
-		player->SetRadioTowerHitJudgment(radioTowerHitJudgment);
+		auto dev = AddGameObject<SightingDevice>();
+		player->SetSightingDivice(dev);
 	}
 
 	void GameStage::CreateBill()
@@ -130,15 +128,10 @@ namespace basecross {
 
 	void GameStage::CreateLinkObject()
 	{
-		auto linkA = AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -33.0f), Vec3(1.0f, 1.0f, 1.0f));
-		auto linkB = AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
-		linkA->SetGoPosition(linkB->GetComponent<Transform>()->GetWorldPosition());
-		auto linkC = AddGameObject<LinkObject>(Vec3(-35.0f, 5.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
-		linkB->SetGoPosition(linkC->GetComponent<Transform>()->GetWorldPosition());
-		auto linkD = AddGameObject<LinkObject>(Vec3(-23.0f, 7.5f, 5.0f), Vec3(1.0f, 1.0f, 1.0f));
-		linkC->SetGoPosition(linkD->GetComponent<Transform>()->GetWorldPosition());
-
-
+		AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -33.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-35.0f, 5.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-23.0f, 7.5f, 5.0f), Vec3(1.0f, 1.0f, 1.0f));
 	}
 
 	void GameStage::OnCreate() {
@@ -169,6 +162,13 @@ namespace basecross {
 		}
 		catch (...) {
 			throw;
+		}
+	}
+	void GameStage::OnUpdate() {
+		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		//スタートボタンを押すことでリザルトに行く
+		if (CntlVec[0].wPressedButtons & XINPUT_GAMEPAD_START) {
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 	}
 }

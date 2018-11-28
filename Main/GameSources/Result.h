@@ -2,11 +2,11 @@
 #include "stdafx.h"
 
 namespace basecross {
-	class TitleStage : public Stage {
+	class ResultStage : public Stage {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
 	public:
-		virtual ~TitleStage() {};
+		virtual ~ResultStage() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 	};

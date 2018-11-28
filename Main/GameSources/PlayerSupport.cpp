@@ -116,4 +116,29 @@ namespace basecross {
 		goal->OpenGoal();
 		m_isUnlockGoal = true;
 	}
+	//--------------------------------------------------------------------------------
+	//照準
+	//--------------------------------------------------------------------------------
+	SightingDevice::SightingDevice(const shared_ptr<Stage>& stagePtr)
+	:GameObject(stagePtr)
+	{
+	}
+	void SightingDevice::OnCreate() {
+		auto ptrTrans = GetComponent<Transform>();
+		Quat Qt;
+		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
+		ptrTrans->SetWorldPosition(Vec3(0,0,0));
+		ptrTrans->SetQuaternion(Qt);
+		ptrTrans->SetScale(1,1,1);
+		//描画コンポーネントの追加
+		auto drawComp = AddComponent<PNTStaticDraw>();
+		//描画コンポーネントに形状（メッシュ）を設定
+		drawComp->SetMeshResource(L"DEFAULT_SQUARE");
+		//drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		//drawComp->SetFogEnabled(true);
+		//影が映りこまない
+		drawComp->SetOwnShadowActive(false);
+		Col4 Color(0.4f, 1.0f, 0.7f, 0.7f);
+		drawComp->SetDiffuse(Color);
+	}
 }
