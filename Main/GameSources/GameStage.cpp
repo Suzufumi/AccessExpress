@@ -63,6 +63,8 @@ namespace basecross {
 	void GameStage::CreatePlayerRelationship() {
 		//ÉvÉåÉCÉÑÅ[
 		auto player = AddGameObject<Player>(Vec3(-35.0f, 9.0f, -35.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
+		auto dev = AddGameObject<SightingDevice>();
+		player->SetSightingDivice(dev);
 	}
 
 	void GameStage::CreateBill()

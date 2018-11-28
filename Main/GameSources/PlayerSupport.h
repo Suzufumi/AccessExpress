@@ -53,4 +53,13 @@ namespace basecross {
 		bool GetUnlockGoal() { return m_isUnlockGoal; }
 		void FindGoal();
 	};
+	//--------------------------------------------------------------------------------------
+	//リンクオブジェクトを捉えるための照準
+	//--------------------------------------------------------------------------------------
+	class SightingDevice : public GameObject {
+	public:
+		SightingDevice(const shared_ptr<Stage>& stageptr);
+		virtual ~SightingDevice() {};
+		virtual void OnCreate()override;
+	};
 }
