@@ -62,7 +62,7 @@ namespace basecross {
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-35.0f, 9.0f, -35.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
+		auto player = AddGameObject<Player>(Vec3(-35.0f, 13.0f, -35.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		auto dev = AddGameObject<SightingDevice>();
 		player->SetSightingDivice(dev);
 	}
@@ -75,7 +75,7 @@ namespace basecross {
 			Vec3 m_scale;
 		};
 		// 配列のサイズ(建物の数)
-		const int BILL_COUNT = 35;
+		const int BILL_COUNT = 36;
 		BillTrans billParam[BILL_COUNT] = 
 		{
 			{ Vec3(-35.0f, 4.0f, -35.0f), Vec3(5.0f, 8.0f, 7.0f) }, //0
@@ -111,6 +111,7 @@ namespace basecross {
 			{ Vec3(20.0f, 3.0f, -5.0f),   Vec3(4.0f, 6.0f, 4.0f) }, //29
 			{ Vec3(20.0f, 4.0f, -15.0f), Vec3(4.0f, 8.0f, 5.0f) }, //30
 			{ Vec3(20.0f, 3.5f, 15.0f),   Vec3(5.0f, 7.0f, 5.0f) }, //31
+			{ Vec3(20.0f, 3.5f, 5.0f), Vec3(6.0f, 8.0f, 5.0f) },
 
 			{ Vec3(33.0f, 4.0f, -35.0f), Vec3(6.0f, 8.0f, 5.0f) }, //32
 			{ Vec3(33.0f, 4.0f, -25.0f), Vec3(6.0f, 8.0f, 5.0f) }, //33
@@ -122,16 +123,18 @@ namespace basecross {
 
 		for (auto bill : billParam)
 		{
+			bill.m_scale *= 1.5f;
+			bill.m_pos.y += 1.5f;
 			AddGameObject<Wall>(bill.m_pos, bill.m_scale);
 		}
 	}
 
 	void GameStage::CreateLinkObject()
 	{
-		AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -33.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-35.0f, 5.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-23.0f, 7.5f, 5.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-35.0f, 12.5f, -33.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-35.0f, 12.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-23.0f, 11.5f, 5.0f), Vec3(1.0f, 1.0f, 1.0f));
 	}
 
 	void GameStage::OnCreate() {
@@ -145,12 +148,9 @@ namespace basecross {
 			CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
-			auto goal = AddGameObject<Goal>(Vec3(20.0f, 3.5f, 5.0f), Vec3(6.0f, 7.0f, 5.0f));
+			auto goal = AddGameObject<Goal>(Vec3(7.0f, 10.0f, 20.0f), Vec3(1.0f, 7.0f, 1.0f));
 			// 建物の配置
 			CreateBill();
-			auto addless = AddGameObject<AddlessCertificate>(Vec3(5.0f, 5.5f, 20.0f), Vec3(1, 1, 1));
-			// ゴールの設定
-			addless->SetGoal(goal);
 
 			CreateLinkObject();
 
