@@ -6,6 +6,7 @@ namespace basecross {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
 	public:
+		virtual ~ResultStage() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 	};
