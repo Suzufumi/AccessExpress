@@ -26,7 +26,7 @@ namespace basecross {
 		virtual ~Goal() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
-		void OpenGoal();
+		void ArriveGoal();
 	};
 	//-------------------------------------------------------------------------------------------------------------
 	//電波を発するオブジェクト、近づくとplayerのスピードが変わる

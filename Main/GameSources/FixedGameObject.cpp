@@ -51,7 +51,8 @@ namespace basecross {
 	void Goal::OnUpdate() {
 
 	}
-	void Goal::OpenGoal() {
+	void Goal::ArriveGoal() {
+		PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 	}
 
 	//---------------------------------------------------------------------------------------------

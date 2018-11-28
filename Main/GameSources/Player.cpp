@@ -118,13 +118,11 @@ namespace basecross{
 			m_File = file;
 			m_isHaveFile = true;
 		}
-		auto addless = dynamic_pointer_cast<AddlessCertificate>(Other);
-		if (addless) {
-			if (!addless->GetUnlockGoal())
-			{
-				addless->FindGoal();
-				addless->SetDrawActive(false);
-			}
+		
+		auto goal = dynamic_pointer_cast<Goal>(Other);
+		if (goal)
+		{
+			goal->ArriveGoal();
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------
