@@ -222,7 +222,6 @@ namespace basecross{
 		m_Lerp += App::GetApp()->GetElapsedTime();
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
-			state = L"walk";
 			//飛び終わったらステートをデータ体にする
 			m_StateMachine->ChangeState(DateState::Instance());
 		}
@@ -262,29 +261,32 @@ namespace basecross{
 	//RayとLinkオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::RayHitLink() {
-		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-			auto sightingDivice = m_SightingDivice.lock();
+		auto sightingDivice = m_SightingDivice.lock();
+		//リンクオブジェクトに当たっているフラグをfalseに戻す
+		sightingDivice->ResetCaptureLink();
 
-			auto pos = sightingDivice->GetComponent<Transform>()->GetWorldPosition();
-			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
-			//playerとカメラの位置から飛ばす方向を求める
-			auto dir = pos - m_cameraPos;
-			dir = dir.normalize();
-			//リンクオブジェクトの入っているグループを持ってくる
-			auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
-			//一つずつ取り出す
-			for (auto& link : linkGroup->GetGroupVector()) {
-				auto linkObj = link.lock();
-				auto linkTrans = linkObj->GetComponent<Transform>();
-				//リンクオブジェクトのOBBを作る
-				OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
-				//プレイヤーからでるRayとOBBで判定
-				bool hit = HitTest::SEGMENT_OBB(pos, pos + dir * 30.0f, obb);
-				
-				if (hit && (p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition())) {
+		auto pos = sightingDivice->GetComponent<Transform>()->GetWorldPosition();
+		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+		//playerとカメラの位置から飛ばす方向を求める
+		auto dir = pos - m_cameraPos;
+		dir = dir.normalize();
+		//リンクオブジェクトの入っているグループを持ってくる
+		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
+		//一つずつ取り出す
+		for (auto& link : linkGroup->GetGroupVector()) {
+			auto linkObj = link.lock();
+			auto linkTrans = linkObj->GetComponent<Transform>();
+			//リンクオブジェクトのOBBを作る
+			OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
+			//プレイヤーからでるRayとOBBで判定
+			bool hit = HitTest::SEGMENT_OBB(pos, pos + dir * 30.0f, obb);
+			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
+			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
+				//照準に当たっていることを教える
+				sightingDivice->SetCaptureLink(true);
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
 					SetBezierPoint(linkTrans->GetWorldPosition());
 					m_Lerp = 0;
-					state = L"Link";
 					m_StateMachine->ChangeState(LinkState::Instance());
 					break;
 				}
