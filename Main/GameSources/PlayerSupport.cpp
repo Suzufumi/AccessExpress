@@ -141,4 +141,14 @@ namespace basecross {
 		Col4 Color(0.4f, 1.0f, 0.7f, 0.7f);
 		drawComp->SetDiffuse(Color);
 	}
+	void SightingDevice::OnUpdate() {
+		if (m_captureLink) {
+			Col4 Color(1.0f, 0.4f, 0.7f, 0.7f);
+			GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
+		}
+		else {
+			Col4 Color(0.4f, 1.0f, 0.7f, 0.7f);
+			GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
+		}
+	}
 }

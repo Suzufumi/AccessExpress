@@ -57,9 +57,13 @@ namespace basecross {
 	//リンクオブジェクトを捉えるための照準
 	//--------------------------------------------------------------------------------------
 	class SightingDevice : public GameObject {
+		bool m_captureLink = false;
 	public:
 		SightingDevice(const shared_ptr<Stage>& stageptr);
 		virtual ~SightingDevice() {};
 		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+		void SetCaptureLink(bool f) { m_captureLink = f; }
+		void ResetCaptureLink() { m_captureLink = false; }
 	};
 }
