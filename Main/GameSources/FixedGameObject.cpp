@@ -18,13 +18,23 @@ namespace basecross {
 		ptrTrans->SetWorldPosition(m_position);
 		ptrTrans->SetQuaternion(Qt);
 		ptrTrans->SetScale(m_scale);
+		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
+		spanMat.affineTransformation(
+			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f)
+		);
+
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		drawComp->SetTextureResource(L"Building1_TX");
-		Col4 Color(0.4f, 0.4f, 0.4f, 1.0f);
-		drawComp->SetDiffuse(Color);
+		drawComp->SetBlendState(BlendState::AlphaBlend);
+		//drawComp->SetMeshToTransformMatrix(spanMat);
+		//Col4 Color(0.4f, 0.4f, 0.4f, 1.0f);
+		//drawComp->SetDiffuse(Color);
 	}
 
 	Goal::Goal(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale)
