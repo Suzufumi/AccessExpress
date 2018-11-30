@@ -240,7 +240,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
 	//---------------------------------------------------------------------------------------------
-	void Player::SightingDiviceChangePosition() {
+	void Player::SightingDeviceChangePosition() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
 		//playerとカメラの位置から照準がある方向を求める
@@ -248,24 +248,24 @@ namespace basecross{
 		auto dir = (pos + Vec3(0.0f, 5.0f, 0.0f)) - m_cameraPos;
 		dir = dir.normalize();
 
-		auto sightingDivice = m_SightingDivice.lock();
+		auto sightingDevice = m_SightingDevice.lock();
 		//playerの頭辺りに、被らないようカメラからの方向を加味して置く
-		sightingDivice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, 2.0f, 0.0f)) + (dir * 2.0f));
+		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, 3.0f, 0.0f)) + (dir * 2.0f));
 
 		Quat rot;
 		rot.rotationRollPitchYawFromVector(Vec3(0.0f,atan2f(dir.x, dir.z), 0.0f));
 		
-		sightingDivice->GetComponent<Transform>()->SetQuaternion(rot);
+		sightingDevice->GetComponent<Transform>()->SetQuaternion(rot);
 	}
 	//---------------------------------------------------------------------------------------------
 	//RayとLinkオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::RayHitLink() {
-		auto sightingDivice = m_SightingDivice.lock();
+		auto sightingDevice = m_SightingDevice.lock();
 		//リンクオブジェクトに当たっているフラグをfalseに戻す
-		sightingDivice->ResetCaptureLink();
+		sightingDevice->ResetCaptureLink();
 
-		auto pos = sightingDivice->GetComponent<Transform>()->GetWorldPosition();
+		auto pos = sightingDevice->GetComponent<Transform>()->GetWorldPosition();
 		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
 		//playerとカメラの位置から飛ばす方向を求める
 		auto dir = pos - m_cameraPos;
@@ -283,7 +283,7 @@ namespace basecross{
 			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
-				sightingDivice->SetCaptureLink(true);
+				sightingDevice->SetCaptureLink(true);
 				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
 					SetBezierPoint(linkTrans->GetWorldPosition());
 					m_Lerp = 0;
@@ -410,13 +410,14 @@ namespace basecross{
 	//ステートに入ったときに呼ばれる関数
 	void WalkState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->ChengeEnergyPur();
+		//Obj->SightingDeviceUpdateFlag(false);
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
 		Obj->Fall();
 		Obj->CameraControll();
-		Obj->SightingDiviceChangePosition();
+		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(DateState::Instance());
 		}
@@ -444,7 +445,7 @@ namespace basecross{
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
 		Obj->CameraControll();
-		Obj->SightingDiviceChangePosition();
+		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
 		}
@@ -464,13 +465,14 @@ namespace basecross{
 	//ステートに入ったときに呼ばれる関数
 	void DateState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->ChengeEnergyMai();
+		//Obj->SightingDeviceUpdateFlag(true);
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void DateState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
 		Obj->RayHitLink();
 		Obj->CameraControll();
-		Obj->SightingDiviceChangePosition();
+		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
 		}

@@ -129,26 +129,33 @@ namespace basecross {
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
 		ptrTrans->SetWorldPosition(Vec3(0,0,0));
 		ptrTrans->SetQuaternion(Qt);
-		ptrTrans->SetScale(1,1,1);
+		ptrTrans->SetScale(2,2,2);
 		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticDraw>();
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"DEFAULT_SQUARE");
 		//drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		//drawComp->SetFogEnabled(true);
 		//影が映りこまない
 		drawComp->SetOwnShadowActive(false);
-		Col4 Color(0.4f, 1.0f, 0.7f, 0.7f);
-		drawComp->SetDiffuse(Color);
+
+		//アルファ値適応
+		drawComp->SetBlendState(BlendState::AlphaBlend);
+		//テクスチャ
+		drawComp->SetTextureResource(L"cursor_TX");
+		//照準を通して世界を見るとほかのオブジェクトが透明になってしまうので
+		//レイヤー位置を変えることで対応
+		SetDrawLayer(1);
 	}
 	void SightingDevice::OnUpdate() {
+		auto drawComp = GetComponent<BcPNTStaticDraw>();
+		drawComp->SetAlpha(1.0f);
 		if (m_captureLink) {
 			Col4 Color(1.0f, 0.4f, 0.7f, 0.7f);
-			GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
+			//GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
 		}
 		else {
 			Col4 Color(0.4f, 1.0f, 0.7f, 0.7f);
-			GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
+			//GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
 		}
 	}
 }
