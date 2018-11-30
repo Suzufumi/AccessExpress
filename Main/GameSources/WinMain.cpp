@@ -233,6 +233,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	int iClientWidth = 1280;
 	int iClientHeight = 800;
 	// フルスクリーンにするかどうかの判定
+	ShowCursor(false);
 	// コマンドラインに/fが設定されていたらフルスクリーンにする
 	bool isFullScreen = false;
 	wstring wstrcmd = lpCmdLine;

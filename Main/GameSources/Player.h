@@ -28,6 +28,7 @@ namespace basecross {
 		float m_energy = 100.0f;
 		float m_changeEnergy = 1.0f;
 		float m_maxEnergy = 100.0f;
+		int m_chain = 0;		// コンボのための変数
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -97,6 +98,9 @@ namespace basecross {
 		void ChengeEnergyPur() { m_changeEnergy = 1.0f; }
 		//エネルギーの量を返す
 		float GetEnergy() { return m_energy; }
+
+		void ResetCombo() { m_chain = 0; }
+		void AddCombo() { m_chain++; }
 
 		void DrawStrings();
 	};

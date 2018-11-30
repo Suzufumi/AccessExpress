@@ -135,6 +135,11 @@ namespace basecross {
 		AddGameObject<LinkObject>(Vec3(-35.0f, 12.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
 		AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
 		AddGameObject<LinkObject>(Vec3(-23.0f, 11.5f, 5.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-23.0f, 11.5f, -25.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-10.0f, 8.5f, -25.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-23.0f, 11.5f, -5.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-10.0f, 11.5f, 0.0f), Vec3(1.0f, 1.0f, 1.0f));
+		AddGameObject<LinkObject>(Vec3(-10.0f, 12.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
 	}
 
 	void GameStage::OnCreate() {

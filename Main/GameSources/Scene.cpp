@@ -48,9 +48,18 @@ namespace basecross{
 
 		auto modelDir = dataDir + L"Model\\";
 		auto playerModelMesh = MultiMeshResource::CreateStaticModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
+		//auto playerModelMesh = MeshResource::CreateStaticModelMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		App::GetApp()->RegisterResource(L"PLAYER_MODEL", playerModelMesh);
 		auto modelTex = modelDir + L"Player\\" + L"UV_Player.png";
 		App::GetApp()->RegisterTexture(L"PLAYER_TX", modelTex);
+		modelTex = modelDir + L"Player\\" + L"UV_face.png";
+		App::GetApp()->RegisterTexture(L"PLAYER_FACE_TX", modelTex);
+
+		auto buildingModel = MeshResource::CreateStaticModelMesh(modelDir, L"Building.bmf");
+		App::GetApp()->RegisterResource(L"BUILDING_MODEL", buildingModel);
+		modelTex = modelDir + L"Building5.tga";
+		App::GetApp()->RegisterTexture(L"Building2_TX", modelTex);
+		
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {

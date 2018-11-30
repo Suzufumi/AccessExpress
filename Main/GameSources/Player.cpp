@@ -388,8 +388,10 @@ namespace basecross{
 		cameraStr += L"Z:" + Util::FloatToWStr(cameraPos->GetAt().z, 6, Util::FloatModify::Fixed) + L"\n";
 		wstring energy(L"Energy : ");
 		energy += Util::FloatToWStr(m_energy) + L"\n";
+		wstring combo(L"Combo : ");
+		combo += Util::IntToWStr(m_chain) + L"\n";
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
-		wstring str = strFps + cameraStr + energy;
+		wstring str = strFps + cameraStr + energy + combo;
 		//wstring str = energy;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
