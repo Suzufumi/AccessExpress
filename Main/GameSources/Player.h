@@ -39,7 +39,7 @@ namespace basecross {
 
 		weak_ptr<RadioTowerHitJudgment> m_RadioTowerHitJudgment;
 		weak_ptr<File> m_File;
-		weak_ptr<SightingDevice> m_SightingDivice;
+		weak_ptr<SightingDevice> m_SightingDevice;
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
@@ -79,10 +79,10 @@ namespace basecross {
 			m_RadioTowerHitJudgment = hit;
 		}
 		//照準のオブジェクトを管理する
-		void SetSightingDivice(weak_ptr<SightingDevice> dev) {
-			m_SightingDivice = dev;
+		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
+			m_SightingDevice = dev;
 		}
-		void SightingDiviceChangePosition();
+		void SightingDeviceChangePosition();
 		//ベジエ曲線で飛ぶ処理
 		void LinkGo();
 		//ベジエ曲線の初期ポジション設定
@@ -98,6 +98,11 @@ namespace basecross {
 		void ChengeEnergyPur() { m_changeEnergy = 1.0f; }
 		//エネルギーの量を返す
 		float GetEnergy() { return m_energy; }
+		//照準のUpdateを切り替える
+		void SightingDeviceUpdateFlag(bool f) { 
+			auto devi = m_SightingDevice.lock(); 
+			devi->SetUpdateActive(f);
+		}
 
 		void ResetCombo() { m_chain = 0; }
 		void AddCombo() { m_chain++; }

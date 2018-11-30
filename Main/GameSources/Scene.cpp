@@ -45,6 +45,8 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"StageSelect_TX", strTexture);
 		strTexture = dataDir + L"ResultStage.png";
 		App::GetApp()->RegisterTexture(L"ResultStage_TX", strTexture);
+		strTexture = dataDir + L"cursor.png";
+		App::GetApp()->RegisterTexture(L"cursor_TX", strTexture);
 
 		auto modelDir = dataDir + L"Model\\";
 		auto playerModelMesh = MultiMeshResource::CreateStaticModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
