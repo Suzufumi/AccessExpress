@@ -354,7 +354,7 @@ namespace basecross{
 	{
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
-		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
+		camera->SetAt(pos + Vec3(0.0f, 3.0f, 0.0f));
 		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
 			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
