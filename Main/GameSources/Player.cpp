@@ -410,7 +410,6 @@ namespace basecross{
 	//ステートに入ったときに呼ばれる関数
 	void WalkState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->ChengeEnergyPur();
-		//Obj->SightingDeviceUpdateFlag(false);
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
@@ -420,6 +419,7 @@ namespace basecross{
 		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(DateState::Instance());
+			Obj->SightingDeviceDrawActiveFlag(true);
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
@@ -448,6 +448,7 @@ namespace basecross{
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+			Obj->SightingDeviceDrawActiveFlag(false);
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
@@ -465,7 +466,6 @@ namespace basecross{
 	//ステートに入ったときに呼ばれる関数
 	void DateState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->ChengeEnergyMai();
-		//Obj->SightingDeviceUpdateFlag(true);
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void DateState::Execute(const shared_ptr<Player>& Obj) {
@@ -473,11 +473,9 @@ namespace basecross{
 		Obj->RayHitLink();
 		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
-		if (Obj->CheckAButton()) {
+		if (Obj->CheckAButton() || Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
-		}
-		if (Obj->GetEnergy() <= 0.0f) {
-			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
+			Obj->SightingDeviceDrawActiveFlag(false);
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数

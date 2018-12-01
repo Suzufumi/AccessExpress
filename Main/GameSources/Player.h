@@ -20,7 +20,7 @@ namespace basecross {
 		float m_maxAngleSpeed;		//カメラが回転するスピード
 		float m_cameraHeight;			//カメラの初期高さ
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
-		bool m_isFall = false;					//Y軸方向の力を加えるかどうか
+		bool m_isFall = true;					//Y軸方向の力を加えるかどうか
 		bool m_isHaveFile = false;
 		bool m_isHit = false;					//オブジェクトに当たっているかどうか
 		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
@@ -81,6 +81,7 @@ namespace basecross {
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
+			SightingDeviceDrawActiveFlag(false);
 		}
 		void SightingDeviceChangePosition();
 		//ベジエ曲線で飛ぶ処理
@@ -98,10 +99,10 @@ namespace basecross {
 		void ChengeEnergyPur() { m_changeEnergy = 1.0f; }
 		//エネルギーの量を返す
 		float GetEnergy() { return m_energy; }
-		//照準のUpdateを切り替える
-		void SightingDeviceUpdateFlag(bool f) { 
+		//照準の表示を切り替える
+		void SightingDeviceDrawActiveFlag(bool f) { 
 			auto devi = m_SightingDevice.lock(); 
-			devi->SetUpdateActive(f);
+			devi->SetDrawActive(f);
 		}
 
 		void ResetCombo() { m_chain = 0; }
