@@ -161,9 +161,11 @@ namespace basecross {
 
 			//Quat qt;
 			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
+						// スコア用のUI
 
 
-			AddGameObject<RemainingTimer>();
+			auto score = AddGameObject<RemainingTimerSprite>(60);
+			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
 		}
 		catch (...) {
 			throw;

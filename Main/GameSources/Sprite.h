@@ -1,48 +1,34 @@
 #pragma once
 #include "stdafx.h"
 
-namespace basecross{
-	//--------------------------------------------------------------------------------------
-	///	スプライト
-	//--------------------------------------------------------------------------------------
+namespace basecross {
 	class Sprite : public GameObject {
-		bool m_Trace;
-		Vec2 m_StartScale;
-		Vec3 m_StartPos;
-		wstring m_TextureKey;
-
+	protected:
+		std::wstring _key;	// テクスチャのキー
+		Vec2 _size;			// スプライトの幅と高さ
+		Rect2D<float> _rect; // テクスチャの範囲
 	public:
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief コンストラクタ
-		@param[in]	StagePtr	ステージ
-		@param[in]	TextureKey	テクスチャキー
-		@param[in]	Trace	透明処理するかどうか
-		@param[in]	StartScale	初期スケール
-		@param[in]	StartPos	初期位置
-		*/
-		//--------------------------------------------------------------------------------------
-		Sprite(const shared_ptr<Stage>& StagePtr, const wstring& TextureKey, bool Trace,
-			const Vec2& StartScale, const Vec3& StartPos);
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief デストラクタ
-		*/
-		//--------------------------------------------------------------------------------------
-		virtual ~Sprite() {};
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief 初期化
-		@return	なし
-		*/
-		//--------------------------------------------------------------------------------------
+		Sprite(const std::shared_ptr<Stage>& stage, const std::wstring& key, Vec2 size)
+			: GameObject(stage), _key(key), _size(size), _rect(0, 0, size.x, size.y)
+		{
+		}
+
+		Sprite(const std::shared_ptr<Stage>& stage, const std::wstring& key, Vec2 size, const Rect2D<float>& rect)
+			:GameObject(stage), _key(key), _size(size), _rect(rect)
+		{
+		}
+
 		virtual void OnCreate() override;
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief 更新
-		@return	なし
-		*/
-		//--------------------------------------------------------------------------------------
-		virtual void OnUpdate()override;
+
+		void SetPosition(const Vec2& position) {
+			auto& app = App::GetApp();
+			Vec2 scrSize((float)app->GetGameWidth(), (float)app->GetGameHeight());
+			Vec2 scrHalf = scrSize * 0.5f;
+
+			auto transComp = GetComponent<Transform>();
+			Vec2 pos = position - scrHalf;
+			transComp->SetPosition(pos.x, -pos.y, 0);
+		};
+
 	};
 }
