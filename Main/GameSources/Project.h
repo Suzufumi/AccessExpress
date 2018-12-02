@@ -26,5 +26,5 @@
 #include "AccessObject.h"
 #include "SearchObject.h"
 #include "LinkObject.h"
+#include "Sprite.h"
 #include "Timer.h"
-

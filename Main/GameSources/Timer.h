@@ -12,4 +12,23 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 	};
+
+	//------------------------------------------------------------------
+	//時間制限のスプライト
+	//------------------------------------------------------------------
+	class RemainingTimerSprite : public GameObject {
+	protected:
+		float m_timer;	// 残り時間
+		int m_places;	// タイムの表示桁
+		vector <Rect2D<float>> m_numRects;
+		vector<shared_ptr<Sprite>>m_numbers;
+		vector<vector<VertexPositionTexture>> m_vertices;
+
+	public:
+		RemainingTimerSprite(const shared_ptr<Stage>& stage, int timer);
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+		virtual void OnDraw() override;
+
+	};
 }
