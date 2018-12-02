@@ -30,7 +30,7 @@ namespace basecross {
 		float m_maxEnergy = 100.0f;
 		int m_chain = 0;		// コンボのための変数
 		int m_chainTimeLimit = 0;	// コンボとコンボの時間を図る時間
-		const int CHAIN_TIMELIMIT = 180;	// コンボが途切れる時間
+		bool m_isAdvanceTime = false; // 時間をすすめるかどうかのフラグ
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -116,6 +116,11 @@ namespace basecross {
 		int GetChain() const { return m_chain; }
 		// コンボとコンボの制限時間を加算する
 		void AddChainTimeLimit() { m_chainTimeLimit++; }
+		// 現在のコンボ間の時間を返す
+		int GetChainTimeLim() const { return m_chainTimeLimit; }
+		void ResetTimeLim() { m_chainTimeLimit = 0; }
+		bool GetAdvanceTimeActive() const { return m_isAdvanceTime; }
+		void SetAdvanceTimeActive(bool advanceTime) { m_isAdvanceTime = advanceTime; }
 
 		void DrawStrings();
 	};

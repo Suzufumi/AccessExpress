@@ -399,8 +399,10 @@ namespace basecross{
 		energy += Util::FloatToWStr(m_energy) + L"\n";
 		wstring combo(L"Combo : ");
 		combo += Util::IntToWStr(m_chain) + L"\n";
+		wstring timeLimit(L"Limit : ");
+		timeLimit += Util::IntToWStr(m_chainTimeLimit) + L"\n";
 		//文字列をつける
-		wstring str = strFps + cameraStr + energy + combo;
+		wstring str = strFps + cameraStr + energy + combo + timeLimit;
 		//wstring str = energy;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
@@ -443,6 +445,9 @@ namespace basecross{
 		static shared_ptr<LinkState> instance(new LinkState);
 		return instance;
 	}
+
+	const int CHAIN_TIMELIMIT = 180;	// コンボが途切れる時間
+
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
 		//auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
@@ -456,7 +461,6 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
-		Obj->AddChainTimeLimit();
 		Obj->LinkGo();
 		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
@@ -480,9 +484,32 @@ namespace basecross{
 	//ステートに入ったときに呼ばれる関数
 	void DateState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->ChengeEnergyMai();
+		// 以前のステートがLinkStateだったら
+		if (Obj->GetStateMachine()->GetPreviousState() == LinkState::Instance())
+		{
+			// タイムチェッカーフラグをオンにする
+			Obj->SetAdvanceTimeActive(true);
+		}
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void DateState::Execute(const shared_ptr<Player>& Obj) {
+		// コンボ間の時間を進めるかどうか
+		if (Obj->GetAdvanceTimeActive())
+		{
+			// 時間を加算する
+			Obj->AddChainTimeLimit();
+		}
+		// 現在の時間を取得
+		int timeLimit = Obj->GetChainTimeLim();
+		// 制限時間に達したら
+		if (timeLimit >= CHAIN_TIMELIMIT)
+		{
+			// コンボのリセット
+			Obj->ResetCombo();
+			// 制限時間をリセット
+			Obj->ResetTimeLim();
+			Obj->SetAdvanceTimeActive(false);
+		}
 		Obj->Walk();
 		Obj->RayHitLink();
 		Obj->CameraControll();
@@ -494,6 +521,7 @@ namespace basecross{
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void DateState::Exit(const shared_ptr<Player>& Obj) {
+		Obj->ResetTimeLim();
 	}
 
 }
