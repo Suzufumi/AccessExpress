@@ -87,7 +87,7 @@ namespace basecross {
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-35.0f, 13.0f, -35.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
+		auto player = AddGameObject<Player>(Vec3(-35.0f, 13.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		auto dev = AddGameObject<SightingDevice>();
 		player->SetSightingDevice(dev);
 	}
@@ -146,11 +146,19 @@ namespace basecross {
 			{ Vec3(33.0f, 3.0f, 15.0f),  Vec3(6.0f, 6.0f, 4.0f) }  //37
 		};
 
+		int count = 0;
 		for (auto bill : billParam)
 		{
 			bill.m_scale *= 1.5f;
 			bill.m_pos.y += 1.5f;
 			AddGameObject<Wall>(bill.m_pos, bill.m_scale);
+			if (count % 2 == 0)
+			{
+				AddGameObject<LinkObject>(
+					Vec3(bill.m_pos.x, bill.m_pos.y * 2.3f, bill.m_pos.z + 1.0f),
+					Vec3(1.0f, 1.0f, 1.0f));
+			}
+			count++;
 		}
 	}
 
@@ -182,7 +190,7 @@ namespace basecross {
 			// 建物の配置
 			CreateBill();
 
-			CreateLinkObject();
+			//CreateLinkObject();
 
 			SetBackGround();
 

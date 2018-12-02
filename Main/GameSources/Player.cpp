@@ -368,6 +368,15 @@ namespace basecross{
 		}
 		return false;
 	}
+
+	//---------------------------------------------------------------------------------------------
+	//コンボ数に応じてボーナスを与える
+	//---------------------------------------------------------------------------------------------
+	void Player::ComboBonus(int nowChains)
+	{
+		m_energy += nowChains * 5.0f;
+	}
+
 	//---------------------------------------------------------------------------------------------
 	//情報の表示
 	//---------------------------------------------------------------------------------------------
@@ -440,9 +449,14 @@ namespace basecross{
 		//auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		//camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
 		//camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
+		
+		// コンボを加算する
+		Obj->AddCombo();
+		Obj->ComboBonus(Obj->GetChain());
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
+		Obj->AddChainTimeLimit();
 		Obj->LinkGo();
 		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();

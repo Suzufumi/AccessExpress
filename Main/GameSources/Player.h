@@ -29,6 +29,8 @@ namespace basecross {
 		float m_changeEnergy = 1.0f;
 		float m_maxEnergy = 100.0f;
 		int m_chain = 0;		// コンボのための変数
+		int m_chainTimeLimit = 0;	// コンボとコンボの時間を図る時間
+		const int CHAIN_TIMELIMIT = 180;	// コンボが途切れる時間
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -105,8 +107,15 @@ namespace basecross {
 			devi->SetDrawActive(f);
 		}
 
-		void ResetCombo() { m_chain = 0; }
+		void ComboBonus(int nowChains);
+		// コンボを加算する
 		void AddCombo() { m_chain++; }
+		// コンボをリセットする
+		void ResetCombo() { m_chain = 0; }
+		// 現在のコンボ数を返す
+		int GetChain() const { return m_chain; }
+		// コンボとコンボの制限時間を加算する
+		void AddChainTimeLimit() { m_chainTimeLimit++; }
 
 		void DrawStrings();
 	};
