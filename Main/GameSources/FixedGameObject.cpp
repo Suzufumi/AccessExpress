@@ -124,4 +124,90 @@ namespace basecross {
 		drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);
 	}
+
+	//--------------------------------------------------------------------------------------------------------------
+	// 背景用の球
+	//--------------------------------------------------------------------------------------------------------------
+	void SkySphere::OnCreate()
+	{
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+
+		auto transComp = GetComponent<Transform>();
+		transComp->SetScale(Vec3(200, 200, 200));
+		transComp->SetPosition(camera->GetEye());
+
+		vector<VertexPositionNormalTexture> vertices;
+		//頂点定義を変える
+		vector<VertexPositionColorTexture> new_vertices;
+		
+		vector<uint16_t> indices;
+		//球体の作成
+		MeshUtill::CreateSphere(1.0f, 18, vertices, indices);
+		for (size_t i = 0; i < vertices.size(); i++)
+		{
+			VertexPositionColorTexture temp;
+			temp.position = vertices[i].position;
+			temp.textureCoordinate = vertices[i].textureCoordinate;
+			temp.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
+			new_vertices.push_back(temp);
+		}
+
+		auto drawComp = AddComponent<PCTStaticDraw>();
+		drawComp->CreateOriginalMesh(new_vertices, indices);
+		drawComp->SetOriginalMeshUse(true);
+		drawComp->SetTextureResource(L"SKY_TX");
+		drawComp->SetSamplerState(SamplerState::LinearClamp);
+		drawComp->SetDepthStencilState(DepthStencilState::Read);
+		SetAlphaActive(true);
+
+	}
+
+	void SkySphere::OnUpdate()
+	{
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		auto transComp = GetComponent<Transform>();
+		transComp->SetPosition(camera->GetEye());
+	}
+
+
+	//--------------------------------------------------------------------------------------------------------------
+	// 背景用のスプライトを作成
+	//--------------------------------------------------------------------------------------------------------------
+	SkySprite::SkySprite(const shared_ptr<Stage>& ptrStage, const Vec3 &rot, const Vec3 &pos)
+		: GameObject(ptrStage), m_rotation(rot), m_position(pos)
+	{
+		m_scale = Vec2(100, 75);
+	}
+
+	void SkySprite::OnCreate()
+	{
+		float helfSize = 0.5f;
+		//頂点配列(縦横5個ずつ表示)
+		vector<VertexPositionColorTexture> vertices = {
+			{ VertexPositionColorTexture(Vec3(-helfSize, helfSize, 0),Col4(1.0f,1.0f,1.0f,1.0f), Vec2(0.0f, 0.0f)) },
+			{ VertexPositionColorTexture(Vec3(helfSize, helfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(5.0f, 0.0f)) },
+			{ VertexPositionColorTexture(Vec3(-helfSize, -helfSize, 0), Col4(1.0f, 0.0f, 1.0f, 1.0f), Vec2(0.0f, 5.0f)) },
+			{ VertexPositionColorTexture(Vec3(helfSize, -helfSize, 0), Col4(1.0f,1.0f, 1.0f, 1.0f), Vec2(5.0f, 5.0f)) },
+		};
+		//インデックス配列
+		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
+		SetAlphaActive(true);
+		auto transComp = GetComponent<Transform>();
+		transComp->SetScale(Vec3(m_scale.x, m_scale.y, 1.0f));
+		transComp->SetRotation(m_rotation);
+		transComp->SetPosition(m_position);
+
+		//頂点とインデックスを指定してスプライト作成
+		auto drawComp = AddComponent<PNTStaticDraw>();
+		//auto drawComp = AddComponent<PCTSpriteDraw>(vertices, indices);
+		drawComp->SetMeshResource(L"DEFAULT_SQUARE");
+		drawComp->SetSamplerState(SamplerState::LinearWrap);
+		drawComp->SetTextureResource(L"SKY_TX");
+		SetDrawLayer(-2);
+	}
+
+	void SkySprite::OnUpdate()
+	{
+
+	}
 }
