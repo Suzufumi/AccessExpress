@@ -32,6 +32,31 @@ namespace basecross {
 
 
 	}
+
+	void GameStage::SetBackGround()
+	{
+		struct backGRParam
+		{
+			Vec3 m_rot;
+			Vec3 m_pos;
+		};
+
+		const int BACK_GROUND = 4;
+		backGRParam backParam[BACK_GROUND] =
+		{
+			{ Vec3(0.0f), Vec3(0.0f, 37.5f, 50.0f)},
+			{ Vec3(0.0f, Deg2Rad(90), 0.0f), Vec3(-50.0f, 37.5f, 0.0f)},
+			{ Vec3(0.0f, Deg2Rad(-90), 0.0f), Vec3(50.0f, 37.5f, 0.0f)},
+			{ Vec3(0.0f), Vec3(0.0f, 37.5f, -50.0f)}
+		};
+
+		for (auto back : backParam)
+		{
+			AddGameObject<SkySprite>(back.m_rot, back.m_pos);
+
+		}
+	}
+
 	//----------------------------------------------------------------
 	//è∞ÇÃçÏê¨
 	//----------------------------------------------------------------
@@ -159,11 +184,14 @@ namespace basecross {
 
 			CreateLinkObject();
 
+			SetBackGround();
+
 			//Quat qt;
 			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
 
 
 			AddGameObject<RemainingTimer>();
+			//AddGameObject<SkySphere>();
 		}
 		catch (...) {
 			throw;

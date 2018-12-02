@@ -14,6 +14,8 @@ namespace basecross {
 	class GameStage : public Stage {
 		//ビューの作成
 		void CreateViewLight();
+		// 背景の設定
+		void SetBackGround();
 		//床の作成
 		void CreateFloor();
 		//プレイヤーとプレイヤー回り
