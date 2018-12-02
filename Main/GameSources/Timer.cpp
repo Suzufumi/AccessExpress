@@ -79,6 +79,9 @@ namespace basecross {
 
 	void RemainingTimerSprite::OnUpdate() {
 		m_timer += -App::GetApp()->GetElapsedTime();
+		if (m_timer < 0.0f) {
+			m_timer = 0.0f;
+		}
 		int timer = m_timer;
 
 		for (int i = 0; i < m_places; i++) {

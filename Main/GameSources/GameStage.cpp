@@ -193,7 +193,6 @@ namespace basecross {
 
 			auto score = AddGameObject<RemainingTimerSprite>(60);
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
-			AddGameObject<RemainingTimer>();
 			//AddGameObject<SkySphere>();
 		}
 		catch (...) {
