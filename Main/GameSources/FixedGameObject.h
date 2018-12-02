@@ -53,5 +53,37 @@ namespace basecross {
 		virtual ~Drive() {};
 		virtual void OnCreate() override;
 	};
+
+	//--------------------------------------------------------------------------------------------------------------
+	// ”wŒi—p‚Ì‹…‚ğì¬
+	//--------------------------------------------------------------------------------------------------------------
+	class SkySphere : public GameObject
+	{
+	public:
+		SkySphere(const shared_ptr<Stage>& ptrStage) :
+			GameObject(ptrStage) {}
+		virtual ~SkySphere() {};
+
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+	};
+
+	//--------------------------------------------------------------------------------------------------------------
+	// ”wŒi—p‚ÌƒXƒvƒ‰ƒCƒg‚ğì¬
+	//--------------------------------------------------------------------------------------------------------------
+	class SkySprite : public GameObject
+	{
+	private:
+		Vec2 m_scale;
+		Vec3 m_rotation;
+		Vec3 m_position;
+	public:
+		SkySprite(const shared_ptr<Stage>& ptrStage, const Vec3 &rot, const Vec3 &pos);
+		virtual ~SkySprite() {};
+
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+	};
 }
 //end basecross
