@@ -35,7 +35,7 @@ namespace basecross{
 
 		//四角形の当たり判定をセット
 		auto col = AddComponent<CollisionObb>();
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 		//コリジョンの判定をしない
 		col->SetAfterCollision(AfterCollision::None);
 		//playerに持たせて使うものには衝突しない

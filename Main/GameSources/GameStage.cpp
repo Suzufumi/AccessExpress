@@ -87,7 +87,7 @@ namespace basecross {
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-35.0f, 13.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
+		auto player = AddGameObject<Player>(Vec3(-35.0f, 25.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		auto dev = AddGameObject<SightingDevice>();
 		player->SetSightingDevice(dev);
 	}
@@ -105,20 +105,20 @@ namespace basecross {
 		{
 			{ Vec3(-35.0f, 4.0f, -35.0f), Vec3(5.0f, 8.0f, 7.0f) }, //0
 			{ Vec3(-35.0f, 4.0f, -20.0f), Vec3(4.0f, 8.0f, 5.0f) }, //1
-			{ Vec3(-35.0f, 2.5f, -10.0f), Vec3(4.0f, 5.0f, 3.0f) },	//2
+			{ Vec3(-35.0f, 2.5f, -10.0f), Vec3(4.0f, 7.0f, 3.0f) },	//2
 			{ Vec3(-35.0f, 3.0f, 0.0f),   Vec3(4.0f, 6.0f, 4.0f) },	//3
 			{ Vec3(-35.0f, 4.0f, 10.0f),  Vec3(4.0f, 8.0f, 5.0f) }, //4
-			{ Vec3(-35.0f, 2.5f, 25.0f),  Vec3(4.0f, 5.0f, 4.0f) }, //5
+			{ Vec3(-35.0f, 2.5f, 25.0f),  Vec3(4.0f, 6.0f, 4.0f) }, //5
 
-			{ Vec3(-23.0f, 3.0f, -35.0f), Vec3(4.0f, 6.0f, 4.0f) }, //6 
-			{ Vec3(-23.0f, 3.5f, -25.0f), Vec3(5.0f, 7.0f, 3.0f) }, //7 
-			{ Vec3(-23.0f, 4.0f, -15.0f), Vec3(4.0f, 8.0f, 4.0f) }, //8 
-			{ Vec3(-23.0f, 2.5f, -5.0f),  Vec3(4.0f, 5.0f, 3.0f) }, //9 
-			{ Vec3(-23.0f, 3.5f, 5.0f),   Vec3(5.0f, 7.0f, 3.0f) }, //10 
-			{ Vec3(-23.0f, 3.0f, 15.0f),  Vec3(4.0f, 6.0f, 3.0f) }, //11
+			{ Vec3(-23.0f, 3.0f, -35.0f), Vec3(4.0f, 7.0f, 4.0f) }, //6 
+			{ Vec3(-23.0f, 3.5f, -25.0f), Vec3(5.0f, 8.0f, 3.0f) }, //7 
+			{ Vec3(-23.0f, 4.0f, -15.0f), Vec3(4.0f, 7.0f, 4.0f) }, //8 
+			{ Vec3(-23.0f, 2.5f, -5.0f),  Vec3(4.0f, 6.0f, 3.0f) }, //9 
+			{ Vec3(-23.0f, 3.5f, 5.0f),   Vec3(5.0f, 6.0f, 3.0f) }, //10 
+			{ Vec3(-23.0f, 3.0f, 15.0f),  Vec3(4.0f, 8.0f, 3.0f) }, //11
 
 			{ Vec3(-10.0f, 3.0f, -35.0f), Vec3(4.0f, 6.0f, 3.0f) }, //13
-			{ Vec3(-10.0f, 2.5f, -25.0f), Vec3(5.0f, 5.0f, 4.0f) }, //14
+			{ Vec3(-10.0f, 2.5f, -25.0f), Vec3(5.0f, 7.0f, 4.0f) }, //14
 			{ Vec3(-10.0f, 4.0f, -10.0f), Vec3(5.0f, 8.0f, 5.0f) }, //15
 			{ Vec3(-10.0f, 3.0f, 0.0f),   Vec3(6.0f, 6.0f, 4.0f) }, //16
 			{ Vec3(-10.0f, 3.5f, 10.0f),  Vec3(5.0f, 7.0f, 3.0f) }, //17
@@ -129,18 +129,18 @@ namespace basecross {
 			{ Vec3(7.0f, 3.0f, -15.0f), Vec3(4.0f, 6.0f, 4.0f) }, //22
 			{ Vec3(7.0f, 4.0f, -5.0f),  Vec3(6.0f, 8.0f, 5.0f) }, //23
 			{ Vec3(7.0f, 3.0f, 5.0f),   Vec3(4.0f, 6.0f, 6.0f) }, //24
-			{ Vec3(7.0f, 2.5f, 20.0f),  Vec3(5.0f, 5.0f, 5.0f) }, //25
+			{ Vec3(7.0f, 2.5f, 20.0f),  Vec3(5.0f, 8.0f, 5.0f) }, //25
 
 			{ Vec3(20.0f, 3.0f, -35.0f),  Vec3(6.0f, 6.0f, 6.0f) }, //26
-			{ Vec3(20.0f, 2.5f, -25.0f),  Vec3(6.0f, 5.0f, 4.0f) }, //27
-			{ Vec3(20.0f, 3.0f, -5.0f),   Vec3(4.0f, 6.0f, 4.0f) }, //29
+			{ Vec3(20.0f, 2.5f, -25.0f),  Vec3(6.0f, 7.0f, 4.0f) }, //27
+			{ Vec3(20.0f, 3.0f, -5.0f),   Vec3(4.0f, 8.0f, 4.0f) }, //29
 			{ Vec3(20.0f, 4.0f, -15.0f), Vec3(4.0f, 8.0f, 5.0f) }, //30
 			{ Vec3(20.0f, 3.5f, 15.0f),   Vec3(5.0f, 7.0f, 5.0f) }, //31
 			{ Vec3(20.0f, 3.5f, 5.0f), Vec3(6.0f, 8.0f, 5.0f) },
 
 			{ Vec3(33.0f, 4.0f, -35.0f), Vec3(6.0f, 8.0f, 5.0f) }, //32
 			{ Vec3(33.0f, 4.0f, -25.0f), Vec3(6.0f, 8.0f, 5.0f) }, //33
-			{ Vec3(33.0f, 3.0f, -15.0f), Vec3(5.0f, 6.0f, 6.0f) }, //34
+			{ Vec3(33.0f, 3.0f, -15.0f), Vec3(5.0f, 8.0f, 6.0f) }, //34
 			{ Vec3(33.0f, 3.5f, -5.0f),  Vec3(5.0f, 7.0f, 4.0f) }, //35
 			{ Vec3(33.0f, 4.0f, 5.0f),   Vec3(4.0f, 8.0f, 5.0f) }, //36
 			{ Vec3(33.0f, 3.0f, 15.0f),  Vec3(6.0f, 6.0f, 4.0f) }  //37
@@ -149,13 +149,16 @@ namespace basecross {
 		int count = 0;
 		for (auto bill : billParam)
 		{
-			bill.m_scale *= 1.5f;
-			bill.m_pos.y += 1.5f;
+			bill.m_scale.x *= 1.5f;
+			bill.m_scale.y *= 3.0f;
+			bill.m_scale.z *= 1.5f;
+
+			bill.m_pos.y = bill.m_scale.y / 2;
 			AddGameObject<Wall>(bill.m_pos, bill.m_scale);
 			if (count % 2 == 0)
 			{
 				AddGameObject<LinkObject>(
-					Vec3(bill.m_pos.x, bill.m_pos.y * 2.3f, bill.m_pos.z + 1.0f),
+					Vec3(bill.m_pos.x, bill.m_pos.y * 2.2f, bill.m_pos.z + 1.0f),
 					Vec3(1.0f, 1.0f, 1.0f));
 			}
 			count++;
@@ -186,7 +189,7 @@ namespace basecross {
 			CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
-			auto goal = AddGameObject<Goal>(Vec3(7.0f, 10.0f, 20.0f), Vec3(1.0f, 7.0f, 1.0f));
+			auto goal = AddGameObject<Goal>(Vec3(7.0f, 24.0f, 20.0f), Vec3(1.0f, 7.0f, 1.0f));
 			// 建物の配置
 			CreateBill();
 
