@@ -185,6 +185,21 @@ namespace basecross{
 
 	}
 	//--------------------------------------------------------------------------------------------
+	//平行移動の速度をステートで分けて変更する
+	//--------------------------------------------------------------------------------------------
+	void Player::ChangeWalkSpeed(State state) {
+		switch (state){
+		case State::HUMAN:
+			m_nowWalkSpeed = m_humanWalkSpeed;
+			break;
+		case State::DATA:
+			m_nowWalkSpeed = m_dataWalkSpeed;
+			break;
+		default:
+			break;
+		}
+	}
+	//--------------------------------------------------------------------------------------------
 	//カメラの回転処理
 	//--------------------------------------------------------------------------------------------
 	void Player::CameraRoll() {
@@ -422,6 +437,7 @@ namespace basecross{
 	//ステートに入ったときに呼ばれる関数
 	void WalkState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->ChengeEnergyPur();
+		Obj->ChangeWalkSpeed(Player::State::HUMAN);
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
@@ -485,6 +501,8 @@ namespace basecross{
 	//ステートに入ったときに呼ばれる関数
 	void DateState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->ChengeEnergyMai();
+		Obj->ChangeWalkSpeed(Player::State::DATA);
+
 		// 以前のステートがLinkStateだったら
 		if (Obj->GetStateMachine()->GetPreviousState() == LinkState::Instance())
 		{
