@@ -20,7 +20,7 @@ namespace basecross
 		ptrTrans->SetQuaternion(Qt);
 		ptrTrans->SetScale(m_scale);
 		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticDraw>();
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		drawComp->SetDiffuse(Col4(0.0f, 1.0f, 0.0f, 1.0f));
