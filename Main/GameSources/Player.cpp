@@ -55,12 +55,16 @@ namespace basecross{
 		);
 
 		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticModelDraw>();
+		auto drawComp = AddComponent<PNTBoneModelDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMultiMeshResource(L"PLAYER_MODEL");
 		drawComp->SetTextureResource(L"PLAYER_TX");
 		// 変換した行列を代入
 		drawComp->SetMeshToTransformMatrix(spanMat);
+		// アニメーションを追加する
+		drawComp->AddAnimation(L"Default", 0, 110, true, 30.0f);
+		// アニメーションの設定
+		drawComp->ChangeCurrentAnimation(L"Default");
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
 		//drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);
@@ -93,6 +97,9 @@ namespace basecross{
 
 		//ステートマシンのアップデート
 		m_StateMachine->Update();
+		// アニメーションを更新する
+		auto drawComp = GetComponent<PNTBoneModelDraw>();
+		drawComp->UpdateAnimation(delta);
 	};
 
 	//--------------------------------------------------------------------------------------------------------------------

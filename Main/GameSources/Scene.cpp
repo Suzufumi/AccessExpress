@@ -53,7 +53,7 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"Number_TX", strTexture);
 
 		auto modelDir = dataDir + L"Model\\";
-		auto playerModelMesh = MultiMeshResource::CreateStaticModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
+		auto playerModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		//auto playerModelMesh = MeshResource::CreateStaticModelMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		App::GetApp()->RegisterResource(L"PLAYER_MODEL", playerModelMesh);
 		auto modelTex = modelDir + L"Player\\" + L"UV_Player.png";
