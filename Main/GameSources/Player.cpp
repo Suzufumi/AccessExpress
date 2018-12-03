@@ -430,7 +430,7 @@ namespace basecross{
 		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(DateState::Instance());
-			Obj->SightingDeviceDrawActiveFlag(true);
+			Obj->SightingDeviceDrawActive(true);
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
@@ -466,7 +466,7 @@ namespace basecross{
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
-			Obj->SightingDeviceDrawActiveFlag(false);
+			Obj->SightingDeviceDrawActive(false);
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
@@ -516,7 +516,7 @@ namespace basecross{
 		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton() || Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
-			Obj->SightingDeviceDrawActiveFlag(false);
+			Obj->SightingDeviceDrawActive(false);
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数

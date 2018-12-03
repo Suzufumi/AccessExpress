@@ -83,7 +83,7 @@ namespace basecross {
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
-			SightingDeviceDrawActiveFlag(false);
+			SightingDeviceDrawActive(false);
 		}
 		void SightingDeviceChangePosition();
 		//ベジエ曲線で飛ぶ処理
@@ -102,7 +102,7 @@ namespace basecross {
 		//エネルギーの量を返す
 		float GetEnergy() { return m_energy; }
 		//照準の表示を切り替える
-		void SightingDeviceDrawActiveFlag(bool f) { 
+		void SightingDeviceDrawActive(bool f) { 
 			auto devi = m_SightingDevice.lock(); 
 			devi->SetDrawActive(f);
 		}
