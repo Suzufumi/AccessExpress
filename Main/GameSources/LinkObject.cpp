@@ -31,11 +31,11 @@ namespace basecross
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
-		//drawComp->SetMeshResource(L"TOWER_MODEL");
-		//drawComp->SetTextureResource(L"TOWER_TX");
-		drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		drawComp->SetMeshResource(L"TOWER_MODEL");
+		drawComp->SetTextureResource(L"TOWER_TX");
+		//drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		drawComp->SetMeshToTransformMatrix(spanMat);
-		drawComp->SetDiffuse(Col4(0.0f, 1.0f, 0.0f, 1.0f));
+		//drawComp->SetDiffuse(Col4(0.0f, 1.0f, 0.0f, 1.0f));
 		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
 	}
 
