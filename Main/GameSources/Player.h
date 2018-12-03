@@ -10,14 +10,14 @@
 namespace basecross {
 	class Player : public GameObject {
 		unique_ptr< StateMachine<Player> >  m_StateMachine;	//ステートマシーン
-		wstring state = L"walk";
 
-		float m_nowFallSpeed = 8.0f;
-		float m_nowWalkSpeed = 10.0f;			//現在の移動のスピード
-		float m_standardWalkSpeed = 5.0f;		//基本の移動スピード
+		float m_nowFallSpeed = 8.0f;		//落下のスピード
+		float m_nowWalkSpeed = 10.0f;		//現在の移動のスピード
+		float m_humanWalkSpeed = 15.0f;		//人間状態の移動スピード
+		float m_dataWalkSpeed = 10.0f;		//データ状態の移動スピード
 		float m_angleX;
 		float m_angleY;
-		float m_maxAngleSpeed;		//カメラが回転するスピード
+		float m_maxAngleSpeed;			//カメラが回転するスピード
 		float m_cameraHeight;			//カメラの初期高さ
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
 		bool m_isFall = true;					//Y軸方向の力を加えるかどうか
@@ -49,6 +49,11 @@ namespace basecross {
 		weak_ptr<TpsCamera> m_tpsCamera; // カメラのインスタンスを受け取る
 
 	public:
+		enum State {
+			HUMAN = 0,
+			DATA = 1
+		};
+
 		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);
 		virtual ~Player() {};
 		virtual void OnCreate() override; // 初期化
@@ -76,6 +81,8 @@ namespace basecross {
 		void CameraRoll();
 		void CameraControll();
 
+		//ステートに応じて平行移動のスピードを変える
+		void ChangeWalkSpeed(State state);
 		//子オブジェクトしてもっている電波塔との当たり判定をプレイヤーのほうでも認知する
 		void SetRadioTowerHitJudgment(weak_ptr<RadioTowerHitJudgment> hit) {
 			m_RadioTowerHitJudgment = hit;
@@ -83,8 +90,9 @@ namespace basecross {
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
-			SightingDeviceDrawActiveFlag(false);
+			SightingDeviceDrawActive(false);
 		}
+		//照準の位置を変える
 		void SightingDeviceChangePosition();
 		//ベジエ曲線で飛ぶ処理
 		void LinkGo();
@@ -102,7 +110,7 @@ namespace basecross {
 		//エネルギーの量を返す
 		float GetEnergy() { return m_energy; }
 		//照準の表示を切り替える
-		void SightingDeviceDrawActiveFlag(bool f) { 
+		void SightingDeviceDrawActive(bool f) { 
 			auto devi = m_SightingDevice.lock(); 
 			devi->SetDrawActive(f);
 		}

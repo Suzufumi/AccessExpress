@@ -159,6 +159,7 @@ namespace basecross {
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
 		drawComp->SetDepthStencilState(DepthStencilState::Read);
 		SetAlphaActive(true);
+		SetDrawLayer(-2);
 
 	}
 
