@@ -37,22 +37,46 @@ namespace basecross{
 		// mediaディレクトリを取得
 		App::GetApp()->GetDataDirectory(dataDir);
 
-		wstring strTexture = dataDir + L"Building1.png";
-		App::GetApp()->RegisterTexture(L"Building1_TX", strTexture);
-		strTexture = dataDir + L"Title.png";
-		App::GetApp()->RegisterTexture(L"Title_TX", strTexture);
-		strTexture = dataDir + L"StageSelect.png";
-		App::GetApp()->RegisterTexture(L"StageSelect_TX", strTexture);
-		strTexture = dataDir + L"ResultStage.png";
-		App::GetApp()->RegisterTexture(L"ResultStage_TX", strTexture);
-		strTexture = dataDir + L"cursor.png";
-		App::GetApp()->RegisterTexture(L"cursor_TX", strTexture);
-		strTexture = dataDir + L"Back.png";
-		App::GetApp()->RegisterTexture(L"SKY_TX", strTexture);
-		strTexture = dataDir + L"Number.png";
-		App::GetApp()->RegisterTexture(L"Number_TX", strTexture);
+		struct InitializedParam
+		{
+			wstring m_texName;
+			wstring m_texKey;
+		};
+		const int TEXTURE_NUM = 8;
+		InitializedParam textures[TEXTURE_NUM] = {
+			{ L"Building1.png", L"Building1_TX" },
+			{ L"Title.png", L"Title_TX"},
+			{ L"StageSelect.png", L"StageSelect_TX"},
+			{ L"ResultStage.png", L"ResultStage_TX"},
+			{ L"cursor.png", L"cursor_TX"},
+			{ L"Back.png", L"SKY_TX"},
+			{ L"Number.png", L"Number_TX"},
+			{ L"GameOver.png", L"OVER_TX"}
+		};
+
+		for (auto texture : textures)
+		{
+			wstring strTexture = dataDir + L"Textures\\" + texture.m_texName;
+			App::GetApp()->RegisterTexture(texture.m_texKey, strTexture);
+
+		}
 
 		auto modelDir = dataDir + L"Model\\";
+
+		//struct ModelParam
+		//{
+		//	wstring m_modelName;
+		//	wstring m_modelKey;
+		//	wstring m_texName;
+		//	wstring m_texKey;
+		//};
+
+		//const int MODEL_SIZE = 3;
+		//ModelParam models[3] = {
+		//	{ L"PlayerChara.bmf", L"PLAYER_MODEL", L"UV_Player.png", L"PLAYER_TX"},
+		//	{ }
+		//}
+
 		auto playerModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		//auto playerModelMesh = MeshResource::CreateStaticModelMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		App::GetApp()->RegisterResource(L"PLAYER_MODEL", playerModelMesh);
