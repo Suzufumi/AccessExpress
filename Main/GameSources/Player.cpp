@@ -402,8 +402,9 @@ namespace basecross{
 		wstring timeLimit(L"Limit : ");
 		timeLimit += Util::IntToWStr(m_chainTimeLimit) + L"\n";
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
-		wstring str = strFps + cameraStr + energy + combo + timeLimit;
-		//wstring str = energy;
+		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
+
+		wstring str = combo + energy;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 
