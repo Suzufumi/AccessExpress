@@ -199,7 +199,8 @@ namespace basecross {
 
 			//Quat qt;
 			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
-						// スコア用のUI
+						
+			AddGameObject<Drone>(Vec3(-35, 25, -35));
 
 
 			auto score = AddGameObject<RemainingTimerSprite>(60);

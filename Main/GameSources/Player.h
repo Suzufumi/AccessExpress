@@ -31,6 +31,7 @@ namespace basecross {
 		int m_chain = 0;		// コンボのための変数
 		int m_chainTimeLimit = 0;	// コンボとコンボの時間を図る時間
 		bool m_isAdvanceTime = false; // 時間をすすめるかどうかのフラグ
+		Vec3 m_response;				//落ちた時に復帰する場所
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -47,6 +48,11 @@ namespace basecross {
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
 
 		weak_ptr<TpsCamera> m_tpsCamera; // カメラのインスタンスを受け取る
+
+		//押し出しに使うめり込みの最小値
+		float m_nesting = NULL;
+		//押し出しに使うめり込んでいる方向
+		int m_nestingMin;
 
 	public:
 		enum State {
@@ -129,6 +135,8 @@ namespace basecross {
 		void ResetTimeLim() { m_chainTimeLimit = 0; }
 		bool GetAdvanceTimeActive() const { return m_isAdvanceTime; }
 		void SetAdvanceTimeActive(bool advanceTime) { m_isAdvanceTime = advanceTime; }
+		//落下した際にリスポーン位置へワープする
+		void Response();
 
 		void DrawStrings();
 	};

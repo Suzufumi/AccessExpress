@@ -147,17 +147,17 @@ namespace basecross{
 	//衝突したとき
 	//--------------------------------------------------------------------------------------------------------------
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {
-		//ファイルに変換する
-		auto file = dynamic_pointer_cast<File>(Other);
-		if (file) {
-			file->SetOnPlayer(GetThis<GameObject>());
-			m_File = file;
-			m_isHaveFile = true;
+		auto trans = GetComponent<Transform>();
+		auto otherTrans = Other->GetComponent<Transform>();
+		//playerの下面と衝突した物体の上面が当たっていたら
+		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
+			//自動でY方向に力を加える処理を行わないようにする
+			m_isFall = false;
 		}
-		
+
+
 		auto goal = dynamic_pointer_cast<Goal>(Other);
-		if (goal)
-		{
+		if (goal){
 			goal->ArriveGoal();
 		}
 	}
@@ -172,18 +172,23 @@ namespace basecross{
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
 		}
-
 		Extrusion(Other);
 
-		auto access = dynamic_pointer_cast<LinkObject>(Other);
-		if (access) {
-		}
 	}
 	//--------------------------------------------------------------------------------------------------------------
 	//衝突が解除されたとき
 	//-------------------------------------------------------------------------------------------------------------
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		m_isFall = true;
+		auto wall = dynamic_pointer_cast<Wall>(Other);
+		if (wall) {
+			auto trans = GetComponent<Transform>();
+			auto wallTrans = wall->GetComponent<Transform>();
+			//playerの下面と衝突した物体の上面が当たっていたら
+			if (((wallTrans->GetWorldPosition().y + wallTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
+				m_response = wallTrans->GetWorldPosition() + Vec3(0.0f, 5.0f, 0.0f);
+				m_response.y += wallTrans->GetScale().y / 2;
+			}
+		}
 	}
 
 
@@ -212,12 +217,13 @@ namespace basecross{
 	//Y方向の移動処理
 	//---------------------------------------------------------------------------------------------
 	void Player::Fall() {
-		auto playerTrans = GetComponent<Transform>();
-		auto playerPos = playerTrans->GetWorldPosition();
 		if (m_isFall) {
+			auto playerTrans = GetComponent<Transform>();
+			auto playerPos = playerTrans->GetWorldPosition();
 			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
+			playerTrans->SetWorldPosition(playerPos);
 		}
-		playerTrans->SetWorldPosition(playerPos);
+		m_isFall = true;
 
 	}
 	//--------------------------------------------------------------------------------------------
@@ -236,6 +242,14 @@ namespace basecross{
 		}
 	}
 	//--------------------------------------------------------------------------------------------
+	//設定高さ以下になったらリスポーン位置にワープさせる
+	//--------------------------------------------------------------------------------------------
+	void Player::Response() {
+		if (GetComponent<Transform>()->GetWorldPosition().y <= 5.0f) {
+			GetComponent<Transform>()->SetWorldPosition(m_response);
+		}
+	}
+	//--------------------------------------------------------------------------------------------
 	//カメラの回転処理
 	//--------------------------------------------------------------------------------------------
 	void Player::CameraRoll() {
@@ -243,15 +257,19 @@ namespace basecross{
 		// スティックの傾きを角度に変換する
 		float padRad = atan2f(m_padDir.z, m_padDir.x);
 
-		m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
-		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
-		//360度を越えたら0にする
-		if (m_angleX > 360) {
-			m_angleX = 0;
-		}
-		//0度よりも小さくなったら
-		if (m_angleX < 0) {
-			m_angleX = 360;
+		//右スティックに値が入力されていたら
+		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
+			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
+			m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
+			//360度を越えたら0にする
+			if (m_angleX > 360) {
+				m_angleX = 0;
+			}
+			//0度よりも小さくなったら
+			if (m_angleX < 0) {
+				m_angleX = 360;
+			}
 		}
 
 		if (m_padDir.length() != 0.0f) {
@@ -290,6 +308,8 @@ namespace basecross{
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
+		//飛んだ際にリスポーン位置の更新も行う
+		m_response = p2;
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -378,30 +398,10 @@ namespace basecross{
 				min = i;
 			}
 		}
-		// 最小になっている方向に対して押し出しを行う
-		switch (min) {
-		case 0:
-			pos.x += diff[min];
-			break;
-		case 1:
-			pos.x -= diff[min];
-			break;
-		case 2:
-			pos.y += diff[min];
-			break;
-		case 3:
-			pos.y -= diff[min];
-			break;
-		case 4:
-			pos.z += diff[min];
-			break;
-		case 5:
-			pos.z -= diff[min];
-			break;
-		default:
-			break;
+		if (m_nesting == NULL || m_nesting > diff[min]) {
+			m_nesting = diff[min];
+			m_nestingMin = min;
 		}
-		trans->SetWorldPosition(pos);
 	}
 
 	void Player::CameraControll()
@@ -482,6 +482,7 @@ namespace basecross{
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
 		Obj->Fall();
+		Obj->Response();
 		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton()) {

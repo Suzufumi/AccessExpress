@@ -137,7 +137,8 @@ namespace basecross {
 		//drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		//影が映りこまない
 		drawComp->SetOwnShadowActive(false);
-
+		//ライトを無視して光る
+		drawComp->SetLightingEnabled(false);
 		//アルファ値適応
 		drawComp->SetBlendState(BlendState::AlphaBlend);
 		//テクスチャ
@@ -148,14 +149,13 @@ namespace basecross {
 	}
 	void SightingDevice::OnUpdate() {
 		auto drawComp = GetComponent<BcPNTStaticDraw>();
-		drawComp->SetAlpha(1.0f);
 		if (m_captureLink) {
-			Col4 Color(1.0f, 0.4f, 0.7f, 0.7f);
-			//GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
+			Col4 Color(1.0f, 0.2f, 0.2f, 1.0f);
+			drawComp->SetDiffuse(Color);
 		}
 		else {
-			Col4 Color(0.4f, 1.0f, 0.7f, 0.7f);
-			//GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
+			Col4 Color(1.0f, 1.0f, 1.0f, 1.0f);
+			drawComp->SetDiffuse(Color);
 		}
 	}
 }
