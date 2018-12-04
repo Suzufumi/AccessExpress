@@ -110,7 +110,34 @@ namespace basecross{
 		if (m_energy >= m_maxEnergy) {
 			m_energy = m_maxEnergy;
 		}
-		
+
+		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
+		// 最小になっている方向に対して押し出しを行う
+		switch (m_nestingMin) {
+		case 0:
+			pos.x += m_nesting;
+			break;
+		case 1:
+			pos.x -= m_nesting;
+			break;
+		case 2:
+			pos.y += m_nesting;
+			break;
+		case 3:
+			pos.y -= m_nesting;
+			break;
+		case 4:
+			pos.z += m_nesting;
+			break;
+		case 5:
+			pos.z -= m_nesting;
+			break;
+		default:
+			break;
+		}
+		GetComponent<Transform>()->SetWorldPosition(pos);
+		m_nesting = NULL;
+
 
 		// デバッグ文字の表示
 		DrawStrings();
@@ -125,8 +152,8 @@ namespace basecross{
 		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
-
 		}
+
 
 		auto goal = dynamic_pointer_cast<Goal>(Other);
 		if (goal){
@@ -143,10 +170,8 @@ namespace basecross{
 		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
-
 		}
 		Extrusion(Other);
-
 
 	}
 	//--------------------------------------------------------------------------------------------------------------
@@ -353,30 +378,10 @@ namespace basecross{
 				min = i;
 			}
 		}
-		// 最小になっている方向に対して押し出しを行う
-		switch (min) {
-		case 0:
-			pos.x += diff[min];
-			break;
-		case 1:
-			pos.x -= diff[min];
-			break;
-		case 2:
-			pos.y += diff[min];
-			break;
-		case 3:
-			pos.y -= diff[min];
-			break;
-		case 4:
-			pos.z += diff[min];
-			break;
-		case 5:
-			pos.z -= diff[min];
-			break;
-		default:
-			break;
+		if (m_nesting == NULL || m_nesting > diff[min]) {
+			m_nesting = diff[min];
+			m_nestingMin = min;
 		}
-		trans->SetWorldPosition(pos);
 	}
 
 	void Player::CameraControll()

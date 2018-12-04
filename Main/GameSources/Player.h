@@ -48,6 +48,9 @@ namespace basecross {
 
 		weak_ptr<TpsCamera> m_tpsCamera; // カメラのインスタンスを受け取る
 
+		float m_nesting = NULL;
+		int m_nestingMin;
+
 	public:
 		enum State {
 			HUMAN = 0,
