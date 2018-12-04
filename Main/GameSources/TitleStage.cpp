@@ -9,6 +9,7 @@ namespace basecross {
 
 		CreateViewLight();
 		CreatePlayer();
+		AddGameObject<SkySprite>(Vec3(0.0f), Vec3(0.0f));
 		auto sprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(600, 200));
 		sprite->SetPosition(Vec2(640, 140));
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));

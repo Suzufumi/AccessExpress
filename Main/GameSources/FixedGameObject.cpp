@@ -156,8 +156,8 @@ namespace basecross {
 		drawComp->CreateOriginalMesh(new_vertices, indices);
 		drawComp->SetOriginalMeshUse(true);
 		//drawComp->SetTextureResource(L"SKY_TX");
-		drawComp->SetTextureResource(L"BACK_L_TX");
-		//drawComp->SetTextureResource(L"BACK_D_TX");
+		//drawComp->SetTextureResource(L"BACK_L_TX");
+		drawComp->SetTextureResource(L"BACK_D_TX");
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
 		drawComp->SetDepthStencilState(DepthStencilState::Default);
 		SetAlphaActive(true);
@@ -179,7 +179,7 @@ namespace basecross {
 	SkySprite::SkySprite(const shared_ptr<Stage>& ptrStage, const Vec3 &rot, const Vec3 &pos)
 		: GameObject(ptrStage), m_rotation(rot), m_position(pos)
 	{
-		m_scale = Vec2(100, 75);
+		m_scale = Vec2(30, 25);
 	}
 
 	void SkySprite::OnCreate()

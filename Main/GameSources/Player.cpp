@@ -140,7 +140,8 @@ namespace basecross{
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
 
-
+		auto ptrUtil = GetBehavior<UtilBehavior>();
+		ptrUtil->RotToHead(m_padDir, 0.1f);
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -281,10 +282,9 @@ namespace basecross{
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
 			m_forward = m_padDir;
-
-			Quat rot;
-			rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
-			GetComponent<Transform>()->SetQuaternion(rot);
+			//Quat rot;
+			//rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
+			//GetComponent<Transform>()->SetQuaternion(rot);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
