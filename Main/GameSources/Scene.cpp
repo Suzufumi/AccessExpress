@@ -31,8 +31,7 @@ namespace basecross{
 	Scene::~Scene() {
 	}
 
-	void Scene::CreateResources()
-	{
+	void Scene::CreateResources(){
 		wstring dataDir;
 		// mediaディレクトリを取得
 		App::GetApp()->GetDataDirectory(dataDir);

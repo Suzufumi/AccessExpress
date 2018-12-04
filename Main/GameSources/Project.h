@@ -28,3 +28,4 @@
 #include "LinkObject.h"
 #include "Sprite.h"
 #include "Timer.h"
+#include "Enemy.h"

@@ -110,7 +110,35 @@ namespace basecross{
 		if (m_energy >= m_maxEnergy) {
 			m_energy = m_maxEnergy;
 		}
-		
+
+		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
+		// 最小になっている方向に対して押し出しを行う
+		switch (m_nestingMin) {
+		case 0:
+			pos.x += m_nesting;
+			break;
+		case 1:
+			pos.x -= m_nesting;
+			break;
+		case 2:
+			pos.y += m_nesting;
+			break;
+		case 3:
+			pos.y -= m_nesting;
+			break;
+		case 4:
+			pos.z += m_nesting;
+			break;
+		case 5:
+			pos.z -= m_nesting;
+			break;
+		default:
+			break;
+		}
+		GetComponent<Transform>()->SetWorldPosition(pos);
+		m_nesting = NULL;
+
+
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -118,17 +146,17 @@ namespace basecross{
 	//衝突したとき
 	//--------------------------------------------------------------------------------------------------------------
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {
-		//ファイルに変換する
-		auto file = dynamic_pointer_cast<File>(Other);
-		if (file) {
-			file->SetOnPlayer(GetThis<GameObject>());
-			m_File = file;
-			m_isHaveFile = true;
+		auto trans = GetComponent<Transform>();
+		auto otherTrans = Other->GetComponent<Transform>();
+		//playerの下面と衝突した物体の上面が当たっていたら
+		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
+			//自動でY方向に力を加える処理を行わないようにする
+			m_isFall = false;
 		}
-		
+
+
 		auto goal = dynamic_pointer_cast<Goal>(Other);
-		if (goal)
-		{
+		if (goal){
 			goal->ArriveGoal();
 		}
 	}
@@ -143,18 +171,13 @@ namespace basecross{
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
 		}
-
 		Extrusion(Other);
 
-		auto access = dynamic_pointer_cast<LinkObject>(Other);
-		if (access) {
-		}
 	}
 	//--------------------------------------------------------------------------------------------------------------
 	//衝突が解除されたとき
 	//-------------------------------------------------------------------------------------------------------------
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		m_isFall = true;
 	}
 
 
@@ -189,6 +212,7 @@ namespace basecross{
 			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
 		}
 		playerTrans->SetWorldPosition(playerPos);
+		m_isFall = true;
 
 	}
 	//--------------------------------------------------------------------------------------------
@@ -214,15 +238,19 @@ namespace basecross{
 		// スティックの傾きを角度に変換する
 		float padRad = atan2f(m_padDir.z, m_padDir.x);
 
-		m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
-		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
-		//360度を越えたら0にする
-		if (m_angleX > 360) {
-			m_angleX = 0;
-		}
-		//0度よりも小さくなったら
-		if (m_angleX < 0) {
-			m_angleX = 360;
+		//右スティックに値が入力されていたら
+		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
+			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
+			m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
+			//360度を越えたら0にする
+			if (m_angleX > 360) {
+				m_angleX = 0;
+			}
+			//0度よりも小さくなったら
+			if (m_angleX < 0) {
+				m_angleX = 360;
+			}
 		}
 
 		if (m_padDir.length() != 0.0f) {
@@ -233,6 +261,10 @@ namespace basecross{
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
 			m_forward = m_padDir;
+
+			Quat rot;
+			rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
+			GetComponent<Transform>()->SetQuaternion(rot);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -346,30 +378,10 @@ namespace basecross{
 				min = i;
 			}
 		}
-		// 最小になっている方向に対して押し出しを行う
-		switch (min) {
-		case 0:
-			pos.x += diff[min];
-			break;
-		case 1:
-			pos.x -= diff[min];
-			break;
-		case 2:
-			pos.y += diff[min];
-			break;
-		case 3:
-			pos.y -= diff[min];
-			break;
-		case 4:
-			pos.z += diff[min];
-			break;
-		case 5:
-			pos.z -= diff[min];
-			break;
-		default:
-			break;
+		if (m_nesting == NULL || m_nesting > diff[min]) {
+			m_nesting = diff[min];
+			m_nestingMin = min;
 		}
-		trans->SetWorldPosition(pos);
 	}
 
 	void Player::CameraControll()
