@@ -178,6 +178,16 @@ namespace basecross{
 	//衝突が解除されたとき
 	//-------------------------------------------------------------------------------------------------------------
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
+		auto wall = dynamic_pointer_cast<Wall>(Other);
+		if (wall) {
+			auto trans = GetComponent<Transform>();
+			auto wallTrans = wall->GetComponent<Transform>();
+			//playerの下面と衝突した物体の上面が当たっていたら
+			if (((wallTrans->GetWorldPosition().y + wallTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
+				m_response = wallTrans->GetWorldPosition() + Vec3(0.0f, 5.0f, 0.0f);
+				m_response.y += wallTrans->GetScale().y / 2;
+			}
+		}
 	}
 
 
@@ -206,12 +216,12 @@ namespace basecross{
 	//Y方向の移動処理
 	//---------------------------------------------------------------------------------------------
 	void Player::Fall() {
-		auto playerTrans = GetComponent<Transform>();
-		auto playerPos = playerTrans->GetWorldPosition();
 		if (m_isFall) {
+			auto playerTrans = GetComponent<Transform>();
+			auto playerPos = playerTrans->GetWorldPosition();
 			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
+			playerTrans->SetWorldPosition(playerPos);
 		}
-		playerTrans->SetWorldPosition(playerPos);
 		m_isFall = true;
 
 	}
@@ -228,6 +238,14 @@ namespace basecross{
 			break;
 		default:
 			break;
+		}
+	}
+	//--------------------------------------------------------------------------------------------
+	//設定高さ以下になったらリスポーン位置にワープさせる
+	//--------------------------------------------------------------------------------------------
+	void Player::Response() {
+		if (GetComponent<Transform>()->GetWorldPosition().y <= 5.0f) {
+			GetComponent<Transform>()->SetWorldPosition(m_response);
 		}
 	}
 	//--------------------------------------------------------------------------------------------
@@ -290,6 +308,8 @@ namespace basecross{
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
+		//飛んだ際にリスポーン位置の更新も行う
+		m_response = p2;
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -462,6 +482,7 @@ namespace basecross{
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
 		Obj->Fall();
+		Obj->Response();
 		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton()) {
