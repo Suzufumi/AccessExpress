@@ -155,9 +155,11 @@ namespace basecross {
 		auto drawComp = AddComponent<PCTStaticDraw>();
 		drawComp->CreateOriginalMesh(new_vertices, indices);
 		drawComp->SetOriginalMeshUse(true);
-		drawComp->SetTextureResource(L"SKY_TX");
+		//drawComp->SetTextureResource(L"SKY_TX");
+		drawComp->SetTextureResource(L"BACK_L_TX");
+		//drawComp->SetTextureResource(L"BACK_D_TX");
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
-		drawComp->SetDepthStencilState(DepthStencilState::Read);
+		drawComp->SetDepthStencilState(DepthStencilState::Default);
 		SetAlphaActive(true);
 		SetDrawLayer(-2);
 
@@ -197,7 +199,6 @@ namespace basecross {
 		transComp->SetScale(Vec3(m_scale.x, m_scale.y, 1.0f));
 		transComp->SetRotation(m_rotation);
 		transComp->SetPosition(m_position);
-
 		//頂点とインデックスを指定してスプライト作成
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		//auto drawComp = AddComponent<PCTSpriteDraw>(vertices, indices);

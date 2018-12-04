@@ -42,7 +42,7 @@ namespace basecross{
 			wstring m_texKey;
 		};
 		const int TEXTURE_NUM = 9;
-		InitializedParam textures[TEXTURE_NUM] = {
+		InitializedParam textures[] = {
 			{ L"Building1.png", L"Building1_TX" },
 			{ L"Title.png", L"Title_TX"},
 			{ L"StageSelect.png", L"StageSelect_TX"},
@@ -51,7 +51,9 @@ namespace basecross{
 			{ L"Back.png", L"SKY_TX"},
 			{ L"Number.png", L"Number_TX"},
 			{ L"GameOver.png", L"OVER_TX"},
-			{ L"title2.png", L"TITLE_TX"}
+			{ L"title2.png", L"TITLE_TX"},
+			{ L"BackLight.png", L"BACK_L_TX"},
+			{ L"BackDark.png", L"BACK_D_TX"}
 		};
 
 		for (auto texture : textures)
