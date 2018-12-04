@@ -206,12 +206,12 @@ namespace basecross{
 	//Y•ûŒü‚ÌˆÚ“®ˆ—
 	//---------------------------------------------------------------------------------------------
 	void Player::Fall() {
-		auto playerTrans = GetComponent<Transform>();
-		auto playerPos = playerTrans->GetWorldPosition();
 		if (m_isFall) {
+			auto playerTrans = GetComponent<Transform>();
+			auto playerPos = playerTrans->GetWorldPosition();
 			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
+			playerTrans->SetWorldPosition(playerPos);
 		}
-		playerTrans->SetWorldPosition(playerPos);
 		m_isFall = true;
 
 	}
