@@ -111,6 +111,7 @@ namespace basecross{
 			m_energy = m_maxEnergy;
 		}
 		
+
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -118,17 +119,17 @@ namespace basecross{
 	//衝突したとき
 	//--------------------------------------------------------------------------------------------------------------
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {
-		//ファイルに変換する
-		auto file = dynamic_pointer_cast<File>(Other);
-		if (file) {
-			file->SetOnPlayer(GetThis<GameObject>());
-			m_File = file;
-			m_isHaveFile = true;
+		auto trans = GetComponent<Transform>();
+		auto otherTrans = Other->GetComponent<Transform>();
+		//playerの下面と衝突した物体の上面が当たっていたら
+		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
+			//自動でY方向に力を加える処理を行わないようにする
+			m_isFall = false;
+
 		}
-		
+
 		auto goal = dynamic_pointer_cast<Goal>(Other);
-		if (goal)
-		{
+		if (goal){
 			goal->ArriveGoal();
 		}
 	}
@@ -142,19 +143,16 @@ namespace basecross{
 		if (((otherTrans->GetWorldPosition().y + otherTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
-		}
 
+		}
 		Extrusion(Other);
 
-		auto access = dynamic_pointer_cast<LinkObject>(Other);
-		if (access) {
-		}
+
 	}
 	//--------------------------------------------------------------------------------------------------------------
 	//衝突が解除されたとき
 	//-------------------------------------------------------------------------------------------------------------
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		m_isFall = true;
 	}
 
 
@@ -189,6 +187,7 @@ namespace basecross{
 			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
 		}
 		playerTrans->SetWorldPosition(playerPos);
+		m_isFall = true;
 
 	}
 	//--------------------------------------------------------------------------------------------
@@ -214,15 +213,19 @@ namespace basecross{
 		// スティックの傾きを角度に変換する
 		float padRad = atan2f(m_padDir.z, m_padDir.x);
 
-		m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
-		m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
-		//360度を越えたら0にする
-		if (m_angleX > 360) {
-			m_angleX = 0;
-		}
-		//0度よりも小さくなったら
-		if (m_angleX < 0) {
-			m_angleX = 360;
+		//右スティックに値が入力されていたら
+		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
+			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
+			m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // カメラを昇降させる
+			//360度を越えたら0にする
+			if (m_angleX > 360) {
+				m_angleX = 0;
+			}
+			//0度よりも小さくなったら
+			if (m_angleX < 0) {
+				m_angleX = 360;
+			}
 		}
 
 		if (m_padDir.length() != 0.0f) {
@@ -233,6 +236,10 @@ namespace basecross{
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
 			m_forward = m_padDir;
+
+			Quat rot;
+			rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
+			GetComponent<Transform>()->SetQuaternion(rot);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
