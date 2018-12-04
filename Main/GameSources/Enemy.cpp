@@ -1,5 +1,6 @@
 #include"stdafx.h"
 #include"Project.h"
+#include "Enemy.h"
 
 namespace basecross {
 	Drone::Drone(const shared_ptr<Stage>& stage ,Vec3 pos)
@@ -22,6 +23,7 @@ namespace basecross {
 			m_roop[i].p2 = centerPos + Vec3(radius * cosf(deg90*(i + 1)), 0, radius * sinf(deg90*(i + 1)));
 		}
 		OBBObject::OnCreate();
+		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());
 	}
 	void Drone::OnUpdate() {
 		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
@@ -42,5 +44,9 @@ namespace basecross {
 			}
 		}
 		GetComponent<Transform>()->SetWorldPosition(pos);
+		if (m_isDead) {
+			SetUpdateActive(false);
+			//GetStage()->RemoveGameObject<Drone>(GetThis<Drone>());
+		}
 	}
 }

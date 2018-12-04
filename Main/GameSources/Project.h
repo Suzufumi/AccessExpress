@@ -21,6 +21,7 @@
 #include "ProjectCamera.h"
 #include "FixedGameObject.h"
 #include "ShapeObject.h"
+#include "Enemy.h"
 #include "PlayerSupport.h"
 #include "Player.h"
 #include "AccessObject.h"
@@ -28,4 +29,3 @@
 #include "LinkObject.h"
 #include "Sprite.h"
 #include "Timer.h"
-#include "Enemy.h"
