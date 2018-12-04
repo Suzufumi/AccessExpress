@@ -21,7 +21,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 		}
 		catch (...) {
 			throw;
@@ -31,8 +31,7 @@ namespace basecross{
 	Scene::~Scene() {
 	}
 
-	void Scene::CreateResources()
-	{
+	void Scene::CreateResources(){
 		wstring dataDir;
 		// mediaディレクトリを取得
 		App::GetApp()->GetDataDirectory(dataDir);
@@ -42,7 +41,7 @@ namespace basecross{
 			wstring m_texName;
 			wstring m_texKey;
 		};
-		const int TEXTURE_NUM = 8;
+		const int TEXTURE_NUM = 9;
 		InitializedParam textures[TEXTURE_NUM] = {
 			{ L"Building1.png", L"Building1_TX" },
 			{ L"Title.png", L"Title_TX"},
@@ -51,7 +50,8 @@ namespace basecross{
 			{ L"cursor.png", L"cursor_TX"},
 			{ L"Back.png", L"SKY_TX"},
 			{ L"Number.png", L"Number_TX"},
-			{ L"GameOver.png", L"OVER_TX"}
+			{ L"GameOver.png", L"OVER_TX"},
+			{ L"title2.png", L"TITLE_TX"}
 		};
 
 		for (auto texture : textures)
