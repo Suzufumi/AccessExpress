@@ -110,7 +110,36 @@ namespace basecross{
 		if (m_energy >= m_maxEnergy) {
 			m_energy = m_maxEnergy;
 		}
-		
+
+		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
+		// 最小になっている方向に対して押し出しを行う
+		switch (m_nestingMin) {
+		case 0:
+			pos.x += m_nesting;
+			break;
+		case 1:
+			pos.x -= m_nesting;
+			break;
+		case 2:
+			pos.y += m_nesting;
+			break;
+		case 3:
+			pos.y -= m_nesting;
+			break;
+		case 4:
+			pos.z += m_nesting;
+			break;
+		case 5:
+			pos.z -= m_nesting;
+			break;
+		default:
+			break;
+		}
+		GetComponent<Transform>()->SetWorldPosition(pos);
+		m_nesting = NULL;
+
+		auto ptrUtil = GetBehavior<UtilBehavior>();
+		ptrUtil->RotToHead(m_padDir, 0.1f);
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -233,6 +262,9 @@ namespace basecross{
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
 			m_forward = m_padDir;
+			//Quat rot;
+			//rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
+			//GetComponent<Transform>()->SetQuaternion(rot);
 		}
 	}
 	//---------------------------------------------------------------------------------------------

@@ -156,8 +156,8 @@ namespace basecross {
 		drawComp->CreateOriginalMesh(new_vertices, indices);
 		drawComp->SetOriginalMeshUse(true);
 		//drawComp->SetTextureResource(L"SKY_TX");
-		drawComp->SetTextureResource(L"BACK_L_TX");
-		//drawComp->SetTextureResource(L"BACK_D_TX");
+		//drawComp->SetTextureResource(L"BACK_L_TX");
+		drawComp->SetTextureResource(L"BACK_D_TX");
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
 		drawComp->SetDepthStencilState(DepthStencilState::Default);
 		SetAlphaActive(true);
