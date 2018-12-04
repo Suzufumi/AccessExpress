@@ -87,7 +87,7 @@ namespace basecross {
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-35.0f, 25.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
+		auto player = AddGameObject<Player>(Vec3(-35.0f, 26.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		auto dev = AddGameObject<SightingDevice>();
 		player->SetSightingDevice(dev);
 	}
@@ -186,7 +186,7 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			//床
-			CreateFloor();
+			//CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
 			auto goal = AddGameObject<Goal>(Vec3(7.0f, 24.0f, 20.0f), Vec3(1.0f, 30.0f, 1.0f));
