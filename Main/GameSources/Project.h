@@ -18,6 +18,7 @@
 #include "TitleStage.h"
 #include "StageSelect.h"
 #include "Result.h"
+#include "GameOver.h"
 #include "ProjectCamera.h"
 #include "FixedGameObject.h"
 #include "ShapeObject.h"
