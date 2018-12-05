@@ -46,7 +46,6 @@ namespace basecross {
 		weak_ptr<File> m_File;
 		weak_ptr<SightingDevice> m_SightingDevice;
 		weak_ptr<Drone> m_Drone;
-		weak_ptr<Drone> m_Damy;
 		int m_DroneNo = NULL;
 
 		Vec3 m_padDir;							//左スティックの向きを入れる

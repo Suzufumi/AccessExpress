@@ -3,26 +3,38 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Drone::Drone(const shared_ptr<Stage>& stage ,Vec3 pos)
-		: OBBObject(stage,pos,Vec3(1.0f,1.0f,1.0f)),m_position(pos)
+	Drone::Drone(const shared_ptr<Stage>& stage ,Vec3 pos,RoopDirection dir)
+		: OBBObject(stage,pos,Vec3(1.0f,1.0f,1.0f)),m_position(pos),m_roopDir(dir)
 	{
 	}
 	void Drone::OnCreate() {
 		//半径
-		float radius = 15.0f;
+		float radius = 10.0f;
 		//ベジエ曲線で円の形に動かすための制御点を作るために、
 		//コンストラクタで設定された位置を横にずらした点を作る
-		Vec3 centerPos = m_position + Vec3(-radius, 0.0f, 0.0f);
-		float deg90 = Deg2Rad(90.0f);
+		Vec3 centerPos;
+		float deg90;
+		float deg45;
+		if (m_roopDir == RoopDirection::ClockWise) {
+			centerPos = m_position + Vec3(radius, 0.0f, 0.0f);
+			deg90 = Deg2Rad(-90.0f);
+			deg45 = Deg2Rad(-45.0f);
+		}
+		if (m_roopDir == RoopDirection::CounterClockwise) {
+			centerPos = m_position + Vec3(-radius, 0.0f, 0.0f);
+			deg90 = Deg2Rad(90.0f);
+			deg45 = Deg2Rad(45.0f);
+		}
 		//点を基準に円状に点を配置する
 		for (int i = 0; i <= 3; i++) {
 			m_roop[i].p0 = centerPos + Vec3(radius * cosf(deg90*i), 0, radius * sinf(deg90*i));
 			m_roop[i].p1 = 
-				centerPos + Vec3((radius + 4) * cosf(deg90*i + Deg2Rad(45.0f)),0,
-				(radius + 4) * sinf(deg90*i + Deg2Rad(45.0f)));
+				centerPos + Vec3((radius + 4) * cosf(deg90*i + deg45),0,
+				(radius + 4) * sinf(deg90*i + deg45));
 			m_roop[i].p2 = centerPos + Vec3(radius * cosf(deg90*(i + 1)), 0, radius * sinf(deg90*(i + 1)));
 		}
 		OBBObject::OnCreate();
+
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());
 	}
 	void Drone::OnUpdate() {
@@ -64,7 +76,33 @@ namespace basecross {
 		}
 		else {
 			player->SetJummerSpeed(1.0f);
-		};
-		
+		};		
+	}
+	//-------------------------------------------------------------------------------------------------
+	//死亡するチェイン数を見せるオブジェクト
+	//-------------------------------------------------------------------------------------------------
+	ViewDeadChain::ViewDeadChain(const shared_ptr<Stage>& stage,int chain) 
+		:GameObject(stage),m_deadChain(chain)
+	{
+	}
+	void ViewDeadChain::OnCreate() {
+		auto ptrTrans = GetComponent<Transform>();
+		Quat Qt;
+		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
+		ptrTrans->SetWorldPosition(Vec3(0, 0, 0));
+		ptrTrans->SetQuaternion(Qt);
+		ptrTrans->SetScale(2, 2, 2);
+		//描画コンポーネントの追加
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
+		//描画コンポーネントに形状（メッシュ）を設定
+		drawComp->SetMeshResource(L"DEFAULT_SQUARE");
+		//影が映りこまない
+		drawComp->SetOwnShadowActive(false);
+		//ライトを無視して光る
+		drawComp->SetLightingEnabled(false);
+		//アルファ値適応
+		drawComp->SetBlendState(BlendState::AlphaBlend);
+		//テクスチャ
+		drawComp->SetTextureResource(L"cursor_TX");
 	}
 }

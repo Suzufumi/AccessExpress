@@ -19,7 +19,13 @@ namespace basecross {
 		//–WŠQ“d”g‚Ì”ÍˆÍ
 		float m_JammerRang = 15.0f;
 	public:
-		Drone(const shared_ptr<Stage>& stage, Vec3 pos);
+		enum RoopDirection {
+			ClockWise = 0,			//Œv‰ñ‚è
+			CounterClockwise = 1	//‹tŒv‰ñ‚è
+		};
+		RoopDirection m_roopDir;
+
+		Drone(const shared_ptr<Stage>& stage, Vec3 pos,RoopDirection dir);
 		virtual ~Drone(){};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
@@ -28,5 +34,14 @@ namespace basecross {
 		void Die() { m_isDead = true; };
 		//–WŠQ“d”g‚Ìˆ—
 		void Jammer();
+	};
+
+	class ViewDeadChain : public GameObject {
+		int m_deadChain;
+	public:
+		ViewDeadChain(const shared_ptr<Stage>& stageptr,int chain);
+		virtual ~ViewDeadChain() {};
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override {};
 	};
 }

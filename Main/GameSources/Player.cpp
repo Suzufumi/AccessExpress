@@ -74,8 +74,6 @@ namespace basecross{
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		//最初のステートをWalkStateに設定
 		m_StateMachine->ChangeState(WalkState::Instance());
-
-		m_Damy = GetStage()->AddGameObject<Drone>(Vec3(0, 0, 0));
 	}
 	//-------------------------------------------------------------------------------------------------------------
 	//Update

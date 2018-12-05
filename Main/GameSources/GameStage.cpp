@@ -150,10 +150,10 @@ namespace basecross {
 
 	void GameStage::CreateDrone()
 	{
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f));
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f));
-		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f));
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f));
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f),Drone::RoopDirection::ClockWise);
+		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f),Drone::RoopDirection::ClockWise);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise);
 
 	}
 
@@ -182,6 +182,8 @@ namespace basecross {
 			//Quat qt;
 			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
 						
+			auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35),Drone::RoopDirection::ClockWise);
+			drone->SetDeadChain(1);
 			//auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35));
 			//drone->SetDeadChain(1);
 			//AddGameObject<Drone>(Vec3(-35, 25, -35));
