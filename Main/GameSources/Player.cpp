@@ -247,7 +247,7 @@ namespace basecross{
 	//設定高さ以下になったらリスポーン位置にワープさせる
 	//--------------------------------------------------------------------------------------------
 	void Player::Response() {
-		if (GetComponent<Transform>()->GetWorldPosition().y <= 5.0f) {
+		if (GetComponent<Transform>()->GetWorldPosition().y <= m_responseHeght) {
 			GetComponent<Transform>()->SetWorldPosition(m_response);
 		}
 	}
@@ -294,10 +294,19 @@ namespace basecross{
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		//計算のための時間加算
 		m_Lerp += App::GetApp()->GetElapsedTime();
+		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
+		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
+			if (drone) {
+				drone->Die();
+				m_DroneNo = NULL;
+			}
 			//飛び終わったらステートをデータ体にする
 			m_StateMachine->ChangeState(DateState::Instance());
+		}
+		if (m_DroneNo != NULL) {
+			p2 = drone->GetComponent<Transform>()->GetWorldPosition();
 		}
 		//ベジエ曲線の計算
 		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * p0.x + 2 * (1 - m_Lerp) * m_Lerp * p1.x + m_Lerp * m_Lerp * p2.x;
@@ -402,10 +411,7 @@ namespace basecross{
 				sightingDevice->SetCaptureLink(true);
 				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
 					SetBezierPoint(droneTrans->GetWorldPosition());
-					auto drone = dynamic_pointer_cast<Drone>(droneObj);
-					if (drone->GetDeadChain() <= GetChain()) {
-						drone->Die();
-					}
+					m_DroneNo = count;
 					m_Lerp = 0;
 					m_StateMachine->ChangeState(LinkState::Instance());
 					break;
