@@ -23,6 +23,7 @@ namespace basecross {
 
 		void CreateBill();
 		void CreateLinkObject();
+		void CreateDrone();
 	public:
 		//\’z‚Æ”jŠü
 		GameStage() :Stage() {}
