@@ -103,17 +103,21 @@ namespace basecross {
 
 		BillTrans billParam[] = 
 		{
-			{ Vec3(-35.0f, 1.0f, -35.0f), Vec3(20.0f, 8.0f, 20.0f) }, //0
-			{ Vec3(-33.0f, 1.0f, -10.0f), Vec3(5.0f, 8.0f, 5.0f) }, //1
-			{ Vec3(-35.0f, 1.0f, 5.0f), Vec3(5.0f, 8.0f, 5.0f) },	//2
-			{ Vec3(-35.0f, 1.0f, 30.0f),   Vec3(25.0f, 8.0f, 25.0f) },	//3
-			{ Vec3(-5.0f, 1.0f, -23.0f),  Vec3(10.0f, 8.0f, 30.0f) }, //4
-			{ Vec3(0.0f, 1.0f, 15.0f),  Vec3(10.0f, 8.0f, 10.0f) }, //5
-			{ Vec3(10.0f, 1.0f, 50.0f),  Vec3(10.0f, 8.0f, 10.0f) }, //6
-			{ Vec3(35.0f, 1.0f, -25.0f),  Vec3(20.0f, 8.0f, 20.0f) }, //7
-			{ Vec3(38.0f, 1.0f, 5.0f),  Vec3(15.0f, 8.0f, 10.0f) }, //8	
-			{ Vec3(35.0f, 1.0f, 35.0f),  Vec3(30.0f, 8.0f, 30.0f) }, //9	
-			{ Vec3(65.0f, 1.0f, 50.0f),  Vec3(20.0f, 3.0f, 20.0f) }, //10	
+			{ Vec3(-35.0f, 1.0f, -35.0f), Vec3(20.0f, 8.0f, 20.0f) }, // 0
+			{ Vec3(-30.0f, 1.0f, -10.0f), Vec3(5.0f, 7.0f, 5.0f) }, // 1
+			{ Vec3(-40.0f, 1.0f, -10.0f), Vec3(5.0f, 7.0f, 5.0f) },	// 2
+			{ Vec3(-38.0f, 1.0f, 10.0f), Vec3(5.0f, 7.0f, 5.0f) },	// 3
+			{ Vec3(-25.0f, 1.0f, 10.0f), Vec3(5.0f, 6.0f, 5.0f) },	// 3
+			{ Vec3(-35.0f, 1.0f, 35.0f),   Vec3(25.0f, 5.0f, 25.0f) }, // 4
+			{ Vec3(-5.0f, 1.0f, -23.0f),  Vec3(10.0f, 8.0f, 30.0f) }, // 5
+			{ Vec3(10.0f, 1.0f, -5.0f),  Vec3(10.0f, 5.0f, 15.0f) }, // 5
+			{ Vec3(5.0f, 1.0f, 25.0f),  Vec3(10.0f, 8.0f, 10.0f) }, // 6
+			{ Vec3(10.0f, 1.0f, 50.0f),  Vec3(10.0f, 7.0f, 10.0f) }, // 7
+			{ Vec3(-5.0f, 1.0f, 40.0f),  Vec3(10.0f, 6.0f, 10.0f) }, // 7
+			{ Vec3(35.0f, 1.0f, -25.0f),  Vec3(20.0f, 4.0f, 20.0f) }, // 8
+			{ Vec3(38.0f, 1.0f, 5.0f),  Vec3(15.0f, 6.0f, 10.0f) }, // 9
+			{ Vec3(35.0f, 1.0f, 35.0f),  Vec3(30.0f, 8.0f, 30.0f) }, // 10	
+			{ Vec3(65.0f, 1.0f, 50.0f),  Vec3(20.0f, 3.0f, 20.0f) }, // 11	
 		};
 
 		int count = 0;
@@ -150,10 +154,24 @@ namespace basecross {
 
 	void GameStage::CreateDrone()
 	{
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise,2);
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f),Drone::RoopDirection::ClockWise,4);
-		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f),Drone::RoopDirection::ClockWise,1);
-		AddGameObject<Drone>(Vec3(10.0f, 25.0f, -30.0f),Drone::RoopDirection::VerticalMotion,2);
+		struct DroneParam
+		{
+			Vec3 m_pos;
+			Drone::RoopDirection m_dir;
+		};
+
+		DroneParam  drones[] = {
+			{ Vec3(-25.0f, 25.0f, -30.0f), Drone::RoopDirection::CounterClockwise },
+			{ Vec3(-20.0f, 25.0f, -30.0f), Drone::RoopDirection::ClockWise },
+			{ Vec3(-20.0f, 25.0f, -5.0f), Drone::RoopDirection::CounterClockwise },
+			{ Vec3(-15.0f, 25.0f, 30.0f), Drone::RoopDirection::ClockWise },
+			{ Vec3(55.0f, 25.0f, 50.0f), Drone::RoopDirection::CounterClockwise },
+		};
+
+		for (auto drone : drones)
+		{
+			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir);
+		}
 
 	}
 
@@ -182,9 +200,14 @@ namespace basecross {
 			//Quat qt;
 			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
 						
+			//auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35),Drone::RoopDirection::ClockWise);
+			//drone->SetDeadChain(1);
+			//auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35));
+			//drone->SetDeadChain(1);
+			//AddGameObject<Drone>(Vec3(-35, 25, -35));
 			CreateDrone();
-
-			auto score = AddGameObject<RemainingTimerSprite>(60);
+			
+			auto score = AddGameObject<RemainingTimerSprite>(90);
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
 			AddGameObject<SkySphere>();
 		}
