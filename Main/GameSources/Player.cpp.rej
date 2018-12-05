@@ -1,0 +1,10 @@
+diff a/Main/GameSources/Player.cpp b/Main/GameSources/Player.cpp	(rejected hunks)
+@@ -144,6 +144,8 @@
+ 		m_nesting = NULL;
+ 		auto ptrUtil = GetBehavior<UtilBehavior>();
+ 		ptrUtil->RotToHead(m_padDir, 0.1f);
++		SetJummerSpeed(1.0f);;
++
+ 		// �f�o�b�O�����̕\��
+ 		DrawStrings();
+ 	}

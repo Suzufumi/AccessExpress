@@ -111,7 +111,7 @@ namespace basecross{
 	//
 	//-------------------------------------------------------------------------------------------------------------------
 	void Player::OnUpdate2() {
-		m_energy += m_changeEnergy * 5.0f * App::GetApp()->GetElapsedTime();
+		m_energy += m_changeEnergy * App::GetApp()->GetElapsedTime();
 		if (m_energy >= m_maxEnergy) {
 			m_energy = m_maxEnergy;
 		}
@@ -144,6 +144,8 @@ namespace basecross{
 		m_nesting = NULL;
 		auto ptrUtil = GetBehavior<UtilBehavior>();
 		ptrUtil->RotToHead(m_padDir, 0.1f);
+		SetJummerSpeed(1.0f);;
+
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -306,7 +308,9 @@ namespace basecross{
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
 			if (drone) {
-				drone->Die();
+				if (drone->GetDeadChain() <= GetChain()) {
+					drone->Die();
+				}
 				m_DroneNo = NULL;
 			}
 			//飛び終わったらステートをデータ体にする
