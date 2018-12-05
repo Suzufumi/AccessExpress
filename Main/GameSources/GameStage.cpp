@@ -90,6 +90,7 @@ namespace basecross {
 		auto player = AddGameObject<Player>(Vec3(-35.0f, 26.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		auto dev = AddGameObject<SightingDevice>();
 		player->SetSightingDevice(dev);
+		SetSharedGameObject(L"Player", player);
 	}
 
 	void GameStage::CreateBill()
@@ -181,6 +182,7 @@ namespace basecross {
 	void GameStage::OnCreate() {
 		try {
 			CreateSharedObjectGroup(L"Link");
+			CreateSharedObjectGroup(L"Drone");
 			//物理計算有効
 			SetPhysicsActive(true);
 			//ビューとライトの作成
@@ -200,8 +202,8 @@ namespace basecross {
 			//Quat qt;
 			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
 						
-			AddGameObject<Drone>(Vec3(-35, 25, -35));
-
+			auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35));
+			drone->SetDeadChain(1);
 
 			auto score = AddGameObject<RemainingTimerSprite>(60);
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);

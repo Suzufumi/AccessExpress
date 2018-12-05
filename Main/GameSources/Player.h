@@ -43,6 +43,9 @@ namespace basecross {
 		weak_ptr<RadioTowerHitJudgment> m_RadioTowerHitJudgment;
 		weak_ptr<File> m_File;
 		weak_ptr<SightingDevice> m_SightingDevice;
+		weak_ptr<Drone> m_Drone;
+		weak_ptr<Drone> m_Damy;
+		int m_DroneNo = NULL;
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
@@ -104,8 +107,12 @@ namespace basecross {
 		void LinkGo();
 		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
+		//Rayを飛ばす
+		void RayShot();
 		//Rayとリンクオブジェクトが当たっているかを見る処理
-		void RayHitLink();
+		void LinkRayCheck(Vec3 origin,Vec3 originDir);
+		//Rayとリンクオブジェクトが当たっているかを見る処理
+		void DroneRayCheck(Vec3 origin, Vec3 originDir);
 		//Aボタンが押された
 		bool CheckAButton();
 

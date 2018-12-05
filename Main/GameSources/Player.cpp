@@ -74,6 +74,8 @@ namespace basecross{
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		//最初のステートをWalkStateに設定
 		m_StateMachine->ChangeState(WalkState::Instance());
+
+		m_Damy = GetStage()->AddGameObject<Drone>(Vec3(0, 0, 0));
 	}
 	//-------------------------------------------------------------------------------------------------------------
 	//Update
@@ -138,7 +140,8 @@ namespace basecross{
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
 
-
+		auto ptrUtil = GetBehavior<UtilBehavior>();
+		ptrUtil->RotToHead(m_padDir, 0.1f);
 		// デバッグ文字の表示
 		DrawStrings();
 	}
@@ -279,10 +282,9 @@ namespace basecross{
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
 			m_forward = m_padDir;
-
-			Quat rot;
-			rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
-			GetComponent<Transform>()->SetQuaternion(rot);
+			//Quat rot;
+			//rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
+			//GetComponent<Transform>()->SetQuaternion(rot);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -332,18 +334,28 @@ namespace basecross{
 		sightingDevice->GetComponent<Transform>()->SetQuaternion(rot);
 	}
 	//---------------------------------------------------------------------------------------------
-	//RayとLinkオブジェクトが当たっているかを調べる
+	//Rayを飛ばす
 	//---------------------------------------------------------------------------------------------
-	void Player::RayHitLink() {
+	void Player::RayShot() {
 		auto sightingDevice = m_SightingDevice.lock();
 		//リンクオブジェクトに当たっているフラグをfalseに戻す
 		sightingDevice->ResetCaptureLink();
 
 		auto pos = sightingDevice->GetComponent<Transform>()->GetWorldPosition();
 		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
-		//playerとカメラの位置から飛ばす方向を求める
+		//照準とカメラの位置から飛ばす方向を求める
 		auto dir = pos - m_cameraPos;
 		dir = dir.normalize();
+		//リンクオブジェクトとの判定
+		LinkRayCheck(pos, dir);
+		//ドローンとの判定
+		DroneRayCheck(pos, dir);
+	}
+	//---------------------------------------------------------------------------------------------
+	//RayとLinkオブジェクトが当たっているかを調べる
+	//---------------------------------------------------------------------------------------------
+	void Player::LinkRayCheck(Vec3 origin,Vec3 originDir) {
+		auto sightingDevice = m_SightingDevice.lock();
 		//リンクオブジェクトの入っているグループを持ってくる
 		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
 		//一つずつ取り出す
@@ -353,7 +365,7 @@ namespace basecross{
 			//リンクオブジェクトのOBBを作る
 			OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
 			//プレイヤーからでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(pos, pos + dir * 30.0f, obb);
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
 			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
@@ -365,6 +377,41 @@ namespace basecross{
 					break;
 				}
 			}
+		}
+	}
+	//---------------------------------------------------------------------------------------------
+	//RayとDroneオブジェクトが当たっているかを調べる
+	//---------------------------------------------------------------------------------------------
+	void Player::DroneRayCheck(Vec3 origin, Vec3 originDir) {
+		auto sightingDevice = m_SightingDevice.lock();
+		//ドローンオブジェクトの入っているグループを持ってくる
+		auto& droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
+		//何番目のDroneか数える
+		int count = 0;
+		//一つずつ取り出す
+		for (auto& drone : droneGroup->GetGroupVector()) {
+			auto droneObj = drone.lock();
+			auto droneTrans = droneObj->GetComponent<Transform>();
+			//リンクオブジェクトのOBBを作る
+			OBB obb(droneTrans->GetScale() * 3, droneTrans->GetWorldMatrix());
+			//プレイヤーからでるRayとOBBで判定
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+			//最後にベジエ曲線で飛んだオブジェクトじゃないものに当たっていたら
+			if (hit && p2 + Vec3(0, -1, 0) != droneTrans->GetWorldPosition()) {
+				//照準に当たっていることを教える
+				sightingDevice->SetCaptureLink(true);
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+					SetBezierPoint(droneTrans->GetWorldPosition());
+					auto drone = dynamic_pointer_cast<Drone>(droneObj);
+					if (drone->GetDeadChain() <= GetChain()) {
+						drone->Die();
+					}
+					m_Lerp = 0;
+					m_StateMachine->ChangeState(LinkState::Instance());
+					break;
+				}
+			}
+			count++;
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -570,7 +617,7 @@ namespace basecross{
 			Obj->SetAdvanceTimeActive(false);
 		}
 		Obj->Walk();
-		Obj->RayHitLink();
+		Obj->RayShot();
 		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton() || Obj->GetEnergy() <= 0.0f) {
