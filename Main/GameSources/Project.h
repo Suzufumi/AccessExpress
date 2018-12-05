@@ -29,4 +29,5 @@
 #include "SearchObject.h"
 #include "LinkObject.h"
 #include "Sprite.h"
+#include "MainUi.h"
 #include "Timer.h"
