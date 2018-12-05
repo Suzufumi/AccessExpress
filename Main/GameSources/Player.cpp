@@ -247,7 +247,7 @@ namespace basecross{
 	//設定高さ以下になったらリスポーン位置にワープさせる
 	//--------------------------------------------------------------------------------------------
 	void Player::Response() {
-		if (GetComponent<Transform>()->GetWorldPosition().y <= 5.0f) {
+		if (GetComponent<Transform>()->GetWorldPosition().y <= m_responseHeght) {
 			GetComponent<Transform>()->SetWorldPosition(m_response);
 		}
 	}

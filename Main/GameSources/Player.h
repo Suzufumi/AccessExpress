@@ -32,6 +32,7 @@ namespace basecross {
 		int m_chainTimeLimit = 0;	// コンボとコンボの時間を図る時間
 		bool m_isAdvanceTime = false; // 時間をすすめるかどうかのフラグ
 		Vec3 m_response;				//落ちた時に復帰する場所
+		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
