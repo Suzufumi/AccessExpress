@@ -8,10 +8,13 @@ namespace basecross {
 	{
 	}
 	void Drone::OnCreate() {
+
 		if (m_roopDir >= 0 && m_roopDir <= 1) {
+			//時計回り,逆時計回り
 			SetBezierClock();
 		}
 		else if (m_roopDir >= 2) {
+			//上下運動
 			SetVerticalMotion();
 		}
 
@@ -110,15 +113,15 @@ namespace basecross {
 	//初期化
 	void ViewDeadChain::OnCreate() {
 
-		auto PtrTransform = GetComponent<Transform>();
+		auto ptrTransform = GetComponent<Transform>();
 		if (!m_DroneObject.expired()) {
 			auto dronePtr = m_DroneObject.lock();
 			auto droneTrans = dronePtr->GetComponent<Transform>();
-			auto Pos = droneTrans->GetPosition();
-			Pos.y += 2.0f;
-			PtrTransform->SetPosition(Pos);
-			PtrTransform->SetScale(1.0f, 1.0f, 1.0f);
-			PtrTransform->SetQuaternion(droneTrans->GetQuaternion());
+			auto pos = droneTrans->GetPosition();
+			pos.y += 2.0f;
+			ptrTransform->SetPosition(pos);
+			ptrTransform->SetScale(1.0f, 1.0f, 1.0f);
+			ptrTransform->SetQuaternion(droneTrans->GetQuaternion());
 			//変更できるスクエアリソースを作成
 
 			//頂点配列
@@ -150,9 +153,9 @@ namespace basecross {
 			//新しい頂点を使ってメッシュリソースの作成
 			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, indices, true);
 
-			auto DrawComp = AddComponent<PCTStaticDraw>();
-			DrawComp->SetMeshResource(m_SquareMeshResource);
-			DrawComp->SetTextureResource(L"Number_TX");
+			auto drawComp = AddComponent<PCTStaticDraw>();
+			drawComp->SetMeshResource(m_SquareMeshResource);
+			drawComp->SetTextureResource(L"Number_TX");
 			SetAlphaActive(true);
 			SetDrawLayer(1);
 		}
@@ -164,19 +167,19 @@ namespace basecross {
 			auto dronePtr = m_DroneObject.lock();
 			auto droneTrans = dronePtr->GetComponent<Transform>();
 
-			auto PtrTransform = GetComponent<Transform>();
-			auto Pos = droneTrans->GetPosition();
-			Pos.y += 2.0f;
-			PtrTransform->SetPosition(Pos);
-			PtrTransform->SetScale(1.0f, 1.0f, 1.0f);
+			auto ptrTransform = GetComponent<Transform>();
+			auto pos = droneTrans->GetPosition();
+			pos.y += 2.0f;
+			ptrTransform->SetPosition(pos);
+			ptrTransform->SetScale(1.0f, 1.0f, 1.0f);
 
 			auto PtrCamera = GetStage()->GetView()->GetTargetCamera();
 
-			Quat Qt;
+			Quat qt;
 			//向きをビルボードにする
-			Qt = Billboard(PtrCamera->GetAt() - PtrCamera->GetEye());
+			qt = Billboard(PtrCamera->GetAt() - PtrCamera->GetEye());
 
-			PtrTransform->SetQuaternion(Qt);
+			ptrTransform->SetQuaternion(qt);
 
 		}
 
