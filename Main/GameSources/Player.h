@@ -120,9 +120,9 @@ namespace basecross {
 		bool CheckAButton();
 
 		//エネルギーが減るようにする
-		void ChengeEnergyMai() { m_changeEnergy = -1.0f; }
+		void ChengeEnergyMai() { m_changeEnergy = -5.0f; }
 		//エネルギーが増えるようにする
-		void ChengeEnergyPur() { m_changeEnergy = 1.0f; }
+		void ChengeEnergyPur() { m_changeEnergy = 2.0f; }
 		//エネルギーの量を返す
 		float GetEnergy() { return m_energy; }
 		//照準の表示を切り替える

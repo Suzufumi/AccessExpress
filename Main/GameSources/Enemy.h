@@ -7,12 +7,13 @@ namespace basecross {
 	class Drone : public OBBObject {
 		struct BezierPoint {
 			Vec3 p0; //始点
-			Vec3 p1; 
+			Vec3 p1;
 			Vec3 p2; //終点
 		};
 		BezierPoint m_roop[4];
 		float m_Lerp = 0.0f;
-		int m_roopNum = 0;
+		int m_joinNum = 0;
+		int m_joinNumMax;
 		Vec3 m_position;
 		int m_deadChain;
 		bool m_isDead = false;
@@ -21,27 +22,57 @@ namespace basecross {
 	public:
 		enum RoopDirection {
 			ClockWise = 0,			//時計回り
-			CounterClockwise = 1	//逆時計回り
+			CounterClockwise = 1,	//逆時計回り
+			VerticalMotion = 2
 		};
 		RoopDirection m_roopDir;
 
-		Drone(const shared_ptr<Stage>& stage, Vec3 pos,RoopDirection dir);
-		virtual ~Drone(){};
+		Drone(const shared_ptr<Stage>& stage, Vec3 pos, RoopDirection dir,int chain);
+		virtual ~Drone() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
-		void SetDeadChain(int chain) { m_deadChain = chain; };
 		int GetDeadChain() { return m_deadChain; };
 		void Die() { m_isDead = true; };
 		//妨害電波の処理
 		void Jammer();
+		//時計回りの動きのベジエ曲線の制御点を作る
+		void SetBezierClock();
+		//上下運動のベジエ曲線の制御点を作る
+		void SetVerticalMotion();
 	};
 
 	class ViewDeadChain : public GameObject {
-		int m_deadChain;
+		weak_ptr<Drone> m_DroneObject;
+		//このオブジェクトのみで使用するスクエアメッシュ
+		shared_ptr<MeshResource> m_SquareMeshResource;
+		//背番号
+		size_t m_Number;
+
+		Quat Billboard(const Vec3& Line) {
+			Vec3 Temp = Line;
+			Mat4x4 RotMatrix;
+			Vec3 DefUp(0, 1.0f, 0);
+			Vec2 TempVec2(Temp.x, Temp.z);
+			if (TempVec2.length() < 0.1f) {
+				DefUp = Vec3(0, 0, 1.0f);
+			}
+			Temp.normalize();
+			RotMatrix = XMMatrixLookAtLH(Vec3(0, 0, 0), Temp, DefUp);
+			RotMatrix.inverse();
+			Quat Qt;
+			Qt = RotMatrix.quatInMatrix();
+			Qt.normalize();
+			return Qt;
+		}
+
 	public:
-		ViewDeadChain(const shared_ptr<Stage>& stageptr,int chain);
+		//構築と破棄
+		ViewDeadChain(const shared_ptr<Stage>& StagePtr,
+			const shared_ptr<Drone>& DroneObjectPtr, size_t Number);
 		virtual ~ViewDeadChain() {};
-		virtual void OnCreate()override;
-		virtual void OnUpdate()override {};
+		//初期化
+		virtual void OnCreate() override;
+		//変化
+		virtual void OnUpdate() override;
 	};
 }

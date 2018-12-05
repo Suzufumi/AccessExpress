@@ -150,10 +150,10 @@ namespace basecross {
 
 	void GameStage::CreateDrone()
 	{
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise);
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f),Drone::RoopDirection::ClockWise);
-		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f),Drone::RoopDirection::ClockWise);
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise,2);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f),Drone::RoopDirection::ClockWise,4);
+		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f),Drone::RoopDirection::ClockWise,1);
+		AddGameObject<Drone>(Vec3(10.0f, 25.0f, -30.0f),Drone::RoopDirection::VerticalMotion,2);
 
 	}
 
@@ -182,11 +182,6 @@ namespace basecross {
 			//Quat qt;
 			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
 						
-			auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35),Drone::RoopDirection::ClockWise);
-			drone->SetDeadChain(1);
-			//auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35));
-			//drone->SetDeadChain(1);
-			//AddGameObject<Drone>(Vec3(-35, 25, -35));
 			CreateDrone();
 
 			auto score = AddGameObject<RemainingTimerSprite>(60);
