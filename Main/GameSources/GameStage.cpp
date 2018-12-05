@@ -100,69 +100,38 @@ namespace basecross {
 			Vec3 m_pos;
 			Vec3 m_scale;
 		};
-		// 配列のサイズ(建物の数)
-		const int BILL_COUNT = 25;
-		BillTrans billParam[BILL_COUNT] = 
+
+		BillTrans billParam[] = 
 		{
-			{ Vec3(-35.0f, 4.0f, -35.0f), Vec3(5.0f, 8.0f, 7.0f) }, //0
-			{ Vec3(-35.0f, 4.0f, -20.0f), Vec3(4.0f, 8.0f, 5.0f) }, //1
-			{ Vec3(-35.0f, 2.5f, -5.0f), Vec3(4.0f, 7.0f, 3.0f) },	//2
-			{ Vec3(-35.0f, 3.0f, 10.0f),   Vec3(4.0f, 6.0f, 4.0f) },	//3
-			{ Vec3(-35.0f, 4.0f, 25.0f),  Vec3(4.0f, 8.0f, 5.0f) }, //4
-			{ Vec3(-35.0f, 2.5f, 40.0f),  Vec3(4.0f, 6.0f, 4.0f) }, //5
-
-			{ Vec3(-15.0f, 3.0f, -35.0f), Vec3(4.0f, 7.0f, 4.0f) }, //6 
-			{ Vec3(-15.0f, 3.5f, -25.0f), Vec3(5.0f, 8.0f, 3.0f) }, //7 
-			{ Vec3(-15.0f, 4.0f, -15.0f), Vec3(4.0f, 7.0f, 4.0f) }, //8 
-			{ Vec3(-15.0f, 2.5f, -5.0f),  Vec3(4.0f, 6.0f, 3.0f) }, //9 
-			{ Vec3(-15.0f, 3.5f, 5.0f),   Vec3(5.0f, 6.0f, 3.0f) }, //10 
-			{ Vec3(-15.0f, 3.0f, 15.0f),  Vec3(4.0f, 8.0f, 3.0f) }, //11
-
-			{ Vec3(10.0f, 3.0f, -35.0f), Vec3(4.0f, 6.0f, 3.0f) }, //13
-			{ Vec3(10.0f, 2.5f, -25.0f), Vec3(5.0f, 7.0f, 4.0f) }, //14
-			{ Vec3(10.0f, 4.0f, -10.0f), Vec3(5.0f, 8.0f, 5.0f) }, //15
-			{ Vec3(10.0f, 3.0f, 0.0f),   Vec3(6.0f, 6.0f, 4.0f) }, //16
-			{ Vec3(10.0f, 3.5f, 10.0f),  Vec3(5.0f, 7.0f, 3.0f) }, //17
-			{ Vec3(10.0f, 3.0f, 20.0f),  Vec3(4.0f, 6.0f, 4.0f) }, //18
-
-			{ Vec3(30.0f, 4.0f, -35.0f), Vec3(5.0f, 8.0f, 5.0f) }, //20
-			{ Vec3(30.0f, 3.5f, -25.0f), Vec3(5.0f, 7.0f, 5.0f) }, //21
-			{ Vec3(30.0f, 3.0f, -15.0f), Vec3(4.0f, 6.0f, 4.0f) }, //22
-			{ Vec3(30.0f, 4.0f, -5.0f),  Vec3(6.0f, 8.0f, 5.0f) }, //23
-			{ Vec3(30.0f, 3.0f, 5.0f),   Vec3(4.0f, 6.0f, 6.0f) }, //24
-			{ Vec3(30.0f, 2.5f, 20.0f),  Vec3(5.0f, 8.0f, 5.0f) }, //25
-
-			//{ Vec3(20.0f, 3.0f, -35.0f),  Vec3(6.0f, 6.0f, 6.0f) }, //26
-			//{ Vec3(20.0f, 2.5f, -25.0f),  Vec3(6.0f, 7.0f, 4.0f) }, //27
-			//{ Vec3(20.0f, 3.0f, -5.0f),   Vec3(4.0f, 8.0f, 4.0f) }, //29
-			//{ Vec3(20.0f, 4.0f, -15.0f), Vec3(4.0f, 8.0f, 5.0f) }, //30
-			//{ Vec3(20.0f, 3.5f, 15.0f),   Vec3(5.0f, 7.0f, 5.0f) }, //31
-			//{ Vec3(20.0f, 3.5f, 5.0f), Vec3(6.0f, 8.0f, 5.0f) },
-
-			//{ Vec3(33.0f, 4.0f, -35.0f), Vec3(6.0f, 8.0f, 5.0f) }, //32
-			//{ Vec3(33.0f, 4.0f, -25.0f), Vec3(6.0f, 8.0f, 5.0f) }, //33
-			//{ Vec3(33.0f, 3.0f, -15.0f), Vec3(5.0f, 8.0f, 6.0f) }, //34
-			//{ Vec3(33.0f, 3.5f, -5.0f),  Vec3(5.0f, 7.0f, 4.0f) }, //35
-			//{ Vec3(33.0f, 4.0f, 5.0f),   Vec3(4.0f, 8.0f, 5.0f) }, //36
-			//{ Vec3(33.0f, 3.0f, 15.0f),  Vec3(6.0f, 6.0f, 4.0f) }  //37
+			{ Vec3(-35.0f, 1.0f, -35.0f), Vec3(20.0f, 8.0f, 20.0f) }, //0
+			{ Vec3(-33.0f, 1.0f, -10.0f), Vec3(5.0f, 8.0f, 5.0f) }, //1
+			{ Vec3(-35.0f, 1.0f, 5.0f), Vec3(5.0f, 8.0f, 5.0f) },	//2
+			{ Vec3(-35.0f, 1.0f, 30.0f),   Vec3(25.0f, 8.0f, 25.0f) },	//3
+			{ Vec3(-5.0f, 1.0f, -23.0f),  Vec3(10.0f, 8.0f, 30.0f) }, //4
+			{ Vec3(0.0f, 1.0f, 15.0f),  Vec3(10.0f, 8.0f, 10.0f) }, //5
+			{ Vec3(10.0f, 1.0f, 50.0f),  Vec3(10.0f, 8.0f, 10.0f) }, //6
+			{ Vec3(35.0f, 1.0f, -25.0f),  Vec3(20.0f, 8.0f, 20.0f) }, //7
+			{ Vec3(38.0f, 1.0f, 5.0f),  Vec3(15.0f, 8.0f, 10.0f) }, //8	
+			{ Vec3(35.0f, 1.0f, 35.0f),  Vec3(30.0f, 8.0f, 30.0f) }, //9	
+			{ Vec3(65.0f, 1.0f, 50.0f),  Vec3(20.0f, 3.0f, 20.0f) }, //10	
 		};
 
 		int count = 0;
 		for (auto bill : billParam)
 		{
-			bill.m_scale.x *= 2.5f;
+			//bill.m_scale.x *= 2.5f;
 			bill.m_scale.y *= 3.0f;
-			bill.m_scale.z *= 2.5f;
+			//bill.m_scale.z *= 2.5f;
 
 			bill.m_pos.y = bill.m_scale.y / 2;
 			AddGameObject<Wall>(bill.m_pos, bill.m_scale);
-			if (count % 2 == 0)
-			{
-				AddGameObject<LinkObject>(
-					Vec3(bill.m_pos.x, bill.m_pos.y * 2.2f, bill.m_pos.z + 3.0f),
-					Vec3(1.0f, 1.0f, 1.0f));
-			}
-			count++;
+			//if (count % 2 == 0)
+			//{
+			AddGameObject<LinkObject>(
+				Vec3(bill.m_pos.x, bill.m_pos.y * 2.0f, bill.m_pos.z),
+				Vec3(1.0f, 1.0f, 1.0f));
+			//}
+			//count++;
 		}
 	}
 
@@ -179,6 +148,15 @@ namespace basecross {
 		AddGameObject<LinkObject>(Vec3(-10.0f, 12.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
 	}
 
+	void GameStage::CreateDrone()
+	{
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f),Drone::RoopDirection::ClockWise);
+		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f),Drone::RoopDirection::ClockWise);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise);
+
+	}
+
 	void GameStage::OnCreate() {
 		try {
 			//ゲームが始まっているフラグを切る
@@ -193,7 +171,7 @@ namespace basecross {
 			//CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
-			auto goal = AddGameObject<Goal>(Vec3(7.0f, 24.0f, 20.0f), Vec3(1.0f, 30.0f, 1.0f));
+			auto goal = AddGameObject<Goal>(Vec3(65.0f, 9.0f, 50.0f), Vec3(1.0f, 30.0f, 1.0f));
 			// 建物の配置
 			CreateBill();
 
@@ -206,6 +184,10 @@ namespace basecross {
 						
 			auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35),Drone::RoopDirection::ClockWise);
 			drone->SetDeadChain(1);
+			//auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35));
+			//drone->SetDeadChain(1);
+			//AddGameObject<Drone>(Vec3(-35, 25, -35));
+			CreateDrone();
 
 			auto score = AddGameObject<RemainingTimerSprite>(60);
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);

@@ -21,7 +21,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameOverStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 		}
 		catch (...) {
 			throw;
@@ -53,7 +53,8 @@ namespace basecross{
 			{ L"GameOver.png", L"GameOver_TX"},
 			{ L"title2.png", L"TITLE_TX"},
 			{ L"BackLight.png", L"BACK_L_TX"},
-			{ L"BackDark.png", L"BACK_D_TX"}
+			{ L"BackDark.png", L"BACK_D_TX"},
+			{L"TitleButoon.png", L"Title_BUTTON_TX"}
 		};
 
 		for (auto texture : textures)
