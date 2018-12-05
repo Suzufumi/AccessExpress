@@ -54,7 +54,11 @@ namespace basecross{
 			{ L"title2.png", L"TITLE_TX"},
 			{ L"BackLight.png", L"BACK_L_TX"},
 			{ L"BackDark.png", L"BACK_D_TX"},
-			{L"TitleButoon.png", L"Title_BUTTON_TX"}
+			{ L"TitleButoon.png", L"Title_BUTTON_TX"}, 
+			{ L"UI_base.png", L"UI_BASE_TX"},
+			{ L"UI_Green.png", L"GREEN_GAUGE_TX"},
+			{ L"UI_Yellow.png", L"YELLOW_GAUGE_TX"},
+			{ L"UI_Red.png", L"RED_GAUGE_TX"},
 		};
 
 		for (auto texture : textures)

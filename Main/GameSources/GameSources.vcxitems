@@ -20,6 +20,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameOver.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkObject.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MainUi.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerSupport.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameOver.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkObject.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MainUi.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PlayerSupport.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
