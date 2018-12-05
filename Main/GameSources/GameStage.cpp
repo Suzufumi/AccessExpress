@@ -171,7 +171,7 @@ namespace basecross {
 
 		for (auto drone : drones)
 		{
-			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir);
+			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir, drone.m_needChains);
 		}
 
 	}
