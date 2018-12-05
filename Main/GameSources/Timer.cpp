@@ -78,9 +78,12 @@ namespace basecross {
 	}
 
 	void RemainingTimerSprite::OnUpdate() {
-		m_timer += -App::GetApp()->GetElapsedTime();
+		if (App::GetApp()->GetScene<Scene>()->GetGameStart()) {
+			m_timer += -App::GetApp()->GetElapsedTime();
+		}
 		if (m_timer < 0.0f) {
 			m_timer = 0.0f;
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameOverStage");
 		}
 		int timer = m_timer;
 

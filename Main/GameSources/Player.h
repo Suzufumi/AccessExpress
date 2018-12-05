@@ -33,6 +33,7 @@ namespace basecross {
 		bool m_isAdvanceTime = false; // 時間をすすめるかどうかのフラグ
 		Vec3 m_response;				//落ちた時に復帰する場所
 		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
+		float m_JummerSpeed = 1.0f;		//スピードにかけられる妨害
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -93,6 +94,8 @@ namespace basecross {
 
 		//ステートに応じて平行移動のスピードを変える
 		void ChangeWalkSpeed(State state);
+		//妨害電波による速度低下値をセットする
+		void SetJummerSpeed(float speed) { m_JummerSpeed = speed; };
 		//子オブジェクトしてもっている電波塔との当たり判定をプレイヤーのほうでも認知する
 		void SetRadioTowerHitJudgment(weak_ptr<RadioTowerHitJudgment> hit) {
 			m_RadioTowerHitJudgment = hit;

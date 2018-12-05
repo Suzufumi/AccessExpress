@@ -16,6 +16,8 @@ namespace basecross {
 		Vec3 m_position;
 		int m_deadChain;
 		bool m_isDead = false;
+		//–WŠQ“d”g‚Ì”ÍˆÍ
+		float m_JammerRang = 15.0f;
 	public:
 		Drone(const shared_ptr<Stage>& stage, Vec3 pos);
 		virtual ~Drone(){};
@@ -24,5 +26,7 @@ namespace basecross {
 		void SetDeadChain(int chain) { m_deadChain = chain; };
 		int GetDeadChain() { return m_deadChain; };
 		void Die() { m_isDead = true; };
+		//–WŠQ“d”g‚Ìˆ—
+		void Jammer();
 	};
 }

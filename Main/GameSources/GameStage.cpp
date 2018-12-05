@@ -87,7 +87,7 @@ namespace basecross {
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-35.0f, 26.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
+		auto player = AddGameObject<Player>(Vec3(-35.0f, 35.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
 		auto dev = AddGameObject<SightingDevice>();
 		player->SetSightingDevice(dev);
 		SetSharedGameObject(L"Player", player);
@@ -181,6 +181,8 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
+			//ゲームが始まっているフラグを切る
+			App::GetApp()->GetScene<Scene>()->SetGameStart(false);
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			//物理計算有効

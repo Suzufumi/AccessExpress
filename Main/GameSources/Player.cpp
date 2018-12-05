@@ -86,19 +86,24 @@ namespace basecross{
 		// 1フレームの実行にかかった時間を取得
 		float delta = app->GetElapsedTime();
 
-
 		// ゲームコントローラー取得
 		auto device = app->GetInputDevice();
-		m_pad = device.GetControlerVec()[0];
+		if (app->GetScene<Scene>()->GetGameStart()) {
+			m_pad = device.GetControlerVec()[0];
+		}
+		else {
+			m_nowFallSpeed = 2.0f;
+			Fall();
+		}
+
 		//左スティックの入力方向を求める
 		m_padDir = Vec3(m_pad.fThumbLX, 0.0f, m_pad.fThumbLY);
 		m_padDir = m_padDir.normalize();
 
 		//右スティックの値でカメラの回転処理を行う
 		CameraRoll();
-
-		//ステートマシンのアップデート
-		m_StateMachine->Update();
+			//ステートマシンのアップデート
+			m_StateMachine->Update();
 		// アニメーションを更新する
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->UpdateAnimation(delta);
@@ -139,7 +144,6 @@ namespace basecross{
 		}
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
-
 		auto ptrUtil = GetBehavior<UtilBehavior>();
 		ptrUtil->RotToHead(m_padDir, 0.1f);
 		// デバッグ文字の表示
@@ -157,10 +161,13 @@ namespace basecross{
 			m_isFall = false;
 		}
 
-
 		auto goal = dynamic_pointer_cast<Goal>(Other);
 		if (goal){
 			goal->ArriveGoal();
+		}
+		if (!App::GetApp()->GetScene<Scene>()->GetGameStart()) {
+			App::GetApp()->GetScene<Scene>()->SetGameStart(true);
+			m_nowFallSpeed = 8.0f;
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------
@@ -204,8 +211,8 @@ namespace basecross{
 		if (m_padDir.x > 0.4f || m_padDir.x < -0.4f ||
 			m_padDir.z > 0.4f || m_padDir.z < -0.4f) {
 			//方向と移動スピードを掛け算してpositonを変更する
-			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime();
-			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime();
+			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
+			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 		}
 		//左スティックが入力されてなかったら
 		//else {
@@ -222,7 +229,7 @@ namespace basecross{
 		if (m_isFall) {
 			auto playerTrans = GetComponent<Transform>();
 			auto playerPos = playerTrans->GetWorldPosition();
-			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
+			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 			playerTrans->SetWorldPosition(playerPos);
 		}
 		m_isFall = true;
@@ -249,6 +256,8 @@ namespace basecross{
 	void Player::Response() {
 		if (GetComponent<Transform>()->GetWorldPosition().y <= m_responseHeght) {
 			GetComponent<Transform>()->SetWorldPosition(m_response);
+			//復帰後にすぐ動けるように少し回復させる
+			m_changeEnergy = 20.0f;
 		}
 	}
 	//--------------------------------------------------------------------------------------------
@@ -293,7 +302,7 @@ namespace basecross{
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		//計算のための時間加算
-		m_Lerp += App::GetApp()->GetElapsedTime();
+		m_Lerp += App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
 		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
 		if (m_Lerp >= 1.0f) {
@@ -533,10 +542,11 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
+		Obj->CameraControll();
+
 		Obj->Walk();
 		Obj->Fall();
 		Obj->Response();
-		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(DateState::Instance());
