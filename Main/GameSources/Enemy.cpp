@@ -64,9 +64,13 @@ namespace basecross {
 		length = fabsf(length);
 		if (length < m_JammerRang) {
 			player->SetJummerSpeed(0.5f);
+			player->SetJummer(true);
 		}
 		else {
-			//player->SetJummerSpeed(1.0f);
+			//他のオブジェクトによって妨害されてなかったら
+			if (!player->GetJummer()) {
+				player->SetJummerSpeed(1.0f);
+			}
 		};
 	}
 	void Drone::SetBezierClock() {

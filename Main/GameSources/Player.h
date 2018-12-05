@@ -34,6 +34,7 @@ namespace basecross {
 		Vec3 m_response;				//落ちた時に復帰する場所
 		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
 		float m_JummerSpeed = 1.0f;		//スピードにかけられる妨害
+		bool m_isJummer;				//妨害を受けているかどうか
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -147,6 +148,10 @@ namespace basecross {
 		void SetAdvanceTimeActive(bool advanceTime) { m_isAdvanceTime = advanceTime; }
 		//落下した際にリスポーン位置へワープする
 		void Response();
+		//妨害を受けているかどうかを返す
+		bool GetJummer() { return m_isJummer; };
+		//妨害を受けている状況を設定する
+		void SetJummer(bool f) { m_isJummer = f; };
 
 		void DrawStrings();
 	};

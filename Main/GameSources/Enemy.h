@@ -18,7 +18,7 @@ namespace basecross {
 		int m_deadChain;
 		bool m_isDead = false;
 		//–WŠQ“d”g‚Ì”ÍˆÍ
-		float m_JammerRang = 15.0f;
+		float m_JammerRang = 5.0f;
 	public:
 		enum DroneMotion {
 			ClockWise = 0,			//ŽžŒv‰ñ‚è
