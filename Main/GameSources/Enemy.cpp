@@ -3,7 +3,7 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Drone::Drone(const shared_ptr<Stage>& stage, Vec3 pos, RoopDirection dir,int chain)
+	Drone::Drone(const shared_ptr<Stage>& stage, Vec3 pos, DroneMotion dir,int chain)
 		: OBBObject(stage, pos, Vec3(1.0f, 1.0f, 1.0f)), m_position(pos), m_roopDir(dir),m_deadChain(chain)
 	{
 	}
@@ -13,9 +13,13 @@ namespace basecross {
 			//éûåvâÒÇË,ãtéûåvâÒÇË
 			SetBezierClock();
 		}
-		else if (m_roopDir >= 2) {
+		else if (m_roopDir == 2) {
 			//è„â∫â^ìÆ
 			SetVerticalMotion();
+		}
+		else if (m_roopDir == 3) {
+			//îgÇÃâ^ìÆ
+			SetWaveMotion();
 		}
 
 		OBBObject::OnCreate();
@@ -74,12 +78,12 @@ namespace basecross {
 		Vec3 centerPos;
 		float deg90;
 		float deg45;
-		if (m_roopDir == RoopDirection::ClockWise) {
+		if (m_roopDir == DroneMotion::ClockWise) {
 			centerPos = m_position + Vec3(radius, 0.0f, 0.0f);
 			deg90 = Deg2Rad(-90.0f);
 			deg45 = Deg2Rad(-45.0f);
 		}
-		if (m_roopDir == RoopDirection::CounterClockwise) {
+		if (m_roopDir == DroneMotion::CounterClockwise) {
 			centerPos = m_position + Vec3(-radius, 0.0f, 0.0f);
 			deg90 = Deg2Rad(90.0f);
 			deg45 = Deg2Rad(45.0f);
@@ -98,6 +102,37 @@ namespace basecross {
 		m_roop[0].p0 = m_position;
 		m_roop[0].p1 = m_position + Vec3(0.0f, 15.0f, 0.0f);
 		m_roop[0].p2 = m_position;
+	}
+	void Drone::SetWaveMotion() {
+		m_joinNumMax = 8;
+		auto halfJoinNum = m_joinNumMax / 2;
+		m_roop[0].p0 = m_position;
+		m_roop[0].p1 = m_position + Vec3(2.0f, 15.0f, 0.0f);
+		m_roop[0].p2 = m_position + Vec3(4.0f, 0.0f, 0.0f);
+		for (int i = 1; i < halfJoinNum; i++) {
+			if (i % 2 == 0) {
+				m_roop[i].p0 = m_roop[i - 1].p2;
+				m_roop[i].p1 = m_roop[i - 1].p2 + Vec3(2.0f, 15.0f, 0.0f);
+				m_roop[i].p2 = m_roop[i - 1].p2 + Vec3(4.0f, 0.0f, 0.0f);
+			}
+			else {
+				m_roop[i].p0 = m_roop[i - 1].p2;
+				m_roop[i].p1 = m_roop[i - 1].p2 + Vec3(2.0f, -15.0f, 0.0f);
+				m_roop[i].p2 = m_roop[i - 1].p2 + Vec3(4.0f, 0.0f, 0.0f);
+			}
+		}
+		for (int i = 0; i < halfJoinNum; i++) {
+			if (i % 2 == 0) {
+				m_roop[halfJoinNum + i].p0 = m_roop[halfJoinNum - i - 1].p2;
+				m_roop[halfJoinNum + i].p1 = m_roop[halfJoinNum - i - 1].p1 + Vec3(0.0f, 30.0f, 0.0f);
+				m_roop[halfJoinNum + i].p2 = m_roop[halfJoinNum - i - 1].p0;
+			}
+			else {
+				m_roop[halfJoinNum + i].p0 = m_roop[halfJoinNum - i - 1].p2;
+				m_roop[halfJoinNum + i].p1 = m_roop[halfJoinNum - i - 1].p1 + Vec3(0.0f, -30.0f, 0.0f);
+				m_roop[halfJoinNum + i].p2 = m_roop[halfJoinNum - i - 1].p0;
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------------------------

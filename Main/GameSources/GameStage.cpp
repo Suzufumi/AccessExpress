@@ -150,10 +150,10 @@ namespace basecross {
 
 	void GameStage::CreateDrone()
 	{
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::RoopDirection::ClockWise,2);
-		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f),Drone::RoopDirection::ClockWise,4);
-		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f),Drone::RoopDirection::ClockWise,1);
-		AddGameObject<Drone>(Vec3(10.0f, 25.0f, -30.0f),Drone::RoopDirection::VerticalMotion,2);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -30.0f),Drone::DroneMotion::Wave,2);
+		AddGameObject<Drone>(Vec3(-20.0f, 25.0f, -5.0f),Drone::DroneMotion::ClockWise,4);
+		AddGameObject<Drone>(Vec3(-15.0f, 25.0f, 30.0f),Drone::DroneMotion::CounterClockwise,1);
+		AddGameObject<Drone>(Vec3(10.0f, 25.0f, -30.0f),Drone::DroneMotion::VerticalMotion,2);
 
 	}
 
