@@ -88,16 +88,22 @@ namespace basecross{
 
 		// ゲームコントローラー取得
 		auto device = app->GetInputDevice();
-		m_pad = device.GetControlerVec()[0];
+		if (app->GetScene<Scene>()->GetGameStart()) {
+			m_pad = device.GetControlerVec()[0];
+		}
+		else {
+			m_nowFallSpeed = 2.0f;
+			Fall();
+		}
+
 		//左スティックの入力方向を求める
 		m_padDir = Vec3(m_pad.fThumbLX, 0.0f, m_pad.fThumbLY);
 		m_padDir = m_padDir.normalize();
 
 		//右スティックの値でカメラの回転処理を行う
 		CameraRoll();
-
-		//ステートマシンのアップデート
-		m_StateMachine->Update();
+			//ステートマシンのアップデート
+			m_StateMachine->Update();
 		// アニメーションを更新する
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->UpdateAnimation(delta);
@@ -155,10 +161,13 @@ namespace basecross{
 			m_isFall = false;
 		}
 
-
 		auto goal = dynamic_pointer_cast<Goal>(Other);
 		if (goal){
 			goal->ArriveGoal();
+		}
+		if (!App::GetApp()->GetScene<Scene>()->GetGameStart()) {
+			App::GetApp()->GetScene<Scene>()->SetGameStart(true);
+			m_nowFallSpeed = 8.0f;
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------
@@ -247,6 +256,8 @@ namespace basecross{
 	void Player::Response() {
 		if (GetComponent<Transform>()->GetWorldPosition().y <= m_responseHeght) {
 			GetComponent<Transform>()->SetWorldPosition(m_response);
+			//復帰後にすぐ動けるように少し回復させる
+			m_changeEnergy = 20.0f;
 		}
 	}
 	//--------------------------------------------------------------------------------------------

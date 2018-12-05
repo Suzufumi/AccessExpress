@@ -12,6 +12,7 @@ namespace basecross{
 	///	ÉQÅ[ÉÄÉVÅ[Éì
 	//--------------------------------------------------------------------------------------
 	class Scene : public SceneBase{
+		bool m_isGameStart;
 	public:
 		//--------------------------------------------------------------------------------------
 		/*!
@@ -41,6 +42,8 @@ namespace basecross{
 		virtual void OnEvent(const shared_ptr<Event>& event) override;
 		
 		void CreateResources();
+		void SetGameStart(bool f) { m_isGameStart = f; };
+		bool GetGameStart() { return m_isGameStart; };
 	};
 
 }
