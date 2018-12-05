@@ -157,21 +157,21 @@ namespace basecross {
 		struct DroneParam
 		{
 			Vec3 m_pos;
-			Drone::RoopDirection m_dir;
+			Drone::DroneMotion m_dir;
 			int m_needChains;
 		};
 
 		DroneParam  drones[] = {
-			{ Vec3(-25.0f, 25.0f, -30.0f), Drone::RoopDirection::CounterClockwise, 2},
-			{ Vec3(-20.0f, 25.0f, -30.0f), Drone::RoopDirection::ClockWise, 4},
-			{ Vec3(-20.0f, 25.0f, -5.0f), Drone::RoopDirection::CounterClockwise, 2},
-			{ Vec3(-15.0f, 25.0f, 30.0f), Drone::RoopDirection::VerticalMotion, 1},
-			{ Vec3(55.0f, 25.0f, 50.0f), Drone::RoopDirection::CounterClockwise, 3 },
+			{ Vec3(-25.0f, 25.0f, -30.0f), Drone::DroneMotion::CounterClockwise, 2},
+			{ Vec3(-20.0f, 25.0f, -30.0f), Drone::DroneMotion::ClockWise, 4},
+			{ Vec3(-20.0f, 25.0f, -5.0f), Drone::DroneMotion::CounterClockwise, 2},
+			{ Vec3(-15.0f, 25.0f, 30.0f), Drone::DroneMotion::VerticalMotion, 1},
+			{ Vec3(55.0f, 25.0f, 50.0f), Drone::DroneMotion::CounterClockwise, 3 },
 		};
 
 		for (auto drone : drones)
 		{
-			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir);
+			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir,drone.m_needChains);
 		}
 
 	}

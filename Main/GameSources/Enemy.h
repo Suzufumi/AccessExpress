@@ -10,7 +10,7 @@ namespace basecross {
 			Vec3 p1;
 			Vec3 p2; //終点
 		};
-		BezierPoint m_roop[4];
+		BezierPoint m_roop[8];
 		float m_Lerp = 0.0f;
 		int m_joinNum = 0;
 		int m_joinNumMax;
@@ -18,16 +18,17 @@ namespace basecross {
 		int m_deadChain;
 		bool m_isDead = false;
 		//妨害電波の範囲
-		float m_JammerRang = 15.0f;
+		float m_JammerRang = 5.0f;
 	public:
-		enum RoopDirection {
+		enum DroneMotion {
 			ClockWise = 0,			//時計回り
 			CounterClockwise = 1,	//逆時計回り
-			VerticalMotion = 2
+			VerticalMotion = 2,		//上下運動
+			Wave = 3				//波の動き、一定進んだら返ってくる
 		};
-		RoopDirection m_roopDir;
+		DroneMotion m_roopDir;
 
-		Drone(const shared_ptr<Stage>& stage, Vec3 pos, RoopDirection dir,int chain);
+		Drone(const shared_ptr<Stage>& stage, Vec3 pos, DroneMotion dir,int chain);
 		virtual ~Drone() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
@@ -39,6 +40,8 @@ namespace basecross {
 		void SetBezierClock();
 		//上下運動のベジエ曲線の制御点を作る
 		void SetVerticalMotion();
+		//波の動きのベジエ曲線の制御点を作る
+		void SetWaveMotion();
 	};
 
 	class ViewDeadChain : public GameObject {

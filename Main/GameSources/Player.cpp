@@ -144,7 +144,7 @@ namespace basecross{
 		m_nesting = NULL;
 		auto ptrUtil = GetBehavior<UtilBehavior>();
 		ptrUtil->RotToHead(m_padDir, 0.1f);
-		SetJummerSpeed(1.0f);;
+		SetJummer(false);
 
 		// デバッグ文字の表示
 		DrawStrings();
