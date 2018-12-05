@@ -10,8 +10,10 @@ namespace basecross {
 		CreateViewLight();
 		CreatePlayer();
 		AddGameObject<SkySprite>(Vec3(0.0f), Vec3(0.0f));
-		auto sprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(600, 200));
-		sprite->SetPosition(Vec2(640, 140));
+		auto titleSprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(600, 200));
+		titleSprite->SetPosition(Vec2(640, 140));
+		auto buttonSprite = AddGameObject<Sprite>(L"Title_BUTTON_TX", Vec2(1000, 100));
+		buttonSprite->SetPosition(Vec2(640, 700));
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"Title_TX");
 	}
