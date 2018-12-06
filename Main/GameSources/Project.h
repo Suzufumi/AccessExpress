@@ -31,3 +31,4 @@
 #include "Sprite.h"
 #include "MainUi.h"
 #include "Timer.h"
+#include "EnergyUI.h"
