@@ -59,6 +59,7 @@ namespace basecross{
 			{ L"UI_Green.png", L"GREEN_GAUGE_TX"},
 			{ L"UI_Yellow.png", L"YELLOW_GAUGE_TX"},
 			{ L"UI_Red.png", L"RED_GAUGE_TX"},
+			{ L"fade.png", L"FADE_TX"}
 		};
 
 		for (auto texture : textures)

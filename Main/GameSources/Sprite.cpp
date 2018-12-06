@@ -36,4 +36,42 @@ namespace basecross{
 		this->SetPosition(Vec2(0, 0));
 
 	}
+
+	//------------------------------------------------------------------------------------
+	/// fadeƒNƒ‰ƒX
+	//------------------------------------------------------------------------------------
+	FadeInOut::FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos)
+		: Sprite(stagePtr, L"FADE_TX", Vec2(0, 0), Rect2D<float>(1.0f, 1.0f, 1.0f, 1.0f)), m_startPos(pos)
+	{
+	}
+
+	FadeInOut::~FadeInOut()
+	{}
+
+	void FadeInOut::OnCreate()
+	{
+		Sprite::OnCreate();
+		this->SetPosition(Vec2(0.0f, 0.0f));
+		//GetComponent<PTSpriteDraw>()->SetDrawActive(false);
+		auto ptrAction = AddComponent<Action>();
+		auto width = App::GetApp()->GetGameWidth();
+		auto height = App::GetApp()->GetGameHeight();
+		ptrAction->AddMoveTo(1.0f, Vec3(width, height / 2, 0.0f));
+		ptrAction->Run();
+		ptrAction->SetLooped(true);
+		SetDrawLayer(100);
+	}
+
+	void FadeInOut::OnUpdate()
+	{
+		auto ptrAction = AddComponent<Action>();
+		if (m_isAction)
+		{
+			ptrAction->Run();
+		}
+		else
+		{
+			ptrAction->Stop();
+		}
+	}
 }
