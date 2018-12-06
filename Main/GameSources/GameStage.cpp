@@ -164,9 +164,13 @@ namespace basecross {
 		DroneParam  drones[] = {
 			{ Vec3(-25.0f, 25.0f, -30.0f), Drone::DroneMotion::CounterClockwise, 2},
 			{ Vec3(-20.0f, 25.0f, -30.0f), Drone::DroneMotion::ClockWise, 4},
-			{ Vec3(-20.0f, 25.0f, -5.0f), Drone::DroneMotion::CounterClockwise, 2},
-			{ Vec3(-15.0f, 25.0f, 30.0f), Drone::DroneMotion::VerticalMotion, 1},
+			{ Vec3(-10.0f, 21.0f, 28.0f), Drone::DroneMotion::VerticalMotion, 1},
+			{ Vec3(-15.0f, 20.0f, 40.0f), Drone::DroneMotion::VerticalMotion, 2},
 			{ Vec3(55.0f, 25.0f, 50.0f), Drone::DroneMotion::CounterClockwise, 3 },
+			{ Vec3(5.0f, 18.0f, -23.0f), Drone::DroneMotion::Wave, 2 },
+			{ Vec3(37.0f, 15.0f, -10.0f), Drone::DroneMotion::VerticalMotion, 4 },
+			{ Vec3(5.0f, 18.0f, 5.0f), Drone::DroneMotion::Wave, 2 },
+			{ Vec3(50.0f, 25.0f, 35.0f), Drone::DroneMotion::ClockWise, 2},
 		};
 
 		for (auto drone : drones)
@@ -190,7 +194,7 @@ namespace basecross {
 			//CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
-			auto goal = AddGameObject<Goal>(Vec3(65.0f, 9.0f, 50.0f), Vec3(1.0f, 30.0f, 1.0f));
+			auto goal = AddGameObject<Goal>(Vec3(65.0f, 13.0f, 50.0f), Vec3(1.0f, 30.0f, 1.0f));
 			// 建物の配置
 			CreateBill();
 
@@ -208,7 +212,7 @@ namespace basecross {
 			//AddGameObject<Drone>(Vec3(-35, 25, -35));
 			CreateDrone();
 			
-			auto score = AddGameObject<RemainingTimerSprite>(90);
+			auto score = AddGameObject<RemainingTimerSprite>(60);
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
 			AddGameObject<SkySphere>();
 		}
