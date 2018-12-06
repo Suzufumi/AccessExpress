@@ -4,8 +4,10 @@
 namespace basecross {
 	void ResultStage::OnCreate() {
 		CreateViewLight();
-		auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
-		obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
+		auto clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(1240.0f, 240.0f));
+		clearSprite->SetPosition(Vec2(App::GetApp()->GetGameWidth() / 2.0f, App::GetApp()->GetGameHeight() / 2.0f));
+		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
+		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
 	}
 	void ResultStage::OnUpdate() {
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
