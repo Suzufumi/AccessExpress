@@ -221,6 +221,8 @@ namespace basecross {
 		//スタートボタンを押すことでリザルトに行く
 		if (CntlVec[0].wPressedButtons & XINPUT_GAMEPAD_START) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+			auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
+			fade->SetIsAction(true);
 		}
 	}
 }
