@@ -169,7 +169,7 @@ namespace basecross {
 			{ Vec3(55.0f, 25.0f, 50.0f), Drone::DroneMotion::CounterClockwise, 3 },
 		};
 
-		for (auto drone : drones){
+		for (auto drone : drones)	{
 			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir, drone.m_needChains);
 		}
 
@@ -210,6 +210,7 @@ namespace basecross {
 			auto score = AddGameObject<RemainingTimerSprite>(90);
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
 			AddGameObject<SkySphere>();
+			AddGameObject<EnergyGaugeUI>();
 		}
 		catch (...) {
 			throw;

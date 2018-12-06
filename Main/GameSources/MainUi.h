@@ -4,11 +4,12 @@
 
 namespace basecross
 {
-	class EnegyGaugeUI : public Sprite
-	{
+	class EnergyGaugeUI : public Sprite{
+		weak_ptr<Sprite> m_energyGauge[12];
 	public:
-		EnegyGaugeUI(const shared_ptr<Stage>& stagePtr);
-		virtual ~EnegyGaugeUI();
+		EnergyGaugeUI(const shared_ptr<Stage>& stagePtr);
+		virtual ~EnergyGaugeUI();
 		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
 	};
 }
