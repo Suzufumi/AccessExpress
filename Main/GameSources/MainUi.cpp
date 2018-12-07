@@ -43,9 +43,9 @@ namespace basecross{
 	}
 	void EnergyGaugeUI::OnUpdate() {
 		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
-		//—Î—Ìˆæ
+		//Ô—Ìˆæ
 		for (int i = 0; i < 3; i++) {
-			if (player->GetEnergy() < (0 + i * 6)) {
+			if (player->GetEnergy() < (3 + i * 5)) {
 				m_energyGauge[i].lock()->SetDrawActive(false);
 			}
 			else {
