@@ -173,9 +173,8 @@ namespace basecross {
 			{ Vec3(50.0f, 25.0f, 35.0f), Drone::DroneMotion::ClockWise, 2},
 		};
 
-		for (auto drone : drones)
-		{
-			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir,drone.m_needChains);
+		for (auto drone : drones)	{
+			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir, drone.m_needChains);
 		}
 
 	}
@@ -215,6 +214,7 @@ namespace basecross {
 			auto score = AddGameObject<RemainingTimerSprite>(60);
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
 			AddGameObject<SkySphere>();
+			AddGameObject<EnergyGaugeUI>();
 		}
 		catch (...) {
 			throw;
@@ -225,6 +225,8 @@ namespace basecross {
 		//スタートボタンを押すことでリザルトに行く
 		if (CntlVec[0].wPressedButtons & XINPUT_GAMEPAD_START) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+			auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
+			fade->SetIsAction(true);
 		}
 	}
 }
