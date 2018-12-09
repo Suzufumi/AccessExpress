@@ -60,7 +60,7 @@ namespace basecross {
 	//-------------------------------------------------------------------------------------
 	//初期化
 	//-------------------------------------------------------------------------------------
-	void File::OnCreate(){
+	void File::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
@@ -82,14 +82,14 @@ namespace basecross {
 		//タグ付け
 		AddTag(L"File");
 	}
-	void File::SetOnPlayer(weak_ptr<GameObject> obj){
+	void File::SetOnPlayer(weak_ptr<GameObject> obj) {
 		auto trans = GetComponent<Transform>();
 		//オブジェクトにアクセス
 		auto player = obj.lock();
 		//オブジェクトを親にする
 		trans->SetParent(player);
 		//親の上に乗る
-		trans->SetPosition(Vec3(0, player->GetComponent<Transform>()->GetScale().y/2 + m_scale.y/2, 0));
+		trans->SetPosition(Vec3(0, player->GetComponent<Transform>()->GetScale().y / 2 + m_scale.y / 2, 0));
 	}
 	void File::LookFile() {
 		auto drawComp = GetComponent<DrawComponent>();
@@ -100,8 +100,8 @@ namespace basecross {
 		drawComp->SetDrawActive(false);
 	}
 
-	AddlessCertificate::AddlessCertificate(const shared_ptr<Stage>& stage, Vec3 pos, Vec3 scale) 
-	:OBBObject(stage,pos,scale)
+	AddlessCertificate::AddlessCertificate(const shared_ptr<Stage>& stage, Vec3 pos, Vec3 scale)
+		:OBBObject(stage, pos, scale)
 	{
 	}
 	void AddlessCertificate::OnCreate() {
@@ -120,16 +120,16 @@ namespace basecross {
 	//照準
 	//--------------------------------------------------------------------------------
 	SightingDevice::SightingDevice(const shared_ptr<Stage>& stagePtr)
-	:GameObject(stagePtr)
+		:GameObject(stagePtr)
 	{
 	}
 	void SightingDevice::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
-		ptrTrans->SetWorldPosition(Vec3(0,0,0));
+		ptrTrans->SetWorldPosition(Vec3(0, 0, 0));
 		ptrTrans->SetQuaternion(Qt);
-		ptrTrans->SetScale(2,2,2);
+		ptrTrans->SetScale(2, 2, 2);
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
@@ -156,6 +156,28 @@ namespace basecross {
 		else {
 			Col4 Color(1.0f, 1.0f, 1.0f, 1.0f);
 			drawComp->SetDiffuse(Color);
+		}
+	}
+	//-------------------------------------------------------------------------------------------------
+	//チェインの文字を見せるオブジェクト
+	//-------------------------------------------------------------------------------------------------
+	ViewChainLetter::ViewChainLetter(const shared_ptr<Stage>& stagePtr)
+		: Sprite(stagePtr, L"chain_TX", Vec2(124, 32))
+	{
+
+	}
+
+	void ViewChainLetter::OnCreate() {
+		Sprite::OnCreate();
+		SetPosition(Vec2(740, 640));
+		SetDrawLayer(1);
+	}
+	void ViewChainLetter::OnUpdate() {
+		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
+			SetDrawActive(true);
+		}
+		else {
+			SetDrawActive(false);
 		}
 	}
 }
