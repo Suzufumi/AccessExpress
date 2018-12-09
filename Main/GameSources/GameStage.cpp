@@ -91,6 +91,7 @@ namespace basecross {
 		auto dev = AddGameObject<SightingDevice>();
 		player->SetSightingDevice(dev);
 		SetSharedGameObject(L"Player", player);
+		AddGameObject<ViewChainLetter>();
 	}
 
 	void GameStage::CreateBill()

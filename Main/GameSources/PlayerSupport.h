@@ -66,4 +66,14 @@ namespace basecross {
 		void SetCaptureLink(bool f) { m_captureLink = f; }
 		void ResetCaptureLink() { m_captureLink = false; }
 	};
+	//--------------------------------------------------------------------------------------
+	//チェインの表記
+	//--------------------------------------------------------------------------------------
+	class ViewChainLetter : public Sprite {
+		public:
+			ViewChainLetter(const shared_ptr<Stage>& stagePtr);
+			virtual ~ViewChainLetter() {};
+			virtual void OnCreate() override;
+			virtual void OnUpdate() override;
+	};
 }
