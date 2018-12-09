@@ -4,8 +4,8 @@
 namespace basecross {
 	void StageSelect::OnCreate() {
 		CreateViewLight();
-		auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
-		obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"StageSelect_TX");
+		auto stageSel = AddGameObject<Sprite>(L"StageSelect_TX", Vec2(800, 200));
+		stageSel->SetPosition(Vec2((float)App::GetApp()->GetGameWidth() / 2.0f , 100));
 	}
 	void StageSelect::OnUpdate() {
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
