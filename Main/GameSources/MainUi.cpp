@@ -19,19 +19,20 @@ namespace basecross{
 			Vec2 size;
 			Vec2 pos;
 		};
+		Vec2 size = Vec2(28,28);
 		GaugeParam gauges[] = {
-			{L"RED_GAUGE_TX", Vec2(32, 32),Vec2(116,192)},
-			{L"RED_GAUGE_TX", Vec2(32, 32),Vec2(116,160)},
-			{L"RED_GAUGE_TX", Vec2(32, 32),Vec2(116,128)},
-			{L"YELLOW_GAUGE_TX", Vec2(32, 32),Vec2(168,192)},
-			{L"YELLOW_GAUGE_TX", Vec2(32, 32),Vec2(168,160)},
-			{L"YELLOW_GAUGE_TX", Vec2(32, 32),Vec2(168,128)},
-			{L"YELLOW_GAUGE_TX", Vec2(32, 32),Vec2(168,96)},
-			{L"GREEN_GAUGE_TX", Vec2(32, 32),Vec2(220,192)},
-			{L"GREEN_GAUGE_TX", Vec2(32, 32),Vec2(220,160)},
-			{L"GREEN_GAUGE_TX", Vec2(32, 32),Vec2(220,128)},
-			{L"GREEN_GAUGE_TX", Vec2(32, 32),Vec2(220,96)},
-			{L"GREEN_GAUGE_TX", Vec2(32, 32),Vec2(220,64)}
+			{L"RED_GAUGE_TX", size,Vec2(117,191)},
+			{L"RED_GAUGE_TX", size,Vec2(117,160)},
+			{L"RED_GAUGE_TX", size,Vec2(117,129)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(168,192)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(168,161)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(168,130)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(168,99)},
+			{L"GREEN_GAUGE_TX", size,Vec2(220,192)},
+			{L"GREEN_GAUGE_TX", size,Vec2(220,161)},
+			{L"GREEN_GAUGE_TX", size,Vec2(220,130)},
+			{L"GREEN_GAUGE_TX", size,Vec2(220,99)},
+			{L"GREEN_GAUGE_TX", size,Vec2(220,68)}
 		};
 		int count = 0;
 		for (auto gauge : gauges) {

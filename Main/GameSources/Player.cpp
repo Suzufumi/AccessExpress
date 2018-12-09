@@ -391,7 +391,8 @@ namespace basecross{
 				//Æ€‚É“–‚½‚Á‚Ä‚¢‚é‚±‚Æ‚ð‹³‚¦‚é
 				sightingDevice->SetCaptureLink(true);
 				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
-					SetBezierPoint(linkTrans->GetWorldPosition());
+					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
+					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
 					m_StateMachine->ChangeState(LinkState::Instance());
 					break;
