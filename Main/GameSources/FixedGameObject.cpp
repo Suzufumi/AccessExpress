@@ -133,7 +133,7 @@ namespace basecross {
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 
 		auto transComp = GetComponent<Transform>();
-		transComp->SetScale(Vec3(200, 200, 200));
+		transComp->SetScale(Vec3(500, 500, 500));
 		transComp->SetPosition(camera->GetEye());
 
 		vector<VertexPositionNormalTexture> vertices;
