@@ -272,7 +272,7 @@ namespace basecross{
 		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
 			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
 			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // ƒJƒƒ‰‚ð‰ñ“]‚³‚¹‚é
-			m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 1.5f * delta; // ƒJƒƒ‰‚ð¸~‚³‚¹‚é
+			m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 5.0f * delta; // ƒJƒƒ‰‚ð¸~‚³‚¹‚é
 			//360“x‚ð‰z‚¦‚½‚ç0‚É‚·‚é
 			if (m_angleX > 360) {
 				m_angleX = 0;

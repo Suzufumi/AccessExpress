@@ -8,7 +8,7 @@ namespace basecross
 		m_AngleX(0.0f),
 		m_AngleY(Deg2Rad(270)),
 		m_cameraHeight(3.0f),
-		m_maxAngleSpeed(PI),
+		m_maxAngleSpeed(2.0f),
 		m_cameraDistance(13.0f)
 	{}
 
