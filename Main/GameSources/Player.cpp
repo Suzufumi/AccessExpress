@@ -302,7 +302,7 @@ namespace basecross{
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		//計算のための時間加算
-		m_Lerp += (App::GetApp()->GetElapsedTime() * m_JummerSpeed * 30.0f) / (m_BezierSpeedLeap+1);
+		m_Lerp += (App::GetApp()->GetElapsedTime() * m_JummerSpeed * 30.0f) / (m_BezierSpeedLeap);
 		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
 		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
 		if (m_Lerp >= 1.0f) {
@@ -322,17 +322,24 @@ namespace basecross{
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
+		//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp,pos);
 	}
 	//ベジエ曲線の制御点設定
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
-		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
 		m_BezierSpeedLeap = Vec3(p0 - p2).length();
+		if (m_BezierSpeedLeap >= 10.0f) {
+			p1 = point + Vec3(0, 10, 0);
+		}
+		else {
+			p1 = point - ((point - p0) / 2);
+		}
 		//飛んだ際にリスポーン位置の更新も行う
 		m_response = p2;
+		//カメラの追従する動きを設定する
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
 	}
