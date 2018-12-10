@@ -320,10 +320,10 @@ namespace basecross{
 			p2 = drone->GetComponent<Transform>()->GetWorldPosition();
 		}
 		//ベジエ曲線の計算
-		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * p0.x + 2 * (1 - m_Lerp) * m_Lerp * p1.x + m_Lerp * m_Lerp * p2.x;
-		pos.y = (1 - m_Lerp) * (1 - m_Lerp) * p0.y + 2 * (1 - m_Lerp) * m_Lerp * p1.y + m_Lerp * m_Lerp * p2.y;
-		pos.z = (1 - m_Lerp) * (1 - m_Lerp) * p0.z + 2 * (1 - m_Lerp) * m_Lerp * p1.z + m_Lerp * m_Lerp * p2.z;
+		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp,pos);
 	}
 	//ベジエ曲線の制御点設定
 	void Player::SetBezierPoint(Vec3 point) {
@@ -333,6 +333,8 @@ namespace basecross{
 		m_BezierSpeedLeap = Vec3(p0 - p2).length();
 		//飛んだ際にリスポーン位置の更新も行う
 		m_response = p2;
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -586,7 +588,7 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
-		Obj->CameraControll();
+		//Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
