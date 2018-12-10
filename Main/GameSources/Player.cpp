@@ -62,7 +62,7 @@ namespace basecross{
 		// 変換した行列を代入
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		// アニメーションを追加する
-		drawComp->AddAnimation(L"Default", 0, 110, true, 30.0f);
+		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
 		// アニメーションの設定
 		drawComp->ChangeCurrentAnimation(L"Default");
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
@@ -320,10 +320,10 @@ namespace basecross{
 			p2 = drone->GetComponent<Transform>()->GetWorldPosition();
 		}
 		//ベジエ曲線の計算
-		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * p0.x + 2 * (1 - m_Lerp) * m_Lerp * p1.x + m_Lerp * m_Lerp * p2.x;
-		pos.y = (1 - m_Lerp) * (1 - m_Lerp) * p0.y + 2 * (1 - m_Lerp) * m_Lerp * p1.y + m_Lerp * m_Lerp * p2.y;
-		pos.z = (1 - m_Lerp) * (1 - m_Lerp) * p0.z + 2 * (1 - m_Lerp) * m_Lerp * p1.z + m_Lerp * m_Lerp * p2.z;
+		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp,pos);
 	}
 	//ベジエ曲線の制御点設定
 	void Player::SetBezierPoint(Vec3 point) {
@@ -333,6 +333,8 @@ namespace basecross{
 		m_BezierSpeedLeap = Vec3(p0 - p2).length();
 		//飛んだ際にリスポーン位置の更新も行う
 		m_response = p2;
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -391,7 +393,7 @@ namespace basecross{
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
 				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
 					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
@@ -422,7 +424,7 @@ namespace basecross{
 			if (hit && p2 + Vec3(0, -1, 0) != droneTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
 				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					SetBezierPoint(droneTrans->GetWorldPosition());
 					m_DroneNo = count;
 					m_Lerp = 0;
@@ -574,10 +576,10 @@ namespace basecross{
 
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
-		//auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
-		//auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
-		//camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		//camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
+		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
+		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
+		camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
 		
 		// コンボを加算する
 		Obj->AddCombo();
@@ -586,7 +588,7 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
-		Obj->CameraControll();
+		//Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());

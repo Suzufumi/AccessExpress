@@ -46,7 +46,7 @@ namespace basecross {
 		drawComp->SetTextureResource(L"PLAYER_TX");
 		drawComp->SetLightingEnabled(false);
 		// アニメーションを追加する
-		drawComp->AddAnimation(L"Default", 0, 110, true, 30.0f);
+		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
 		// アニメーションの設定
 		drawComp->ChangeCurrentAnimation(L"Default");
 
