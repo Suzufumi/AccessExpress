@@ -30,6 +30,7 @@ namespace basecross {
 			transComp->SetPosition(pos.x, -pos.y, 0);
 		};
 
+		void SetMesh(const shared_ptr<MeshResource> mesh);
 	};
 
 	//------------------------------------------------------------------------------------

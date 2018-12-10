@@ -92,6 +92,7 @@ namespace basecross {
 		player->SetSightingDevice(dev);
 		SetSharedGameObject(L"Player", player);
 		AddGameObject<ViewChainLetter>();
+		AddGameObject<ViewChainNum>();
 	}
 
 	void GameStage::CreateBill()

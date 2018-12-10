@@ -35,6 +35,7 @@ namespace basecross {
 		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
 		float m_JummerSpeed = 1.0f;		//スピードにかけられる妨害
 		bool m_isJummer;				//妨害を受けているかどうか
+		float m_BezierSpeedLeap;
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
