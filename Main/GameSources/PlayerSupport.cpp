@@ -180,4 +180,64 @@ namespace basecross {
 			SetDrawActive(false);
 		}
 	}
+	//-------------------------------------------------------------------------------------------------
+	//チェインの文字を見せるオブジェクト
+	//-------------------------------------------------------------------------------------------------
+	ViewChainNum::ViewChainNum(const shared_ptr<Stage>& stagePtr)
+		: Sprite(stagePtr, L"Number_TX", Vec2(32, 64))
+	{
+
+	}
+
+	void ViewChainNum::OnCreate() {
+		Sprite::OnCreate();
+		SetPosition(Vec2(720, 590));
+
+		//頂点配列
+		vector<VertexPositionNormalTexture> vertices;
+		//インデックスを作成するための配列
+		vector<uint16_t> indices;
+		//Squareの作成(ヘルパー関数を利用)
+		MeshUtill::CreateSquare(1.0f, vertices, indices);
+		//UV値の変更
+		float from = ((float)5) / 10.0f;
+		float to = from + (1.0f / 10.0f);
+		//左上頂点
+		vertices[0].textureCoordinate = Vec2(from, 0);
+		//右上頂点
+		vertices[1].textureCoordinate = Vec2(to, 0);
+		//左下頂点
+		vertices[2].textureCoordinate = Vec2(from, 1.0f);
+		//右下頂点
+		vertices[3].textureCoordinate = Vec2(to, 1.0f);
+		//頂点の型を変えた新しい頂点を作成
+		vector<VertexPositionColorTexture> new_vertices;
+		for (auto& v : vertices) {
+			VertexPositionColorTexture nv;
+			nv.position = v.position;
+			nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
+			nv.textureCoordinate = v.textureCoordinate;
+			new_vertices.push_back(nv);
+		}
+		//新しい頂点を使ってメッシュリソースの作成
+		m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, indices, true);
+		
+		//auto drawComp = AddComponent<PCTStaticDraw>();
+		//drawComp->SetMeshResource(m_SquareMeshResource);
+		//drawComp->SetTextureResource(L"Number_TX");
+		SetMesh(m_SquareMeshResource);
+		SetAlphaActive(true);
+		
+		SetDrawLayer(1);
+		
+	}
+	void ViewChainNum::OnUpdate() {
+		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
+			SetDrawActive(true);
+		}
+		else {
+			SetDrawActive(false);
+		}
+	}
+
 }

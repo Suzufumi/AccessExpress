@@ -67,7 +67,7 @@ namespace basecross {
 		void ResetCaptureLink() { m_captureLink = false; }
 	};
 	//--------------------------------------------------------------------------------------
-	//チェインの表記
+	//チェインの文字
 	//--------------------------------------------------------------------------------------
 	class ViewChainLetter : public Sprite {
 		public:
@@ -76,4 +76,17 @@ namespace basecross {
 			virtual void OnCreate() override;
 			virtual void OnUpdate() override;
 	};
+	//--------------------------------------------------------------------------------------
+	//チェインの数字
+	//--------------------------------------------------------------------------------------
+	class ViewChainNum : public Sprite {
+		shared_ptr<MeshResource> m_SquareMeshResource;
+
+	public:
+		ViewChainNum(const shared_ptr<Stage>& stagePtr);
+		virtual ~ViewChainNum() {};
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+	};
+
 }

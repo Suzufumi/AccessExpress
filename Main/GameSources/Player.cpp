@@ -302,7 +302,7 @@ namespace basecross{
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		//計算のための時間加算
-		m_Lerp += App::GetApp()->GetElapsedTime() * m_JummerSpeed;
+		m_Lerp += (App::GetApp()->GetElapsedTime() * m_JummerSpeed * 30.0f) / (m_BezierSpeedLeap+1);
 		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
 		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
 		if (m_Lerp >= 1.0f) {
@@ -330,6 +330,7 @@ namespace basecross{
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p1 = point + Vec3(0, 10, 0);
 		p2 = point + Vec3(0,1,0);
+		m_BezierSpeedLeap = Vec3(p0 - p2).length();
 		//飛んだ際にリスポーン位置の更新も行う
 		m_response = p2;
 	}

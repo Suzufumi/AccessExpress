@@ -33,6 +33,11 @@ namespace basecross{
 		drawComp->SetTextureResource(_key);
 		SetAlphaActive(true);	// “§–¾“x‚ð”½‰f‚·‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
 
+		this->SetPosition(Vec2(0, 0));
+	}
+	void Sprite::SetMesh(const shared_ptr<MeshResource> mesh) {
+		auto drawComp = GetComponent<PTSpriteDraw>();
+		drawComp->SetMeshResource(mesh);
 		//this->SetPosition(Vec2(0, 0));
 
 	}
