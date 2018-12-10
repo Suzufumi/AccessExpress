@@ -62,7 +62,7 @@ namespace basecross{
 		// 変換した行列を代入
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		// アニメーションを追加する
-		drawComp->AddAnimation(L"Default", 0, 110, true, 30.0f);
+		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
 		// アニメーションの設定
 		drawComp->ChangeCurrentAnimation(L"Default");
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
@@ -393,7 +393,7 @@ namespace basecross{
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
 				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
 					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
@@ -424,7 +424,7 @@ namespace basecross{
 			if (hit && p2 + Vec3(0, -1, 0) != droneTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
 				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					SetBezierPoint(droneTrans->GetWorldPosition());
 					m_DroneNo = count;
 					m_Lerp = 0;
@@ -576,10 +576,10 @@ namespace basecross{
 
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
-		//auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
-		//auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
-		//camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		//camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
+		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
+		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
+		camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
 		
 		// コンボを加算する
 		Obj->AddCombo();
