@@ -326,15 +326,20 @@ namespace basecross{
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp,pos);
 	}
+	//---------------------------------------------------------------------------------------------
 	//ベジエ曲線の制御点設定
+	//---------------------------------------------------------------------------------------------
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p2 = point + Vec3(0,1,0);
 		m_BezierSpeedLeap = Vec3(p0 - p2).length();
-		if (m_BezierSpeedLeap >= 10.0f) {
+		if (m_BezierSpeedLeap >= 20.0f) {
 			p1 = point + Vec3(0, 10, 0);
 		}
-		else {
+		else if(m_BezierSpeedLeap >= 10.0f){
+			p1 = point + Vec3(0, 5, 0);
+		}
+		else if(m_BezierSpeedLeap < 10.0f){
 			p1 = point - ((point - p0) / 2);
 		}
 		//飛んだ際にリスポーン位置の更新も行う
