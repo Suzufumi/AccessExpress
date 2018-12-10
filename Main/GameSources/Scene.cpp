@@ -59,7 +59,7 @@ namespace basecross{
 			{ L"UI_Yellow.png", L"YELLOW_GAUGE_TX"},
 			{ L"UI_Red.png", L"RED_GAUGE_TX"},
 			{ L"fade.png", L"FADE_TX"},	
-			{ L"chain.png",L"chain_TX"}
+			{ L"chain.png",L"chain_TX"},
 			{ L"fade.png", L"FADE_TX"},
 			{ L"Num1.png", L"Stage1" },
 			{ L"Num2.png", L"Stage2" },
