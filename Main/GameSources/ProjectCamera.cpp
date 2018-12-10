@@ -35,7 +35,7 @@ namespace basecross
 		Vec3 pos;
 		pos = (1 - leap)*(1 - leap)*p0 + 2 * (1 - leap)*leap*p1 + leap * leap*p2;
 		SetEye(pos);
-		SetAt(playerPos);
+		SetAt(playerPos + Vec3(0.0f,3.0f,0.0f));
 	}
 	//--------------------------------------------------------------------------------------------
 	//êßå‰ì_ÇÃê›íË
