@@ -60,6 +60,12 @@ namespace basecross{
 			{ L"UI_Red.png", L"RED_GAUGE_TX"},
 			{ L"fade.png", L"FADE_TX"},	
 			{ L"chain.png",L"chain_TX"}
+			{ L"fade.png", L"FADE_TX"},
+			{ L"Num1.png", L"Stage1" },
+			{ L"Num2.png", L"Stage2" },
+			{ L"Num3.png", L"Stage3" },
+			{ L"Num4.png", L"Stage4" },
+			{ L"Num5.png", L"Stage5" }
 		};
 
 		for (auto texture : textures)

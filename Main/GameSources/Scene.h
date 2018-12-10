@@ -13,6 +13,7 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	class Scene : public SceneBase{
 		bool m_isGameStart;
+		int m_stageNum;
 	public:
 		//--------------------------------------------------------------------------------------
 		/*!
@@ -44,6 +45,9 @@ namespace basecross{
 		void CreateResources();
 		void SetGameStart(bool f) { m_isGameStart = f; };
 		bool GetGameStart() { return m_isGameStart; };
+
+		int GetStageNum() const { return m_stageNum; }
+		void SetStageNum(int num) { m_stageNum = num; }
 	};
 
 }
