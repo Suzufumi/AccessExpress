@@ -390,7 +390,7 @@ namespace basecross{
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//Æ€‚É“–‚½‚Á‚Ä‚¢‚é‚±‚Æ‚ð‹³‚¦‚é
 				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
 					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
@@ -421,7 +421,7 @@ namespace basecross{
 			if (hit && p2 + Vec3(0, -1, 0) != droneTrans->GetWorldPosition()) {
 				//Æ€‚É“–‚½‚Á‚Ä‚¢‚é‚±‚Æ‚ð‹³‚¦‚é
 				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_B) {
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					SetBezierPoint(droneTrans->GetWorldPosition());
 					m_DroneNo = count;
 					m_Lerp = 0;
