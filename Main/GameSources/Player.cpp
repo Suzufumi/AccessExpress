@@ -98,10 +98,8 @@ namespace basecross{
 		m_padDir = Vec3(m_pad.fThumbLX, 0.0f, m_pad.fThumbLY);
 		m_padDir = m_padDir.normalize();
 
-		//右スティックの値でカメラの回転処理を行う
-		CameraRoll();
-			//ステートマシンのアップデート
-			m_StateMachine->Update();
+		//ステートマシンのアップデート
+		m_StateMachine->Update();
 		// アニメーションを更新する
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->UpdateAnimation(delta);
@@ -291,9 +289,6 @@ namespace basecross{
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
 			m_forward = m_padDir;
-			//Quat rot;
-			//rot.rotationRollPitchYawFromVector(Vec3(0.0f, atan2f(m_forward.x,m_forward.z), 0.0f));
-			//GetComponent<Transform>()->SetQuaternion(rot);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -560,12 +555,13 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void WalkState::Execute(const shared_ptr<Player>& Obj) {
-		Obj->CameraControll();
-
 		Obj->Walk();
 		Obj->Fall();
 		Obj->Response();
 		Obj->SightingDeviceChangePosition();
+		Obj->CameraControll();
+		//右スティックの値でカメラの回転処理を行う
+		Obj->CameraRoll();
 		if (Obj->CheckAButton()) {
 			Obj->GetStateMachine()->ChangeState(DateState::Instance());
 			Obj->SightingDeviceDrawActive(true);
@@ -652,8 +648,10 @@ namespace basecross{
 		}
 		Obj->Walk();
 		Obj->RayShot();
-		Obj->CameraControll();
 		Obj->SightingDeviceChangePosition();
+		Obj->CameraControll();
+		//右スティックの値でカメラの回転処理を行う
+		Obj->CameraRoll();
 		if (Obj->CheckAButton() || Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
 			Obj->SightingDeviceDrawActive(false);
