@@ -13,6 +13,7 @@
 
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
+#include "GameManager.h"
 #include "Scene.h"
 #include "GameStage.h"
 #include "TitleStage.h"

@@ -14,7 +14,7 @@ namespace basecross {
 
 		 bool m_isSlow = false;	//スロー状態だったらtrue
 	public:
-		static GameManager& getInstance() {
+		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
 			return inst;
 		}
