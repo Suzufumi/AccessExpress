@@ -21,8 +21,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
-		}
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");		}
 		catch (...) {
 			throw;
 		}
@@ -107,7 +106,6 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"TOWER_MODEL", staticModel);
 		modelTex = modelDir + L"RadioTower.png";
 		App::GetApp()->RegisterTexture(L"TOWER_TX", modelTex);
-		
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {

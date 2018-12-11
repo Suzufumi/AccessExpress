@@ -39,7 +39,14 @@ namespace basecross {
 		pos.z = (1 - m_Lerp) * (1 - m_Lerp) * m_roop[m_joinNum].p0.z +
 			2 * (1 - m_Lerp) * m_Lerp * m_roop[m_joinNum].p1.z + m_Lerp * m_Lerp * m_roop[m_joinNum].p2.z;
 
-		m_Lerp += App::GetApp()->GetElapsedTime() / 2.0f;
+		auto& gameManager = GameManager::GetInstance();
+		auto addLerp = App::GetApp()->GetElapsedTime() / 2.0f;
+		if (gameManager.GetOnSlow()) {
+			m_Lerp += addLerp / gameManager.GetSlowSpeed();
+		}
+		else {
+			m_Lerp += addLerp;
+		}
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 0.0f;
 			m_joinNum += 1;

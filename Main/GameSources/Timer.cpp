@@ -77,8 +77,14 @@ namespace basecross {
 	}
 
 	void RemainingTimerSprite::OnUpdate() {
+		auto& gameManager = GameManager::GetInstance();
 		if (App::GetApp()->GetScene<Scene>()->GetGameStart()) {
-			m_timer += -App::GetApp()->GetElapsedTime();
+			if (gameManager.GetOnSlow()) {
+				m_timer += -App::GetApp()->GetElapsedTime() / gameManager.GetSlowSpeed();
+			}
+			else {
+				m_timer += -App::GetApp()->GetElapsedTime();
+			}
 		}
 		if (m_timer < 0.0f) {
 			m_timer = 0.0f;
