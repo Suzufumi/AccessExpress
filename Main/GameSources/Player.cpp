@@ -528,12 +528,14 @@ namespace basecross{
 		energy += Util::FloatToWStr(m_energy) + L"\n";
 		wstring combo(L"Combo : ");
 		combo += Util::IntToWStr(m_chain) + L"\n";
+		wstring chainLimit(L"CHAIN_TIME : ");
+		chainLimit += Util::IntToWStr(m_chainTime) + L"\n";
 		wstring timeLimit(L"Limit : ");
-		timeLimit += Util::IntToWStr(m_chainTimeLimit) + L"\n";
+		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
 		//文字列をつける
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
 
-		wstring str = combo + energy;
+		wstring str = combo + chainLimit + energy + timeLimit;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 
@@ -617,6 +619,15 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void DateState::Enter(const shared_ptr<Player>& Obj) {
+		if (Obj->GetChain() >= 4)
+		{
+			// 現在のチェインに応じて制限時間を設定
+			Obj->SetComboChainLimit(Obj->GetFirstTime() / (Obj->GetChain() - 2));
+		}
+		else
+		{
+			Obj->SetComboChainLimit(Obj->GetFirstTime());
+		}
 		Obj->ChengeEnergyMai();
 		Obj->ChangeWalkSpeed(Player::State::DATA);
 
@@ -633,12 +644,12 @@ namespace basecross{
 		if (Obj->GetAdvanceTimeActive())
 		{
 			// 時間を加算する
-			Obj->AddChainTimeLimit();
+			Obj->AddChainTime();
 		}
 		// 現在の時間を取得
-		int timeLimit = Obj->GetChainTimeLim();
+		int timeLimit = Obj->GetComboChainLimit();
 		// 制限時間に達したら
-		if (timeLimit >= CHAIN_TIMELIMIT)
+		if (Obj->GetChainTimeLim() >= Obj->GetComboChainLimit())
 		{
 			// コンボのリセット
 			Obj->ResetCombo();

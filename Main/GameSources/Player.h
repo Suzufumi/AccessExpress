@@ -10,6 +10,7 @@
 namespace basecross {
 	class Player : public GameObject {
 		unique_ptr< StateMachine<Player> >  m_StateMachine;	//ステートマシーン
+		const int FIRST_CHAIN_TIME = 180;	// 最初にチェインするときの時間
 
 		float m_nowFallSpeed = 8.0f;		//落下のスピード
 		float m_nowWalkSpeed = 10.0f;		//現在の移動のスピード
@@ -29,7 +30,8 @@ namespace basecross {
 		float m_changeEnergy = 1.0f;
 		float m_maxEnergy = 100.0f;
 		int m_chain = 0;		// コンボのための変数
-		int m_chainTimeLimit = 0;	// コンボとコンボの時間を図る時間
+		int m_chainTime = 0;	// コンボとコンボの時間を図る時間
+		int m_comboChainLimit = 0; // コンボが進んでいくにつれて更新する制限時間
 		bool m_isAdvanceTime = false; // 時間をすすめるかどうかのフラグ
 		Vec3 m_response;				//落ちた時に復帰する場所
 		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
@@ -140,11 +142,15 @@ namespace basecross {
 		void ResetCombo() { m_chain = 0; }
 		// 現在のコンボ数を返す
 		int GetChain() const { return m_chain; }
+		// 初めの時間を取得する
+		int GetFirstTime() const { return FIRST_CHAIN_TIME; }
 		// コンボとコンボの制限時間を加算する
-		void AddChainTimeLimit() { m_chainTimeLimit++; }
+		void AddChainTime() { m_chainTime++; }
 		// 現在のコンボ間の時間を返す
-		int GetChainTimeLim() const { return m_chainTimeLimit; }
-		void ResetTimeLim() { m_chainTimeLimit = 0; }
+		int GetChainTimeLim() const { return m_chainTime; }
+		void ResetTimeLim() { m_chainTime = 0; }
+		int GetComboChainLimit() const{ return m_comboChainLimit; }
+		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
 		bool GetAdvanceTimeActive() const { return m_isAdvanceTime; }
 		void SetAdvanceTimeActive(bool advanceTime) { m_isAdvanceTime = advanceTime; }
 		//落下した際にリスポーン位置へワープする
