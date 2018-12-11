@@ -72,8 +72,8 @@ namespace basecross{
 		SetDrawLayer(1);
 
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
-		//最初のステートをWalkStateに設定
-		m_StateMachine->ChangeState(WalkState::Instance());
+		//最初のステートをDataStateに設定
+		m_StateMachine->ChangeState(DataState::Instance());
 	}
 	//-------------------------------------------------------------------------------------------------------------
 	//Update
@@ -109,11 +109,6 @@ namespace basecross{
 	//
 	//-------------------------------------------------------------------------------------------------------------------
 	void Player::OnUpdate2() {
-		m_energy += m_changeEnergy * App::GetApp()->GetElapsedTime();
-		if (m_energy >= m_maxEnergy) {
-			m_energy = m_maxEnergy;
-		}
-
 		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
 		// 最小になっている方向に対して押し出しを行う
 		switch (m_nestingMin) {
@@ -313,19 +308,25 @@ namespace basecross{
 			//スローにする
 			gameManager.SetOnSlow(true);
 		}
+		//飛ぶ処理が終わったら
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
 			//スローを終わる
 			gameManager.SetOnSlow(false);
+			//ドローンに向かって飛んでいたら
 			if (drone) {
+				//現在チェインがドローンの死にチェイン数を超えていた場合
 				if (drone->GetDeadChain() <= GetChain()) {
+					//動かなくする
 					drone->Die();
 				}
+				//向かっているドローンの初期化
 				m_DroneNo = NULL;
 			}
 			//飛び終わったらステートをデータ体にする
-			m_StateMachine->ChangeState(DateState::Instance());
+			m_StateMachine->ChangeState(DataState::Instance());
 		}
+		//ドローンに向かっていたら、動いているので終点の位置を更新する
 		if (m_DroneNo != NULL) {
 			p2 = drone->GetComponent<Transform>()->GetWorldPosition();
 		}
@@ -423,6 +424,8 @@ namespace basecross{
 					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
 					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
+					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+					m_DroneNo = NULL;
 					m_StateMachine->ChangeState(LinkState::Instance());
 					break;
 				}
@@ -584,7 +587,7 @@ namespace basecross{
 		//右スティックの値でカメラの回転処理を行う
 		Obj->CameraRoll();
 		if (Obj->CheckAButton()) {
-			Obj->GetStateMachine()->ChangeState(DateState::Instance());
+			Obj->GetStateMachine()->ChangeState(DataState::Instance());
 			Obj->SightingDeviceDrawActive(true);
 		}
 	}
@@ -632,16 +635,16 @@ namespace basecross{
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
 	}
 	//--------------------------------------------------------------------------------------
-	//	class DateState : public ObjState<Player>;
+	//	class DataState : public ObjState<Player>;
 	//	用途: データ体状態
 	//--------------------------------------------------------------------------------------
 	//ステートのインスタンス取得
-	shared_ptr<DateState> DateState::Instance() {
-		static shared_ptr<DateState> instance(new DateState);
+	shared_ptr<DataState> DataState::Instance() {
+		static shared_ptr<DataState> instance(new DataState);
 		return instance;
 	}
 	//ステートに入ったときに呼ばれる関数
-	void DateState::Enter(const shared_ptr<Player>& Obj) {
+	void DataState::Enter(const shared_ptr<Player>& Obj) {
 		if (Obj->GetChain() >= 4)
 		{
 			// 現在のチェインに応じて制限時間を設定
@@ -662,7 +665,7 @@ namespace basecross{
 		}
 	}
 	//ステート実行中に毎ターン呼ばれる関数
-	void DateState::Execute(const shared_ptr<Player>& Obj) {
+	void DataState::Execute(const shared_ptr<Player>& Obj) {
 		// コンボ間の時間を進めるかどうか
 		if (Obj->GetAdvanceTimeActive())
 		{
@@ -692,7 +695,7 @@ namespace basecross{
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
-	void DateState::Exit(const shared_ptr<Player>& Obj) {
+	void DataState::Exit(const shared_ptr<Player>& Obj) {
 		Obj->ResetTimeLim();
 	}
 

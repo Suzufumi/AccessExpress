@@ -106,7 +106,7 @@ namespace basecross {
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
-			SightingDeviceDrawActive(false);
+			SightingDeviceDrawActive(true);
 		}
 		//照準の位置を変える
 		void SightingDeviceChangePosition();
@@ -202,11 +202,11 @@ namespace basecross {
 	//class DateState : public ObjState<Player>;
 	//用途: データ体状態
 	//--------------------------------------------------------------------------------------
-	class DateState : public ObjState<Player> {
-		DateState() {}
+	class DataState : public ObjState<Player> {
+		DataState() {}
 	public:
 		//ステートのインスタンス取得
-		static shared_ptr<DateState> Instance();
+		static shared_ptr<DataState> Instance();
 		//ステートに入ったときに呼ばれる関数
 		virtual void Enter(const shared_ptr<Player>& Obj)override;
 		//ステート実行中に毎ターン呼ばれる関数
