@@ -296,12 +296,27 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto& gameManager = GameManager::GetInstance();
 		//計算のための時間加算
-		m_Lerp += (App::GetApp()->GetElapsedTime() * m_JummerSpeed * 30.0f) / (m_BezierSpeedLeap);
+		auto addLerp = (App::GetApp()->GetElapsedTime() * m_JummerSpeed * 30.0f) / (m_BezierSpeedLeap);
+		if (gameManager.GetOnSlow()) {
+			//スロー状態なので10分の1の更新速度にする
+			m_Lerp += addLerp / gameManager.GetSlowSpeed();
+		}
+		else {
+			m_Lerp += addLerp;
+		}
 		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
 		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
+		//着地寸前でスローになっていなかったら
+		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false) {
+			//スローにする
+			gameManager.SetOnSlow(true);
+		}
 		if (m_Lerp >= 1.0f) {
 			m_Lerp = 1.0f;
+			//スローを終わる
+			gameManager.SetOnSlow(false);
 			if (drone) {
 				if (drone->GetDeadChain() <= GetChain()) {
 					drone->Die();

@@ -10,9 +10,11 @@ namespace basecross {
 	private:
 		GameManager() {} // コンストラクタを private に置く。
 		GameManager(const GameManager&); // コピーコンストラクタも private に置き、定義しない。
+		GameManager& operator=(const GameManager&); // コピー代入演算子も private に置き、定義しない
 		 ~GameManager() {} // デストラクタを private に置く。
 
 		 bool m_isSlow = false;	//スロー状態だったらtrue
+		 float m_slowSpeed = 20.0f;	//スロー状態で何分の１になるかの変数
 	public:
 		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
@@ -25,6 +27,9 @@ namespace basecross {
 		//スローフラグの設定
 		void SetOnSlow(bool f) {
 			m_isSlow = f;
+		}
+		float GetSlowSpeed() {
+			return m_slowSpeed;
 		}
 	};
 
