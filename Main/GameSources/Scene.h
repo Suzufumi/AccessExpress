@@ -49,7 +49,6 @@ namespace basecross{
 		int GetStageNum() const { return m_stageNum; }
 		void SetStageNum(int num) { m_stageNum = num; }
 	};
-
 }
 
 //end basecross
