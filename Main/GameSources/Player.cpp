@@ -332,9 +332,11 @@ namespace basecross{
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
-		//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp,pos);
+		if (!gameManager.GetOnSlow()) {
+			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
+		}
 	}
 	//---------------------------------------------------------------------------------------------
 	//ベジエ曲線の制御点設定
@@ -357,6 +359,8 @@ namespace basecross{
 		//カメラの追従する動きを設定する
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
+		//次のリンクに移るのでスローを解く
+		GameManager::GetInstance().SetOnSlow(false);
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -493,7 +497,7 @@ namespace basecross{
 			m_nestingMin = min;
 		}
 	}
-
+	//カメラのプレイヤー追従処理
 	void Player::CameraControll()
 	{
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -613,7 +617,11 @@ namespace basecross{
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->LinkGo();
-		//Obj->CameraControll();
+		if (GameManager::GetInstance().GetOnSlow()) {
+			Obj->RayShot();
+			Obj->CameraControll();
+			Obj->CameraRoll();
+		}
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
