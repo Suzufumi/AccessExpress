@@ -27,7 +27,8 @@ namespace basecross
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, -0.5f, 0.0f)
 		);
-
+		//プレイヤーとぶつからないようにする
+		AddTag(L"PlayerUse");
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
