@@ -91,6 +91,8 @@ namespace basecross {
 		void Walk();
 		//落ちる処理
 		void Fall();
+		//左スティックの値でプレイヤーを回転させる
+		void PlayerRoll();
 
 		void CameraRoll();
 		void CameraControll();

@@ -135,8 +135,6 @@ namespace basecross{
 		}
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
-		auto ptrUtil = GetBehavior<UtilBehavior>();
-		ptrUtil->RotToHead(m_padDir, 0.1f);
 		SetJummer(false);
 
 		// デバッグ文字の表示
@@ -207,12 +205,6 @@ namespace basecross{
 			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 		}
-		//左スティックが入力されてなかったら
-		//else {
-		//	//Velocity値をだんだん小さくする
-		//	m_velocity.x = m_velocity.x * 0.9f;
-		//	m_velocity.z = m_velocity.x * 0.9f;
-		//}
 		playerTrans->SetWorldPosition(playerPos);
 	}
 	//---------------------------------------------------------------------------------------------
@@ -227,6 +219,14 @@ namespace basecross{
 		}
 		m_isFall = true;
 
+	}
+	//---------------------------------------------------------------------------------------------
+	//左スティックの値でプレイヤーを回転させる
+	//---------------------------------------------------------------------------------------------
+	void Player::PlayerRoll() {
+		//左スティックの入力方向に回転させる
+		auto ptrUtil = GetBehavior<UtilBehavior>();
+		ptrUtil->RotToHead(m_padDir, 0.1f);
 	}
 	//--------------------------------------------------------------------------------------------
 	//平行移動の速度をステートで分けて変更する
@@ -295,7 +295,7 @@ namespace basecross{
 		//計算のための時間加算
 		auto addLerp = (App::GetApp()->GetElapsedTime() * m_JummerSpeed * 30.0f) / (m_BezierSpeedLeap);
 		if (gameManager.GetOnSlow()) {
-			//スロー状態なので10分の1の更新速度にする
+			//スロー状態なので20分の1の更新速度にする
 			m_Lerp += addLerp / gameManager.GetSlowSpeed();
 		}
 		else {
@@ -344,7 +344,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
-		p2 = point + Vec3(0,1,0);
+		p2 = point + Vec3(0,1.0f,0);
 		m_BezierSpeedLeap = Vec3(p0 - p2).length();
 		if (m_BezierSpeedLeap >= 20.0f) {
 			p1 = point + Vec3(0, 10, 0);
@@ -422,6 +422,7 @@ namespace basecross{
 				sightingDevice->SetCaptureLink(true);
 				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
+					dir.y = 0;
 					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
 					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
@@ -619,12 +620,13 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
-		Obj->LinkGo();
+		//スロー状態なら、カメラとレイを開放する
 		if (GameManager::GetInstance().GetOnSlow()) {
 			Obj->RayShot();
 			Obj->CameraControll();
 			Obj->CameraRoll();
 		}
+		Obj->LinkGo();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
@@ -686,9 +688,11 @@ namespace basecross{
 		Obj->Walk();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
+		//カメラ制御のための値を変更する
 		Obj->CameraControll();
 		//右スティックの値でカメラの回転処理を行う
 		Obj->CameraRoll();
+		Obj->PlayerRoll();
 		if (Obj->CheckAButton() || Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
 			Obj->SightingDeviceDrawActive(false);
