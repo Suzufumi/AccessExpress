@@ -87,7 +87,7 @@ namespace basecross{
 		// ゲームコントローラー取得
 		auto device = app->GetInputDevice();
 		if (app->GetScene<Scene>()->GetGameStart()) {
-			m_pad = device.GetControlerVec()[0];
+			m_pad = GameManager::GetInstance().GetPad();
 		}
 		else {
 			m_nowFallSpeed = 2.0f;
