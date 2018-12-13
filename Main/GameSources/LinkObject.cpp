@@ -25,7 +25,7 @@ namespace basecross
 			Vec3(1.0f, 1.0f, 1.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -0.5f, 0.0f)
+			Vec3(0.0f, -0.2f, 0.0f)
 		);
 		//プレイヤーとぶつからないようにする
 		AddTag(L"PlayerUse");
@@ -34,9 +34,11 @@ namespace basecross
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"TOWER_MODEL");
 		drawComp->SetTextureResource(L"TOWER_TX");
-		//drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		// ライティングをなしにする
+		drawComp->SetLightingEnabled(false);
 		drawComp->SetMeshToTransformMatrix(spanMat);
-		//drawComp->SetDiffuse(Col4(0.0f, 1.0f, 0.0f, 1.0f));
+		drawComp->SetSamplerState(SamplerState::LinearClamp);
+		SetAlphaActive(true);
 		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
 	}
 

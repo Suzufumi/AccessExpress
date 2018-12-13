@@ -42,7 +42,7 @@ namespace basecross{
 		};
 		const int TEXTURE_NUM = 9;
 		InitializedParam textures[] = {
-			{ L"Building1.png", L"Building1_TX" },
+			//{ L"Building1.png", L"Building1_TX" },
 			{ L"Title.png", L"TITLE_TX"},
 			{ L"StageSelect.png", L"StageSelect_TX"},
 			{ L"DeliverClear.png", L"ResultStage_TX"},
@@ -100,11 +100,11 @@ namespace basecross{
 
 		auto staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"Building.bmf");
 		App::GetApp()->RegisterResource(L"BUILDING_MODEL", staticModel);
-		modelTex = modelDir + L"Building5.tga";
-		App::GetApp()->RegisterTexture(L"Building2_TX", modelTex);
+		modelTex = modelDir + L"Tx_Building1.tga";
+		App::GetApp()->RegisterTexture(L"Building_TX", modelTex);
 		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"RadioTower.bmf");
 		App::GetApp()->RegisterResource(L"TOWER_MODEL", staticModel);
-		modelTex = modelDir + L"RadioTower.png";
+		modelTex = modelDir + L"RadioTower.tga";
 		App::GetApp()->RegisterTexture(L"TOWER_TX", modelTex);
 	}
 
