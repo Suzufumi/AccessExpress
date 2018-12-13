@@ -14,7 +14,8 @@ namespace basecross {
 		 ~GameManager() {} // デストラクタを private に置く。
 
 		 bool m_isSlow = false;	//スロー状態だったらtrue
-		 float m_slowSpeed = 20.0f;	//スロー状態で何分の１になるかの変数
+		 float m_slowSpeed = 20.0f;	//スロー状態で何分の１になるかの変数	
+		 CONTROLER_STATE m_pad;//パッドの全情報
 	public:
 		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
@@ -30,6 +31,19 @@ namespace basecross {
 		}
 		float GetSlowSpeed() {
 			return m_slowSpeed;
+		}
+		//パッドの情報を更新する
+		void UpDatePadData() {
+			// アプリケーション取得
+			auto& app = App::GetApp();
+			// ゲームコントローラー取得
+			auto device = app->GetInputDevice();
+			if (app->GetScene<Scene>()->GetGameStart()) {
+				m_pad = device.GetControlerVec()[0];
+			}
+		};
+		CONTROLER_STATE GetPad() {
+			return m_pad;
 		}
 	};
 

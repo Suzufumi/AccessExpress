@@ -225,9 +225,12 @@ namespace basecross {
 		}
 	}
 	void GameStage::OnUpdate() {
-		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		//マネージャーが持つパッド情報を更新
+		GameManager::GetInstance().UpDatePadData();
+
 		//スタートボタンを押すことでリザルトに行く
-		if (CntlVec[0].wPressedButtons & XINPUT_GAMEPAD_START) {
+		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_START
+			&& App::GetApp()->GetScene<Scene>()->GetGameStart()) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 			auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
 			fade->SetIsAction(true);
