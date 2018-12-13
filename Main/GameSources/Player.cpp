@@ -15,11 +15,8 @@ namespace basecross{
 		:GameObject(StagePtr)
 	{	
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
-		//posStr = GameManager::GetInstance().DeleteParenthesis(posStr);
 		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
-		//rotStr = GameManager::GetInstance().DeleteParenthesis(rotStr);
 		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-		//scaleStr = GameManager::GetInstance().DeleteParenthesis(scaleStr);
 
 		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
 		auto quat = MyUtil::unityQuatStrToBCQuat(rotStr);

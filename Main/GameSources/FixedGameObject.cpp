@@ -2,9 +2,18 @@
 #include "Project.h"
 
 namespace basecross {
-	Wall::Wall(const shared_ptr<Stage>& StagePtr, Vec3 pos, Vec3 scale)
-		: GameObject(StagePtr), m_position(pos), m_scale(scale)
+	Wall::Wall(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
+		: GameObject(StagePtr)
 	{
+		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+
+		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
+
+		m_position = pos;
+		m_scale = scale;
+
 	}
 	//--------------------------------------------------------------------------------------
 	//初期化
@@ -20,10 +29,10 @@ namespace basecross {
 		ptrTrans->SetScale(m_scale);
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(1.5f, 1.0f, 1.5f),
+			Vec3(1.0f, 1.0f, 1.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -0.45f, 0.0f)
+			Vec3(0.0f, -3.5f, 0.0f)
 		);
 
 		//描画コンポーネントの追加

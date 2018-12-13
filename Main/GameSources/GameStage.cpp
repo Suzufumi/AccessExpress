@@ -92,7 +92,6 @@ namespace basecross {
 		// XmlファイルからL"Player"を探す
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Player");
 
-
 		//プレイヤー
 		//auto player = AddGameObject<Player>(Vec3(pos), Quat(qt), Vec3(scale));
 		//auto dev = AddGameObject<SightingDevice>();
@@ -104,61 +103,16 @@ namespace basecross {
 
 	void GameStage::CreateBill()
 	{
-		struct BillTrans
-		{
-			Vec3 m_pos;
-			Vec3 m_scale;
-		};
-
-		BillTrans billParam[] = 
-		{
-			{ Vec3(-35.0f, 1.0f, -35.0f), Vec3(20.0f, 8.0f, 20.0f) }, // 0
-			{ Vec3(-30.0f, 1.0f, -10.0f), Vec3(5.0f, 7.0f, 5.0f) }, // 1
-			{ Vec3(-40.0f, 1.0f, -10.0f), Vec3(5.0f, 7.0f, 5.0f) },	// 2
-			{ Vec3(-38.0f, 1.0f, 10.0f), Vec3(5.0f, 7.0f, 5.0f) },	// 3
-			{ Vec3(-25.0f, 1.0f, 10.0f), Vec3(5.0f, 6.0f, 5.0f) },	// 3
-			{ Vec3(-35.0f, 1.0f, 35.0f),   Vec3(25.0f, 5.0f, 25.0f) }, // 4
-			{ Vec3(-5.0f, 1.0f, -23.0f),  Vec3(10.0f, 8.0f, 30.0f) }, // 5
-			{ Vec3(10.0f, 1.0f, -5.0f),  Vec3(10.0f, 5.0f, 15.0f) }, // 5
-			{ Vec3(5.0f, 1.0f, 25.0f),  Vec3(10.0f, 8.0f, 10.0f) }, // 6
-			{ Vec3(10.0f, 1.0f, 50.0f),  Vec3(10.0f, 7.0f, 10.0f) }, // 7
-			{ Vec3(-5.0f, 1.0f, 40.0f),  Vec3(10.0f, 6.0f, 10.0f) }, // 7
-			{ Vec3(35.0f, 1.0f, -25.0f),  Vec3(20.0f, 4.0f, 20.0f) }, // 8
-			{ Vec3(38.0f, 1.0f, 5.0f),  Vec3(15.0f, 6.0f, 10.0f) }, // 9
-			{ Vec3(35.0f, 1.0f, 35.0f),  Vec3(30.0f, 8.0f, 30.0f) }, // 10	
-			{ Vec3(65.0f, 1.0f, 50.0f),  Vec3(20.0f, 3.0f, 20.0f) }, // 11	
-		};
-
-		int count = 0;
-		for (auto bill : billParam)
-		{
-			//bill.m_scale.x *= 2.5f;
-			bill.m_scale.y *= 3.0f;
-			//bill.m_scale.z *= 2.5f;
-
-			bill.m_pos.y = bill.m_scale.y / 2;
-			AddGameObject<Wall>(bill.m_pos, bill.m_scale);
-			//if (count % 2 == 0)
-			//{
-			AddGameObject<LinkObject>(
-				Vec3(bill.m_pos.x, bill.m_pos.y * 2.0f, bill.m_pos.z),
-				Vec3(1.0f, 1.0f, 1.0f));
-			//}
-			//count++;
-		}
+		GameObjecttXMLBuilder builder;
+		builder.Register<Wall>(L"Wall");
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Wall");
 	}
 
 	void GameStage::CreateLinkObject()
 	{
-		AddGameObject<LinkObject>(Vec3(-35.0f, 12.5f, -33.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-35.0f, 12.5f, -20.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-35.0f, 8.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-23.0f, 11.5f, 5.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-23.0f, 11.5f, -25.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-10.0f, 8.5f, -25.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-23.0f, 11.5f, -5.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-10.0f, 11.5f, 0.0f), Vec3(1.0f, 1.0f, 1.0f));
-		AddGameObject<LinkObject>(Vec3(-10.0f, 12.5f, -10.0f), Vec3(1.0f, 1.0f, 1.0f));
+		GameObjecttXMLBuilder builder;
+		builder.Register<LinkObject>(L"RadioTower");
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/RadioTower");
 	}
 
 	void GameStage::CreateDrone()
@@ -214,8 +168,7 @@ namespace basecross {
 			auto goal = AddGameObject<Goal>(Vec3(65.0f, 13.0f, 50.0f), Vec3(1.0f, 30.0f, 1.0f));
 			// 建物の配置
 			CreateBill();
-
-			//CreateLinkObject();
+			CreateLinkObject();
 
 			//SetBackGround();
 
