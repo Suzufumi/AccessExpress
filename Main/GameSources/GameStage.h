@@ -12,6 +12,8 @@ namespace basecross {
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage {
+		// ステージのパスを保存する
+		wstring m_stageXmlPath;
 		//ビューの作成
 		void CreateViewLight();
 		// 背景の設定

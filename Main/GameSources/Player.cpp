@@ -11,9 +11,24 @@ namespace basecross{
 	//------------------------------------------------------------------------------------------------
 	//playerのコンストラクタ
 	//------------------------------------------------------------------------------------------------
-	Player::Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca)
-		:GameObject(StagePtr), m_position(pos), m_quaternion(quat), m_scale(sca)
-	{
+	Player::Player(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
+		:GameObject(StagePtr)
+	{	
+		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		//posStr = GameManager::GetInstance().DeleteParenthesis(posStr);
+		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
+		//rotStr = GameManager::GetInstance().DeleteParenthesis(rotStr);
+		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+		//scaleStr = GameManager::GetInstance().DeleteParenthesis(scaleStr);
+
+		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		auto quat = MyUtil::unityQuatStrToBCQuat(rotStr);
+		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
+
+		m_position = pos;
+		m_quaternion = quat;
+		m_scale = scale;
+
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		m_tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 		m_angleX = m_tpsCamera.lock()->GetCameraAngleX();
@@ -47,7 +62,7 @@ namespace basecross{
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(1.0f, 0.5f, 1.0f),
+			Vec3(1.0f, 1.0f, 1.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, Deg2Rad(180), 0.0f),
 			Vec3(0.0f, -0.5f, 0.0f)
@@ -69,6 +84,13 @@ namespace basecross{
 		//drawComp->SetColorAndAlpha(Color);
 		// レイヤーの調整
 		SetDrawLayer(1);
+
+		auto dev = GetStage()->AddGameObject<SightingDevice>();
+		this->SetSightingDevice(dev);
+		GetStage()->AddGameObject<ViewChainLetter>();
+		GetStage()->AddGameObject<ViewChainNum>();
+
+		GetStage()->SetSharedGameObject(L"Player", GetThis<Player>());
 
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		//最初のステートをDataStateに設定

@@ -78,7 +78,8 @@ namespace basecross {
 		};
 		Target m_target;
 
-		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);
+		Player(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode);
+		//Player(const shared_ptr<Stage>& StagePtr, /*IXMLDOMNodePtr pNode*/ Vec3 pos, Quat quat, Vec3 sca);
 		virtual ~Player() {};
 		virtual void OnCreate() override; // ‰Šú‰»
 		virtual void OnUpdate() override; // XV

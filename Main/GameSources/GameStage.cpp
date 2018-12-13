@@ -86,15 +86,20 @@ namespace basecross {
 	//プレイヤー関係の作成
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
+		GameObjecttXMLBuilder builder;
+		// プレイヤーをXmlに登録
+		builder.Register<Player>(L"Player");
+		// XmlファイルからL"Player"を探す
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Player");
+
+
 		//プレイヤー
-		auto player = AddGameObject<Player>(Vec3(-35.0f, 35.0f, -37.0f), Quat(0, 0, 0, 1), Vec3(1, 2, 1));
-		auto dev = AddGameObject<SightingDevice>();
-		player->SetSightingDevice(dev);
-		SetSharedGameObject(L"Player", player);
-		AddGameObject<ViewChainLetter>();
-		auto chainNum = AddGameObject<ViewChainNum>();
-		chainNum->GetComponent<Transform>()->SetPosition(Vec3(800, -480, 0));
-		AddGameObject<SlowTimeUI>();
+		//auto player = AddGameObject<Player>(Vec3(pos), Quat(qt), Vec3(scale));
+		//auto dev = AddGameObject<SightingDevice>();
+		//player->SetSightingDevice(dev);
+		//SetSharedGameObject(L"Player", player);
+		//AddGameObject<ViewChainLetter>();
+		//AddGameObject<ViewChainNum>();
 	}
 
 	void GameStage::CreateBill()
@@ -185,6 +190,11 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
+			wstring dataDir;
+			App::GetApp()->GetDataDirectory(dataDir);
+			m_stageXmlPath = dataDir + L"Stage\\" + L"1.xml";
+
+			XmlDocReader xmlReader(m_stageXmlPath);
 			//ゲームが始まっているフラグを切る
 			App::GetApp()->GetScene<Scene>()->SetGameStart(false);
 			//スローフラグをオフにしておく
