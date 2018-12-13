@@ -221,12 +221,11 @@ namespace basecross{
 
 	}
 	//---------------------------------------------------------------------------------------------
-	//左スティックの値でプレイヤーを回転させる
+	//プレイヤーを向かう方向に回転させる
 	//---------------------------------------------------------------------------------------------
 	void Player::PlayerRoll() {
-		//左スティックの入力方向に回転させる
 		auto ptrUtil = GetBehavior<UtilBehavior>();
-		ptrUtil->RotToHead(m_padDir, 0.1f);
+		ptrUtil->RotToHead(m_forward, 0.1f);
 	}
 	//--------------------------------------------------------------------------------------------
 	//平行移動の速度をステートで分けて変更する
@@ -345,7 +344,9 @@ namespace basecross{
 	void Player::SetBezierPoint(Vec3 point) {
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p2 = point + Vec3(0,1.0f,0);
-		m_BezierSpeedLeap = Vec3(p0 - p2).length();
+		//飛ぶ先までの距離に応じて飛ぶ際のスピードを変える
+		m_BezierSpeedLeap = Vec3(p2 - p0).length();
+		//飛ぶ先までの距離に応じて飛ぶ際の放物線の形を変える
 		if (m_BezierSpeedLeap >= 20.0f) {
 			p1 = point + Vec3(0, 10, 0);
 		}
@@ -362,6 +363,8 @@ namespace basecross{
 		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
 		//次のリンクに移るのでスローを解く
 		GameManager::GetInstance().SetOnSlow(false);
+		//プレイヤーの正面向き飛ぶ方向にする
+		m_forward = Vec3(p2 - p0).normalize();
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -626,6 +629,9 @@ namespace basecross{
 			Obj->CameraControll();
 			Obj->CameraRoll();
 		}
+		else {
+			Obj->PlayerRoll();
+		}
 		Obj->LinkGo();
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
@@ -692,6 +698,7 @@ namespace basecross{
 		Obj->CameraControll();
 		//右スティックの値でカメラの回転処理を行う
 		Obj->CameraRoll();
+		//プレイヤーの体の向きを変える
 		Obj->PlayerRoll();
 		if (Obj->CheckAButton() || Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());

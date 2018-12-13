@@ -47,6 +47,6 @@ namespace basecross
 		p0 = GetEye();		//始点
 		p2 = p2Player - a;	//終点
 		//始点と終点の中点からaの方向にずらして与える
-		p1 = p2 - ((p2 - p0) / 2) - a.normalize() * 5.0f;
+		p1 = (p2 - ((p2 - p0) / 2)) - a.normalize() * Vec3(p2 - p0).length();
 	}
 }
