@@ -48,9 +48,18 @@ namespace basecross {
 		SetDrawLayer(-1);
 	}
 
-	Goal::Goal(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale)
-		: GameObject(stagePtr), m_position(pos), m_scale(scale)
+	Goal::Goal(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
+		: GameObject(stagePtr)
 	{
+		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+
+		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
+
+		m_position = pos;
+		m_scale = scale;
+
 	}
 
 	void Goal::OnCreate() {

@@ -33,29 +33,6 @@ namespace basecross {
 
 	}
 
-	void GameStage::SetBackGround()
-	{
-		struct backGRParam
-		{
-			Vec3 m_rot;
-			Vec3 m_pos;
-		};
-
-		const int BACK_GROUND = 4;
-		backGRParam backParam[BACK_GROUND] =
-		{
-			{ Vec3(0.0f), Vec3(0.0f, 37.5f, 50.0f)},
-			{ Vec3(0.0f, Deg2Rad(90), 0.0f), Vec3(-50.0f, 37.5f, 0.0f)},
-			{ Vec3(0.0f, Deg2Rad(-90), 0.0f), Vec3(50.0f, 37.5f, 0.0f)},
-			{ Vec3(0.0f), Vec3(0.0f, 37.5f, -50.0f)}
-		};
-
-		for (auto back : backParam)
-		{
-			AddGameObject<SkySprite>(back.m_rot, back.m_pos);
-
-		}
-	}
 
 	//----------------------------------------------------------------
 	//床の作成
@@ -142,6 +119,13 @@ namespace basecross {
 
 	}
 
+	void GameStage::CreateGoal()
+	{
+		GameObjecttXMLBuilder builder;
+		builder.Register<Goal>(L"Goal");
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Goal");
+	}
+
 	void GameStage::OnCreate() {
 		try {
 			wstring dataDir;
@@ -165,21 +149,10 @@ namespace basecross {
 			//CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
-			auto goal = AddGameObject<Goal>(Vec3(65.0f, 13.0f, 50.0f), Vec3(1.0f, 30.0f, 1.0f));
 			// 建物の配置
 			CreateBill();
 			CreateLinkObject();
 
-			//SetBackGround();
-
-			//Quat qt;
-			//AddGameObject<SearchObject>(Vec3(-3.0f, 1.0f, 5.0f), Quat(qt.identity()), Vec3(1.0f, 1.0f, 1.0f));
-						
-			//auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35),Drone::RoopDirection::ClockWise);
-			//drone->SetDeadChain(1);
-			//auto drone = AddGameObject<Drone>(Vec3(-35, 25, -35));
-			//drone->SetDeadChain(1);
-			//AddGameObject<Drone>(Vec3(-35, 25, -35));
 			CreateDrone();
 			
 			//制限時間を作成（中央上）
@@ -189,6 +162,7 @@ namespace basecross {
 			auto score = AddGameObject<ScoreUI>();
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 3, 0, 0);
 
+			CreateGoal();
 			AddGameObject<SkySphere>();
 			AddGameObject<EnergyGaugeUI>();
 		}
