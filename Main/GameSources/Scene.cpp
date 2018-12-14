@@ -15,6 +15,7 @@ namespace basecross{
 	void Scene::OnCreate(){
 		try {
 			CreateResources();
+			CreateMusicResources();
 			//クリアする色を設定
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
@@ -107,19 +108,53 @@ namespace basecross{
 		modelTex = modelDir + L"RadioTower.tga";
 		App::GetApp()->RegisterTexture(L"TOWER_TX", modelTex);
 	}
+	//----------------------------------------------------------------------------------------
+	//音を登録する
+	//----------------------------------------------------------------------------------------
+	void Scene::CreateMusicResources() {
+		wstring dataDir;
+		// mediaディレクトリを取得
+		App::GetApp()->GetDataDirectory(dataDir);
+
+		//構造体作成
+		struct InitializedParam{
+			wstring m_musicName;
+			wstring m_musicKey;
+		};
+		//ファイル名とキーの設定
+		InitializedParam musics[] = {
+			{L"yayoi.wav",L"yayoi_mus"},
+			{L"nanika.wav",L"nanika_mus"},
+		};
+		//プロジェクトに登録
+		for (auto music : musics){
+			wstring strTexture = dataDir + L"Musics\\" + music.m_musicName;
+			App::GetApp()->RegisterWav(music.m_musicKey, strTexture);
+		}
+	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
+		auto audioMana = m_audioManager.lock();
+		audioMana->Stop(m_numMusic.lock());
 		if (event->m_MsgStr == L"ToGameStage") {
+			m_numMusic = audioMana->Start(L"yayoi_mus", XAUDIO2_LOOP_INFINITE, 1.0f);
+
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {
+			m_numMusic = audioMana->Start(L"yayoi_mus", XAUDIO2_LOOP_INFINITE, 1.0f);
+			
 			ResetActiveStage<TitleStage>();
 		}
 		else if (event->m_MsgStr == L"ToStageSelect") {
+			m_numMusic = audioMana->Start(L"nanika_mus", XAUDIO2_LOOP_INFINITE, 0.6f);
+
 			ResetActiveStage<StageSelect>();
 		}
 		else if (event->m_MsgStr == L"ToResultStage") {
+			m_numMusic = audioMana->Start(L"nanika_mus", XAUDIO2_LOOP_INFINITE, 0.6f);
+
 			ResetActiveStage<ResultStage>();
 		}
 		else if (event->m_MsgStr == L"ToGameOverStage") {

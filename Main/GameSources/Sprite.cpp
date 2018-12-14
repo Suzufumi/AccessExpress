@@ -61,7 +61,7 @@ namespace basecross{
 		auto ptrAction = AddComponent<Action>();
 		auto width = App::GetApp()->GetGameWidth();
 		auto height = App::GetApp()->GetGameHeight();
-		ptrAction->AddMoveTo(1.0f, Vec3(width, 0.0f, 0.0f));
+		ptrAction->AddMoveTo(1.0f, Vec3((float)width, 0.0f, 0.0f));
 		ptrAction->Run();
 		ptrAction->SetLooped(true);
 		SetDrawLayer(100);
