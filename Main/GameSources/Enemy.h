@@ -4,7 +4,10 @@
 #include "Project.h"
 
 namespace basecross {
-	class Drone : public OBBObject {
+	class Drone : public GameObject {
+		Vec3 m_pos;
+		Quat m_quat;
+		Vec3 m_scale;
 		struct BezierPoint {
 			Vec3 p0; //Žn“_
 			Vec3 p1;
@@ -28,7 +31,7 @@ namespace basecross {
 		};
 		DroneMotion m_roopDir;
 
-		Drone(const shared_ptr<Stage>& stage, Vec3 pos, DroneMotion dir,int chain);
+		Drone(const shared_ptr<Stage>& stage, IXMLDOMNodePtr pNode);
 		virtual ~Drone() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;

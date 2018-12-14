@@ -94,29 +94,9 @@ namespace basecross {
 
 	void GameStage::CreateDrone()
 	{
-		struct DroneParam
-		{
-			Vec3 m_pos;
-			Drone::DroneMotion m_dir;
-			int m_needChains;
-		};
-
-		DroneParam  drones[] = {
-			{ Vec3(-25.0f, 25.0f, -30.0f), Drone::DroneMotion::CounterClockwise, 2},
-			{ Vec3(-20.0f, 25.0f, -30.0f), Drone::DroneMotion::ClockWise, 4},
-			{ Vec3(-10.0f, 21.0f, 28.0f), Drone::DroneMotion::VerticalMotion, 1},
-			{ Vec3(-15.0f, 20.0f, 40.0f), Drone::DroneMotion::VerticalMotion, 2},
-			{ Vec3(55.0f, 25.0f, 50.0f), Drone::DroneMotion::CounterClockwise, 3 },
-			{ Vec3(5.0f, 18.0f, -23.0f), Drone::DroneMotion::Wave, 2 },
-			{ Vec3(37.0f, 15.0f, -10.0f), Drone::DroneMotion::VerticalMotion, 4 },
-			{ Vec3(5.0f, 18.0f, 5.0f), Drone::DroneMotion::Wave, 2 },
-			{ Vec3(50.0f, 25.0f, 35.0f), Drone::DroneMotion::ClockWise, 2},
-		};
-
-		for (auto drone : drones)	{
-			auto ptrDrone = AddGameObject<Drone>(drone.m_pos, drone.m_dir, drone.m_needChains);
-		}
-
+		GameObjecttXMLBuilder builder;
+		builder.Register<Drone>(L"Enemy");
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Enemy");
 	}
 
 	void GameStage::CreateGoal()
