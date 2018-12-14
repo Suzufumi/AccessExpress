@@ -9,7 +9,8 @@
 
 namespace basecross {
 	class Player : public GameObject {
-		unique_ptr< StateMachine<Player> >  m_StateMachine;	//ステートマシーン
+		unique_ptr<StateMachine<Player>>  m_StateMachine;	//ステートマシーン
+		unique_ptr<StateMachine<Player>> m_animStateMachine; // アニメーションのステートマシン
 		const int FIRST_CHAIN_TIME = 180;	// 最初にチェインするときの時間
 
 		float m_nowFallSpeed = 8.0f;		//落下のスピード
@@ -90,6 +91,11 @@ namespace basecross {
 		}
 
 		Target GetTarget() { return m_target; };
+
+		const unique_ptr<StateMachine<Player>>& GetAnimStateMachine()
+		{
+			return m_animStateMachine;
+		}
 
 		//衝突したとき
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;

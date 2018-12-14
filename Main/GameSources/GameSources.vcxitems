@@ -24,6 +24,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MainUi.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyUtil.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PlayerAnimState.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerSupport.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MainUi.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MyUtil.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PlayerAnimState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PlayerSupport.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectCamera.cpp" />

@@ -74,8 +74,8 @@ namespace basecross{
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		// アニメーションを追加する
 		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
-		// アニメーションの設定
-		drawComp->ChangeCurrentAnimation(L"Default");
+		drawComp->AddAnimation(L"Move", 200, 30, true, 30.0f);
+		drawComp->AddAnimation(L"Fly", 300, 40, false, 30.0f);
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
 		//drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);
@@ -92,6 +92,9 @@ namespace basecross{
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		//最初のステートをDataStateに設定
 		m_StateMachine->ChangeState(DataState::Instance());
+
+		m_animStateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
+		m_animStateMachine->ChangeState(PlayerDefaultAnim::Instance());
 	}
 	//-------------------------------------------------------------------------------------------------------------
 	//Update
@@ -118,6 +121,8 @@ namespace basecross{
 
 		//ステートマシンのアップデート
 		m_StateMachine->Update();
+
+		m_animStateMachine->Update();
 		// アニメーションを更新する
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->UpdateAnimation(delta);
@@ -209,11 +214,12 @@ namespace basecross{
 		}
 	}
 
-
+																	
 	//--------------------------------------------------------------------------------------------
 	//XZ平面の移動処理
 	//--------------------------------------------------------------------------------------------
 	void Player::Walk() {
+		//GetDynamicComponent<SmBaseDraw>()->ChangeCurrentAnimation(L"Move");
 		auto playerTrans = GetComponent<Transform>();
 		auto playerPos = playerTrans->GetWorldPosition();
 		//左スティックに値が入力されていたら
@@ -748,6 +754,7 @@ namespace basecross{
 
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
+		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
 		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
@@ -797,6 +804,7 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void DataState::Enter(const shared_ptr<Player>& Obj) {
+		//Obj->GetAnimStateMachine()->ChangeState(PlayerDefaultAnim::Instance());
 		if (Obj->GetChain() >= 4)
 		{
 			// 現在のチェインに応じて制限時間を設定

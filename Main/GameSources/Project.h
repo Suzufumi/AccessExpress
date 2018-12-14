@@ -27,6 +27,7 @@
 #include "Enemy.h"
 #include "Sprite.h"
 #include "PlayerSupport.h"
+#include "PlayerAnimState.h"
 #include "AccessObject.h"
 #include "SearchObject.h"
 #include "LinkObject.h"
