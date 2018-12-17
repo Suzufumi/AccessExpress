@@ -132,28 +132,43 @@ namespace basecross{
 			App::GetApp()->RegisterWav(music.m_musicKey, strTexture);
 		}
 	}
+	//----------------------------------------------------------------------------------------
+	//音を一回鳴らす
+	//----------------------------------------------------------------------------------------
+	void Scene::MusicOnceStart(wstring key,float volume) {
+		auto audioMana = m_audioManager.lock();
+		audioMana->Start(key, XAUDIO2_NO_LOOP_REGION, volume);
+	}
+	//----------------------------------------------------------------------------------------
+	//音をループで流す
+	//----------------------------------------------------------------------------------------
+	shared_ptr<SoundItem> Scene::MusicRoopStart(wstring key, float volume) {
+		auto audioMana = m_audioManager.lock();
+		auto si = audioMana->Start(key, XAUDIO2_LOOP_INFINITE, volume);
+		return si;
+	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		auto audioMana = m_audioManager.lock();
 		audioMana->Stop(m_numMusic.lock());
 		if (event->m_MsgStr == L"ToGameStage") {
-			m_numMusic = audioMana->Start(L"yayoi_mus", XAUDIO2_LOOP_INFINITE, 1.0f);
+			m_numMusic = MusicRoopStart(L"yayoi_mus", 1.0f);
 
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {
-			m_numMusic = audioMana->Start(L"yayoi_mus", XAUDIO2_LOOP_INFINITE, 1.0f);
+			m_numMusic = MusicRoopStart(L"yayoi_mus", 1.0f);
 			
 			ResetActiveStage<TitleStage>();
 		}
 		else if (event->m_MsgStr == L"ToStageSelect") {
-			m_numMusic = audioMana->Start(L"nanika_mus", XAUDIO2_LOOP_INFINITE, 0.6f);
+			m_numMusic = MusicRoopStart(L"nanika_mus", 0.6f);
 
 			ResetActiveStage<StageSelect>();
 		}
 		else if (event->m_MsgStr == L"ToResultStage") {
-			m_numMusic = audioMana->Start(L"nanika_mus", XAUDIO2_LOOP_INFINITE, 0.6f);
+			m_numMusic = MusicRoopStart(L"nanika_mus", 0.6f);
 
 			ResetActiveStage<ResultStage>();
 		}
