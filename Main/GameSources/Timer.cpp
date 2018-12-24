@@ -35,7 +35,7 @@ namespace basecross {
 	//時間制限のスプライト
 	//---------------------------------------------------------------------------------
 	RemainingTimerSprite::RemainingTimerSprite(const shared_ptr<Stage>& stage, int timer)
-		:GameObject(stage), m_timer(timer)
+		:GameObject(stage), m_timer((float)timer)
 	{
 		m_places = 3;//3桁表示
 	}
@@ -90,7 +90,7 @@ namespace basecross {
 			m_timer = 0.0f;
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameOverStage");
 		}
-		int timer = m_timer;
+		int timer = (int)m_timer;
 
 		for (int i = 0; i < m_places; i++) {
 			int num = timer % 10;	// 一の位を抜き出す

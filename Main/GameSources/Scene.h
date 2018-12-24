@@ -14,6 +14,8 @@ namespace basecross{
 	class Scene : public SceneBase{
 		bool m_isGameStart;
 		int m_stageNum;
+		 weak_ptr<XAudio2Manager> m_audioManager = App::GetApp()->GetXAudio2Manager();
+		 weak_ptr<SoundItem> m_numMusic;
 	public:
 		//--------------------------------------------------------------------------------------
 		/*!
@@ -43,8 +45,11 @@ namespace basecross{
 		virtual void OnEvent(const shared_ptr<Event>& event) override;
 		
 		void CreateResources();
+		void CreateMusicResources();
 		void SetGameStart(bool f) { m_isGameStart = f; };
 		bool GetGameStart() { return m_isGameStart; };
+		void MusicOnceStart(wstring key,float volume);
+		shared_ptr<SoundItem> MusicRoopStart(wstring key, float volume);
 
 		int GetStageNum() const { return m_stageNum; }
 		void SetStageNum(int num) { m_stageNum = num; }

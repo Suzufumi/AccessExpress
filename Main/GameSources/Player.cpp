@@ -19,7 +19,6 @@ namespace basecross{
 		m_angleX = m_tpsCamera.lock()->GetCameraAngleX();
 		m_angleY = m_tpsCamera.lock()->GetCameraAngleY();
 		m_maxAngleSpeed = m_tpsCamera.lock()->GetMaxAngleSpeed();
-		m_cameraHeight = m_tpsCamera.lock()->GetCameraHeight();
 		m_cameraDistance = m_tpsCamera.lock()->GetCameraDistance();
 
 	}
@@ -90,7 +89,7 @@ namespace basecross{
 			m_pad = GameManager::GetInstance().GetPad();
 		}
 		else {
-			m_nowFallSpeed = 2.0f;
+			m_nowFallSpeed = 5.0f;
 			Fall();
 		}
 
@@ -264,14 +263,20 @@ namespace basecross{
 		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
 			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
 			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
-			m_cameraHeight += -m_pad.fThumbRY * m_maxAngleSpeed * 5.0f * delta; // カメラを昇降させる
-			//360度を越えたら0にする
-			if (m_angleX > 360) {
-				m_angleX = 0;
+			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
+			//Y軸基準角度の丸め(-360<360)
+			if (m_angleY > Deg2Rad(360.0f)) {
+				m_angleY = Deg2Rad(0.0f);
 			}
-			//0度よりも小さくなったら
-			if (m_angleX < 0) {
-				m_angleX = 360;
+			if (m_angleY < Deg2Rad(0.0f)) {
+				m_angleY = Deg2Rad(360.0f);
+			}
+			//X軸基準角度の丸め(-60<60)
+			if (m_angleX > Deg2Rad(60.0f)) {
+				m_angleX = Deg2Rad(60.0f);
+			}
+			if (m_angleX < -Deg2Rad(60.0f)) {
+				m_angleX = -Deg2Rad(60.0f);
 			}
 		}
 
@@ -283,6 +288,39 @@ namespace basecross{
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
 			m_forward = m_padDir;
+		}
+	}
+	//---------------------------------------------------------------------------------------------
+	//カメラのプレイヤー追従処理
+	//---------------------------------------------------------------------------------------------
+	void Player::CameraControll(){
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		camera->SetAt(pos + Vec3(0.0f, 3.0f, 0.0f));
+		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
+			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
+		camera->SetEye(eye);
+	}
+	//---------------------------------------------------------------------------------------------
+	//Lボタンを押したときにリンクオブジェが照準の近くだったらそっちを向く
+	//---------------------------------------------------------------------------------------------
+	void Player::Rock(Vec3 origin, Vec3 originDir) {
+		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB) {
+			auto sightingDevice = m_SightingDevice.lock();
+			//リンクオブジェクトの入っているグループを持ってくる
+			auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
+			//一つずつ取り出す
+			for (auto& link : linkGroup->GetGroupVector()) {
+				auto linkObj = link.lock();
+				auto linkTrans = linkObj->GetComponent<Transform>();
+				//リンクオブジェクトのOBBを作る
+				OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
+				//プレイヤーからでるRayとOBBで判定
+				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+				if (hit) {
+
+				}
+			}
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -504,16 +542,6 @@ namespace basecross{
 			m_nestingMin = min;
 		}
 	}
-	//カメラのプレイヤー追従処理
-	void Player::CameraControll()
-	{
-		auto pos = GetComponent<Transform>()->GetWorldPosition();
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-		camera->SetAt(pos + Vec3(0.0f, 3.0f, 0.0f));
-		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
-			m_cameraHeight, sin(m_angleY) * m_cameraDistance);
-		camera->SetEye(eye);
-	}
 	//---------------------------------------------------------------------------------------------
 	//Aボタンが押されたかどうかを返す
 	//---------------------------------------------------------------------------------------------
@@ -560,8 +588,10 @@ namespace basecross{
 		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
 		//文字列をつける
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
+		wstring AngleX(L"AngleX : ");
+		AngleX += Util::IntToWStr(m_angleX) + L"\n";
 
-		wstring str = combo + chainLimit + energy + timeLimit;
+		wstring str = combo + chainLimit + energy + timeLimit + AngleX;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 

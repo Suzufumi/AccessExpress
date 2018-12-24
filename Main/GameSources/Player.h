@@ -19,7 +19,6 @@ namespace basecross {
 		float m_angleX;
 		float m_angleY;
 		float m_maxAngleSpeed;			//カメラが回転するスピード
-		float m_cameraHeight;			//カメラの初期高さ
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
 		bool m_isFall = true;					//Y軸方向の力を加えるかどうか
 		bool m_isHaveFile = false;
@@ -118,9 +117,11 @@ namespace basecross {
 		void SetBezierPoint(Vec3 point);
 		//Rayを飛ばす
 		void RayShot();
+		//レイが修正範囲内に入っていてLボタンを押していたら修正する
+		void Rock(Vec3 origin, Vec3 originDir);
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
-		//Rayとリンクオブジェクトが当たっているかを見る処理
+		//Rayとドローンが当たっているかを見る処理
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
 		//Aボタンが押された
 		bool CheckAButton();
