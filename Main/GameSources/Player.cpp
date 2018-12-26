@@ -256,8 +256,6 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------------
 	void Player::CameraRoll() {
 		float delta = App::GetApp()->GetElapsedTime();
-		// スティックの傾きを角度に変換する
-		float padRad = atan2f(m_padDir.z, m_padDir.x);
 
 		//右スティックに値が入力されていたら
 		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
@@ -280,6 +278,8 @@ namespace basecross{
 			}
 		}
 
+		// スティックの傾きを角度に変換する
+		float padRad = atan2f(m_padDir.z, m_padDir.x);
 		if (m_padDir.length() != 0.0f) {
 			// スティックの角度にカメラの角度を加える
 			padRad += m_angleY + XM_PIDIV2;  // カメラの角度に９０度加える
@@ -305,7 +305,7 @@ namespace basecross{
 	//Lボタンを押したときにリンクオブジェが照準の近くだったらそっちを向く
 	//---------------------------------------------------------------------------------------------
 	void Player::Rock(Vec3 origin, Vec3 originDir) {
-		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_LEFT_THUMB) {
+		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
 			auto sightingDevice = m_SightingDevice.lock();
 			//リンクオブジェクトの入っているグループを持ってくる
 			auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
@@ -314,11 +314,21 @@ namespace basecross{
 				auto linkObj = link.lock();
 				auto linkTrans = linkObj->GetComponent<Transform>();
 				//リンクオブジェクトのOBBを作る
-				OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
+				OBB obb(linkTrans->GetScale() * 5, linkTrans->GetWorldMatrix());
 				//プレイヤーからでるRayとOBBで判定
-				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 50.0f, obb);
 				if (hit) {
-
+					float deltaX = origin.x - linkTrans->GetWorldPosition().x;
+					float deltaZ = origin.z - linkTrans->GetWorldPosition().z;
+					float deltaY = origin.y - linkTrans->GetWorldPosition().y;
+					//横のカメラ位置を制御する角度
+					m_angleY = atan2f(deltaZ, deltaX);
+					if (m_angleY < 0.0f) {
+						m_angleY += Deg2Rad(360.0f);
+					}
+					//縦のカメラ位置を制御する角度
+					static float syahen = hypotf(deltaX,deltaZ);
+					m_angleX = atan2f(deltaY, syahen) + (3.0f/m_cameraDistance);
 				}
 			}
 		}
@@ -437,6 +447,8 @@ namespace basecross{
 		//照準とカメラの位置から飛ばす方向を求める
 		auto dir = pos - m_cameraPos;
 		dir = dir.normalize();
+		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
+		Rock(m_cameraPos, dir);
 		//リンクオブジェクトとの判定
 		LinkRayCheck(pos, dir);
 		//ドローンとの判定
@@ -563,8 +575,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//情報の表示
 	//---------------------------------------------------------------------------------------------
-	void Player::DrawStrings()
-	{
+	void Player::DrawStrings(){
 		// FPSの取得
 		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
 		wstring strFps(L"FPS: ");
@@ -588,13 +599,14 @@ namespace basecross{
 		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
 		//文字列をつける
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
+		wstring AngleY(L"AngleY : ");
+		AngleY += Util::FloatToWStr(m_angleY) + L"\n";
 		wstring AngleX(L"AngleX : ");
-		AngleX += Util::IntToWStr(m_angleX) + L"\n";
+		AngleX += Util::FloatToWStr(m_angleX) + L"\n";
 
-		wstring str = combo + chainLimit + energy + timeLimit + AngleX;
+		wstring str = combo + chainLimit + energy + timeLimit + AngleY + AngleX ;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
-
 	}
 
 	//--------------------------------------------------------------------------------------
