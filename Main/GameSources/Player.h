@@ -20,6 +20,7 @@ namespace basecross {
 		float m_angleY;
 		float m_maxAngleSpeed;			//カメラが回転するスピード
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
+		float m_cameraLookUp;	//カメラが見上げる高さ
 		bool m_isFall = true;					//Y軸方向の力を加えるかどうか
 		bool m_isHaveFile = false;
 		bool m_isHit = false;					//オブジェクトに当たっているかどうか

@@ -12,6 +12,7 @@ namespace basecross
 		float m_AngleX;						//プレイヤーのX軸基準回転
 		float m_maxAngleSpeed;		//カメラが回転するスピード
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
+		float m_cameraLookUp;	//カメラが見上げる高さ
 		bool m_isLink;				//リンク状態の処理を行う
 		Vec3 p0, p1, p2;
 	public:
@@ -36,5 +37,7 @@ namespace basecross
 		{ return m_maxAngleSpeed; }
 		float GetCameraDistance() const
 		{ return m_cameraDistance; }
+		float GetCameraLookUp() const
+		{ return m_cameraLookUp; }
 	};
 }

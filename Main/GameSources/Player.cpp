@@ -20,7 +20,7 @@ namespace basecross{
 		m_angleY = m_tpsCamera.lock()->GetCameraAngleY();
 		m_maxAngleSpeed = m_tpsCamera.lock()->GetMaxAngleSpeed();
 		m_cameraDistance = m_tpsCamera.lock()->GetCameraDistance();
-
+		m_cameraLookUp = m_tpsCamera.lock()->GetCameraLookUp();
 	}
 	//-------------------------------------------------------------------------------------------------
 	//初期化
@@ -296,7 +296,7 @@ namespace basecross{
 	void Player::CameraControll(){
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
-		camera->SetAt(pos + Vec3(0.0f, 3.0f, 0.0f));
+		camera->SetAt(pos + Vec3(0.0f, m_cameraLookUp, 0.0f));
 		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
 			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
@@ -328,7 +328,8 @@ namespace basecross{
 					}
 					//縦のカメラ位置を制御する角度
 					static float syahen = hypotf(deltaX,deltaZ);
-					m_angleX = atan2f(deltaY, syahen) + (3.0f/m_cameraDistance);
+					//プレイヤーの上を見るようにしているのでその分上にずらす
+					m_angleX = atan2f(deltaY, syahen) + (m_cameraLookUp /m_cameraDistance);
 				}
 			}
 		}
@@ -427,7 +428,7 @@ namespace basecross{
 
 		auto sightingDevice = m_SightingDevice.lock();
 		//playerの頭辺りに、被らないようカメラからの方向を加味して置く
-		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, 3.0f, 0.0f)) + (dir * 2.0f));
+		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)) + (dir * 2.0f));
 
 		Quat rot;
 		rot.rotationRollPitchYawFromVector(Vec3(0.0f,atan2f(dir.x, dir.z), 0.0f));
@@ -599,12 +600,8 @@ namespace basecross{
 		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
 		//文字列をつける
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
-		wstring AngleY(L"AngleY : ");
-		AngleY += Util::FloatToWStr(m_angleY) + L"\n";
-		wstring AngleX(L"AngleX : ");
-		AngleX += Util::FloatToWStr(m_angleX) + L"\n";
 
-		wstring str = combo + chainLimit + energy + timeLimit + AngleY + AngleX ;
+		wstring str = combo + chainLimit + energy + timeLimit;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 	}
