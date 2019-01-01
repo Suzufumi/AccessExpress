@@ -341,9 +341,12 @@ namespace basecross{
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto& gameManager = GameManager::GetInstance();
 		//計算のための時間加算
-		auto addLerp = (App::GetApp()->GetElapsedTime() * m_JummerSpeed * 30.0f) / (m_BezierSpeedLeap);
+		//auto addLerp = (App::GetApp()->GetElapsedTime() * m_JummerSpeed * (30.0f + m_chain)) / (m_BezierSpeedLeap);
+		//移動の経過にチェイン数による加速をいれた
+		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
+		//スロー状態かどうかで処理
 		if (gameManager.GetOnSlow()) {
-			//スロー状態なので20分の1の更新速度にする
+			//20分の1の更新速度にする
 			m_Lerp += addLerp / gameManager.GetSlowSpeed();
 		}
 		else {
@@ -397,10 +400,10 @@ namespace basecross{
 		m_BezierSpeedLeap = Vec3(p2 - p0).length();
 		//飛ぶ先までの距離に応じて飛ぶ際の放物線の形を変える
 		if (m_BezierSpeedLeap >= 20.0f) {
-			p1 = point + Vec3(0, 10, 0);
+			p1 = point + Vec3(0, 6, 0);
 		}
 		else if(m_BezierSpeedLeap >= 10.0f){
-			p1 = point + Vec3(0, 5, 0);
+			p1 = point + Vec3(0, 3, 0);
 		}
 		else if(m_BezierSpeedLeap < 10.0f){
 			p1 = point - ((point - p0) / 2);
