@@ -125,6 +125,8 @@ namespace basecross{
 		InitializedParam musics[] = {
 			{L"yayoi.wav",L"yayoi_mus"},
 			{L"nanika.wav",L"nanika_mus"},
+			{L"tw015.wav",L"tw015_mus"},
+			{L"tw014b.wav",L"tw014b_mus"}
 		};
 		//プロジェクトに登録
 		for (auto music : musics){
@@ -152,13 +154,13 @@ namespace basecross{
 		auto audioMana = m_audioManager.lock();
 		audioMana->Stop(m_numMusic.lock());
 		if (event->m_MsgStr == L"ToGameStage") {
-			m_numMusic = MusicRoopStart(L"yayoi_mus", 1.0f);
+			m_numMusic = MusicRoopStart(L"tw015_mus", 1.0f);
 
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {
-			m_numMusic = MusicRoopStart(L"yayoi_mus", 1.0f);
+			m_numMusic = MusicRoopStart(L"tw014b_mus", 1.0f);
 			
 			ResetActiveStage<TitleStage>();
 		}
