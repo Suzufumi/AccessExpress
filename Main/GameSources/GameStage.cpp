@@ -218,7 +218,7 @@ namespace basecross {
 			//制限時間を作成（中央上）
 			auto timer = AddGameObject<RemainingTimerSprite>(60);
 			timer->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
-			//スコアを作成
+			//スコアUIを作成
 			auto score = AddGameObject<ScoreUI>();
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 3, 0, 0);
 

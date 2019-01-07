@@ -13,9 +13,10 @@ namespace basecross {
 		GameManager& operator=(const GameManager&); // コピー代入演算子も private に置き、定義しない
 		 ~GameManager() {} // デストラクタを private に置く。
 
-		 bool m_isSlow = false;	//スロー状態だったらtrue
+		 bool m_isSlow = false;		//スロー状態だったらtrue
 		 float m_slowSpeed = 20.0f;	//スロー状態で何分の１になるかの変数	
-		 CONTROLER_STATE m_pad;//パッドの全情報
+		 CONTROLER_STATE m_pad;		//パッドの全情報
+		 int m_nowScore = 0;		//現在のスコアの値
 	public:
 		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
@@ -57,6 +58,19 @@ namespace basecross {
 		CONTROLER_STATE GetPad() {
 			return m_pad;
 		}
+		//--------------------------------------------------------------------------------------
+		//スコアを増やす
+		//--------------------------------------------------------------------------------------
+		void AddScore(int score){
+			m_nowScore += score; 
+		}
+		//--------------------------------------------------------------------------------------
+		//スコアの値を返す
+		//--------------------------------------------------------------------------------------
+		int GetScore() {
+			return m_nowScore; 
+		}
+
 	};
 
 }

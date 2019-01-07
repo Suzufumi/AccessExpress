@@ -17,7 +17,6 @@ namespace basecross
 	//------------------------------------------------------------------------
 	class ScoreUI : public GameObject {
 	protected:
-		int m_nowScore;
 		int m_displayScore;
 		int m_places;	// •\Ž¦Œ…
 		vector <Rect2D<float>> m_numRects;

@@ -78,9 +78,8 @@ namespace basecross{
 	ScoreUI::ScoreUI(const shared_ptr<Stage>& stagePtr)
 		: GameObject(stagePtr)
 	{
-		m_nowScore = 0;
 		m_displayScore = 0;
-		m_places = 3;
+		m_places = 4;
 	}
 	//------------------------------------------------------------------------------------
 	//構築
@@ -123,7 +122,11 @@ namespace basecross{
 
 	void ScoreUI::OnUpdate() {
 		auto& gameManager = GameManager::GetInstance();
-		
+		//内部スコアの値まで表示スコアをカウントアップする
+		if (gameManager.GetScore() != m_displayScore) {
+			m_displayScore += 1;
+		}
+
 		int score = m_displayScore;
 		for (int i = 0; i < m_places; i++) {
 			int num = score % 10;	// 一の位を抜き出す
