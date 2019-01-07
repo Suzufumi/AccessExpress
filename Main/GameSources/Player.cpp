@@ -409,6 +409,10 @@ namespace basecross{
 	//ベジエ曲線の制御点設定
 	//---------------------------------------------------------------------------------------------
 	void Player::SetBezierPoint(Vec3 point) {
+		auto& gameManager = GameManager::GetInstance();
+		//スコアを増やす
+		gameManager.AddScore(20);
+
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p2 = point + Vec3(0,1.0f,0);
 		//飛ぶ先までの距離に応じて飛ぶ際のスピードを変える
