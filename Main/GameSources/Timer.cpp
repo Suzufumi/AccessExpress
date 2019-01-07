@@ -70,7 +70,7 @@ namespace basecross {
 				GetStage(), L"Number_TX", Vec2(640, 128), m_numRects[0]);
 			auto transComp = number->GetComponent<Transform>();
 			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
-			transComp->SetParent(GetThis<RemainingTimerSprite>());	// 基準点が画面の左上からScoreUIの場所になった
+			transComp->SetParent(GetThis<RemainingTimerSprite>());	// 基準点が画面の左上からTimerの場所になった
 			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 128));
 			m_numbers.push_back(number);
 		}

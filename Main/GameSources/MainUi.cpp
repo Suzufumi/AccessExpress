@@ -72,4 +72,81 @@ namespace basecross{
 			}
 		}
 	}
+	//------------------------------------------------------------------------------------
+	//コンストラクタ
+	//------------------------------------------------------------------------------------
+	ScoreUI::ScoreUI(const shared_ptr<Stage>& stagePtr)
+		: GameObject(stagePtr)
+	{
+		m_nowScore = 0;
+		m_displayScore = 0;
+		m_places = 3;
+	}
+	//------------------------------------------------------------------------------------
+	//構築
+	//------------------------------------------------------------------------------------
+	void ScoreUI::OnCreate() {
+		// 数字ごとの範囲を設定する
+		for (int i = 0; i < 10; i++) {
+			m_numRects.push_back({
+				static_cast<float>(64 * i),			// left
+				static_cast<float>(0),				// top
+				static_cast<float>(64 * (i + 1)),	// right
+				static_cast<float>(128)				// bottom
+				});
+		}
+
+		float start_x = m_numRects[5].left / 640.0f;
+		float end_x = m_numRects[5].right / 640.0f;
+		float start_y = m_numRects[5].top / 128.0f;
+		float end_y = m_numRects[5].bottom / 128.0f;
+
+		for (int i = 0; i < m_places; i++) {
+			m_vertices.push_back({
+				{ Vec3(0.0f,128.0f,0.0f),Vec2(start_x,start_y) },
+				{ Vec3(64.0f,128.0f,0.0f),Vec2(end_x,start_y) },
+				{ Vec3(0.0f,0.0f,0.0f),Vec2(start_x,end_y) },
+				{ Vec3(64.0f,0.0f,0.0f),Vec2(end_x,end_y) }
+				});
+		}
+
+		for (int i = 0; i < m_places; i++) {
+			auto number = ObjectFactory::Create<Sprite>(
+				GetStage(), L"Number_TX", Vec2(640, 128), m_numRects[0]);
+			auto transComp = number->GetComponent<Transform>();
+			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
+			transComp->SetParent(GetThis<ScoreUI>());	// 基準点が画面の左上からScoreUIの場所になった
+			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 128));
+			m_numbers.push_back(number);
+		}
+	}
+
+	void ScoreUI::OnUpdate() {
+		auto& gameManager = GameManager::GetInstance();
+		
+		int score = m_displayScore;
+		for (int i = 0; i < m_places; i++) {
+			int num = score % 10;	// 一の位を抜き出す
+			score /= 10;			// 一の位を切り捨てる
+
+			float start_x = m_numRects[num].left / 640.0f;
+			float end_x = m_numRects[num].right / 640.0f;
+			float start_y = m_numRects[num].top / 128.0f;
+			float end_y = m_numRects[num].bottom / 128.0f;
+
+			m_vertices[i][0].textureCoordinate = Vec2(start_x, start_y);
+			m_vertices[i][1].textureCoordinate = Vec2(end_x, start_y);
+			m_vertices[i][2].textureCoordinate = Vec2(start_x, end_y);
+			m_vertices[i][3].textureCoordinate = Vec2(end_x, end_y);
+
+			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
+			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
+		}
+	}
+
+	void ScoreUI::OnDraw() {
+		for (auto number : m_numbers) {
+			number->OnDraw();
+		}
+	}
 }

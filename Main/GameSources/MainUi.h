@@ -12,4 +12,22 @@ namespace basecross
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 	};
+	//------------------------------------------------------------------------
+	//スコアを表示するUI
+	//------------------------------------------------------------------------
+	class ScoreUI : public GameObject {
+	protected:
+		int m_nowScore;
+		int m_displayScore;
+		int m_places;	// 表示桁
+		vector <Rect2D<float>> m_numRects;
+		vector<shared_ptr<Sprite>>m_numbers;
+		vector<vector<VertexPositionTexture>> m_vertices;
+	public:
+		ScoreUI(const shared_ptr<Stage>& stagePtr);
+		virtual ~ScoreUI() {};
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		virtual void OnDraw() override;
+	};
 }
