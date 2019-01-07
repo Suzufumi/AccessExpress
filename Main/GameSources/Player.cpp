@@ -302,36 +302,51 @@ namespace basecross{
 		camera->SetEye(eye);
 	}
 	//---------------------------------------------------------------------------------------------
-	//Lボタンを押したときにリンクオブジェが照準の近くだったらそっちを向く
+	//Lボタンを押しているときにリンクオブジェが照準の近くだったらそっちを向く
 	//---------------------------------------------------------------------------------------------
 	void Player::Rock(Vec3 origin, Vec3 originDir) {
-		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
-			auto sightingDevice = m_SightingDevice.lock();
-			//リンクオブジェクトの入っているグループを持ってくる
-			auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
-			//一つずつ取り出す
-			for (auto& link : linkGroup->GetGroupVector()) {
-				auto linkObj = link.lock();
-				auto linkTrans = linkObj->GetComponent<Transform>();
-				//リンクオブジェクトのOBBを作る
-				OBB obb(linkTrans->GetScale() * 5, linkTrans->GetWorldMatrix());
-				//プレイヤーからでるRayとOBBで判定
-				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 50.0f, obb);
-				if (hit) {
-					float deltaX = origin.x - linkTrans->GetWorldPosition().x;
-					float deltaZ = origin.z - linkTrans->GetWorldPosition().z;
-					float deltaY = origin.y - linkTrans->GetWorldPosition().y;
-					//横のカメラ位置を制御する角度
-					m_angleY = atan2f(deltaZ, deltaX);
-					if (m_angleY < 0.0f) {
-						m_angleY += Deg2Rad(360.0f);
+		//Lボタンを押し続けているとき
+		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
+			if (!m_lockon) {
+				//リンクオブジェクトの入っているグループを持ってくる
+				auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
+				//一つずつ取り出す
+				for (auto& link : linkGroup->GetGroupVector()) {
+					auto linkObj = link.lock();
+					auto linkTrans = linkObj->GetComponent<Transform>();
+					//リンクオブジェクトのOBBを作る
+					OBB obb(linkTrans->GetScale() * 5, linkTrans->GetWorldMatrix());
+					//照準からでるRayとOBBで判定
+					bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+					if (hit) {
+						m_LockOnObj = dynamic_pointer_cast<LinkObject>(linkObj);
+						m_lockon = true;
+						break;
 					}
-					//縦のカメラ位置を制御する角度
-					static float syahen = hypotf(deltaX,deltaZ);
-					//プレイヤーの上を見るようにしているのでその分上にずらす
-					m_angleX = atan2f(deltaY, syahen) + (m_cameraLookUp /m_cameraDistance);
 				}
 			}
+		}
+		//Lボタンを押していないとき
+		else {
+			m_lockon = false;
+		}
+		//リンクオブジェクトを照準にとらえてロックオンしているとき
+		if (m_lockon) {
+			//カメラの制御をおこなう
+			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
+			float deltaX = m_cameraPos.x - linkTrans->GetWorldPosition().x;
+			float deltaZ = m_cameraPos.z - linkTrans->GetWorldPosition().z;
+			float deltaY = m_cameraPos.y - linkTrans->GetWorldPosition().y;
+			//横のカメラ位置を制御する角度
+			m_angleY = atan2f(deltaZ, deltaX);
+			if (m_angleY < 0.0f) {
+				m_angleY += Deg2Rad(360.0f);
+			}
+			//縦のカメラ位置を制御する角度
+			float syahen = hypotf(deltaX, deltaZ);
+			//プレイヤーの上を見るようにしているのでその分上にずらす
+			m_angleX = atan2f(deltaY, syahen) + (m_cameraLookUp / m_cameraDistance);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -417,6 +432,8 @@ namespace basecross{
 		GameManager::GetInstance().SetOnSlow(false);
 		//プレイヤーの正面向き飛ぶ方向にする
 		m_forward = Vec3(p2 - p0).normalize();
+		//リンクオブジェのロックオンを解除
+		m_lockon = false;
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -452,7 +469,7 @@ namespace basecross{
 		auto dir = pos - m_cameraPos;
 		dir = dir.normalize();
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
-		Rock(m_cameraPos, dir);
+		Rock(pos, dir);
 		//リンクオブジェクトとの判定
 		LinkRayCheck(pos, dir);
 		//ドローンとの判定

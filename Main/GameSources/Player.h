@@ -39,6 +39,7 @@ namespace basecross {
 		bool m_isJummer;				//妨害を受けているかどうか
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
+		bool m_lockon = false;			//リンクオブジェクトをロックオンしている際にtrue
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -52,6 +53,7 @@ namespace basecross {
 		weak_ptr<SightingDevice> m_SightingDevice;
 		weak_ptr<Drone> m_Drone;
 		int m_DroneNo = NULL;
+		weak_ptr<LinkObject> m_LockOnObj;		//ロックオンしているオブジェクト
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
