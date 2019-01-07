@@ -389,6 +389,11 @@ namespace basecross{
 				//向かっているドローンの初期化
 				m_DroneNo = NULL;
 			}
+			auto& gameManager = GameManager::GetInstance();
+			//スコアを増やす
+			gameManager.AddScore(GetChain() * 20 + GetChain() * 10);
+			//次のリンクへ飛べなかったのでコンボリセットする
+			ResetCombo();
 			//飛び終わったらステートをデータ体にする
 			m_StateMachine->ChangeState(DataState::Instance());
 		}
@@ -409,9 +414,6 @@ namespace basecross{
 	//ベジエ曲線の制御点設定
 	//---------------------------------------------------------------------------------------------
 	void Player::SetBezierPoint(Vec3 point) {
-		auto& gameManager = GameManager::GetInstance();
-		//スコアを増やす
-		gameManager.AddScore(20);
 
 		p0 = GetComponent<Transform>()->GetWorldPosition();
 		p2 = point + Vec3(0,1.0f,0);
@@ -683,6 +685,9 @@ namespace basecross{
 		// コンボを加算する
 		Obj->AddCombo();
 		Obj->ComboBonus(Obj->GetChain());
+		auto& gameManager = GameManager::GetInstance();
+		//スコアを増やす
+		gameManager.AddScore(20);
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
@@ -737,23 +742,24 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void DataState::Execute(const shared_ptr<Player>& Obj) {
-		// コンボ間の時間を進めるかどうか
-		if (Obj->GetAdvanceTimeActive())
-		{
-			// 時間を加算する
-			Obj->AddChainTime();
-		}
-		// 現在の時間を取得
-		int timeLimit = Obj->GetComboChainLimit();
+		//// コンボ間の時間を進めるかどうか
+		//if (Obj->GetAdvanceTimeActive())
+		//{
+		//	// 時間を加算する
+		//	Obj->AddChainTime();
+		//}
+		//// 現在の時間を取得
+		//int timeLimit = Obj->GetComboChainLimit();
 		// 制限時間に達したら
-		if (Obj->GetChainTimeLim() >= Obj->GetComboChainLimit())
-		{
-			// コンボのリセット
-			Obj->ResetCombo();
-			// 制限時間をリセット
-			Obj->ResetTimeLim();
-			Obj->SetAdvanceTimeActive(false);
-		}
+		//if (Obj->GetChainTimeLim() >= Obj->GetComboChainLimit())
+		//{
+		//	
+		//	// コンボのリセット
+		//	Obj->ResetCombo();
+		//	// 制限時間をリセット
+		//	Obj->ResetTimeLim();
+		//	Obj->SetAdvanceTimeActive(false);
+		//}
 		Obj->Walk();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
