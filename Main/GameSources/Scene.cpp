@@ -127,7 +127,7 @@ namespace basecross{
 		//ファイル名とキーの設定
 		InitializedParam musics[] = {
 			//BGM
-			{L"nanika.wav",L"nanika_mus"},
+			{L"tw061.wav",L"tw061_mus"},
 			{L"tw015.wav",L"tw015_mus"},
 			{L"tw014b.wav",L"tw014b_mus"}
 			//SE
@@ -170,12 +170,12 @@ namespace basecross{
 			ResetActiveStage<TitleStage>();
 		}
 		else if (event->m_MsgStr == L"ToStageSelect") {
-			m_numMusic = MusicRoopStart(L"nanika_mus", 0.6f);
+			m_numMusic = MusicRoopStart(L"tw061_mus", 0.6f);
 
 			ResetActiveStage<StageSelect>();
 		}
 		else if (event->m_MsgStr == L"ToResultStage") {
-			m_numMusic = MusicRoopStart(L"nanika_mus", 0.6f);
+			m_numMusic = MusicRoopStart(L"tw061_mus", 0.6f);
 
 			ResetActiveStage<ResultStage>();
 		}
