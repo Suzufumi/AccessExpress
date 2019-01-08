@@ -92,7 +92,8 @@ namespace basecross {
 		player->SetSightingDevice(dev);
 		SetSharedGameObject(L"Player", player);
 		AddGameObject<ViewChainLetter>();
-		AddGameObject<ViewChainNum>();
+		auto chainNum = AddGameObject<ViewChainNum>();
+		chainNum->GetComponent<Transform>()->SetPosition(Vec3(800, -480, 0));
 		AddGameObject<SlowTimeUI>();
 	}
 

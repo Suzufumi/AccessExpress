@@ -184,59 +184,78 @@ namespace basecross {
 	//チェインの数字を見せるオブジェクト
 	//-------------------------------------------------------------------------------------------------
 	ViewChainNum::ViewChainNum(const shared_ptr<Stage>& stagePtr)
-		: Sprite(stagePtr, L"Number_TX", Vec2(32, 64))
-	{
-
+		: GameObject(stagePtr){
+		m_places = 1;
 	}
-
+	//------------------------------------------------------------------------------------
+	//構築
+	//------------------------------------------------------------------------------------
 	void ViewChainNum::OnCreate() {
-		Sprite::OnCreate();
-		SetPosition(Vec2(720, 590));
+		// 数字ごとの範囲を設定する
+		for (int i = 0; i < 10; i++) {
+			m_numRects.push_back({
+				static_cast<float>(64 * i),			// left
+				static_cast<float>(0),				// top
+				static_cast<float>(64 * (i + 1)),	// right
+				static_cast<float>(128)				// bottom
+				});
+		}
 
-		//頂点配列
-		vector<VertexPositionNormalTexture> vertices;
-		//インデックスを作成するための配列
-		vector<uint16_t> indices;
-		//Squareの作成(ヘルパー関数を利用)
-		MeshUtill::CreateSquare(1.0f, vertices, indices);
-		//UV値の変更
-		float from = ((float)5) / 10.0f;
-		float to = from + (1.0f / 10.0f);
-		//左上頂点
-		vertices[0].textureCoordinate = Vec2(from, 0);
-		//右上頂点
-		vertices[1].textureCoordinate = Vec2(to, 0);
-		//左下頂点
-		vertices[2].textureCoordinate = Vec2(from, 1.0f);
-		//右下頂点
-		vertices[3].textureCoordinate = Vec2(to, 1.0f);
-		//頂点の型を変えた新しい頂点を作成
-		vector<VertexPositionColorTexture> new_vertices;
-		for (auto& v : vertices) {
-			VertexPositionColorTexture nv;
-			nv.position = v.position;
-			nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
-			nv.textureCoordinate = v.textureCoordinate;
-			new_vertices.push_back(nv);
+		float start_x = m_numRects[5].left / 640.0f;
+		float end_x = m_numRects[5].right / 640.0f;
+		float start_y = m_numRects[5].top / 128.0f;
+		float end_y = m_numRects[5].bottom / 128.0f;
+
+		for (int i = 0; i < m_places; i++) {
+			m_vertices.push_back({
+				{ Vec3(0.0f,128.0f,0.0f),Vec2(start_x,start_y) },
+				{ Vec3(64.0f,128.0f,0.0f),Vec2(end_x,start_y) },
+				{ Vec3(0.0f,0.0f,0.0f),Vec2(start_x,end_y) },
+				{ Vec3(64.0f,0.0f,0.0f),Vec2(end_x,end_y) }
+				});
 		}
-		//新しい頂点を使ってメッシュリソースの作成
-		m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, indices, true);
-		
-		//auto drawComp = AddComponent<PCTStaticDraw>();
-		//drawComp->SetMeshResource(m_SquareMeshResource);
-		//drawComp->SetTextureResource(L"Number_TX");
-		SetMesh(m_SquareMeshResource);
-		SetAlphaActive(true);
-		
-		SetDrawLayer(1);
-		
+
+		for (int i = 0; i < m_places; i++) {
+			auto number = ObjectFactory::Create<Sprite>(
+				GetStage(), L"Number_TX", Vec2(640,128), m_numRects[0]);
+			auto transComp = number->GetComponent<Transform>();
+			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
+			transComp->SetParent(GetThis<ViewChainNum>());	// 基準点が画面の左上からScoreUIの場所になった
+			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 128));
+			m_numbers.push_back(number);
+		}
 	}
+
 	void ViewChainNum::OnUpdate() {
-		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
-			SetDrawActive(true);
+		auto& gameManager = GameManager::GetInstance();
+		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
+
+		int chain = player->GetChain();
+		for (int i = 0; i < m_places; i++) {
+			int num = chain % 10;	// 一の位を抜き出す
+			chain /= 10;			// 一の位を切り捨てる
+
+			float start_x = m_numRects[num].left / 640.0f;
+			float end_x = m_numRects[num].right / 640.0f;
+			float start_y = m_numRects[num].top / 128.0f;
+			float end_y = m_numRects[num].bottom / 128.0f;
+
+			m_vertices[i][0].textureCoordinate = Vec2(start_x, start_y);
+			m_vertices[i][1].textureCoordinate = Vec2(end_x, start_y);
+			m_vertices[i][2].textureCoordinate = Vec2(start_x, end_y);
+			m_vertices[i][3].textureCoordinate = Vec2(end_x, end_y);
+
+			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
+			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
 		}
-		else {
-			SetDrawActive(false);
+		OnDraw();
+	}
+
+	void ViewChainNum::OnDraw() {
+		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
+			for (auto number : m_numbers) {
+				number->OnDraw();
+			}
 		}
 	}
 
