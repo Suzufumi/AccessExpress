@@ -71,6 +71,11 @@ namespace basecross {
 			HUMAN = 0,
 			DATA = 1
 		};
+		enum Target {
+			LINK = 0,
+			DRONE = 1
+		};
+		Target m_target;
 
 		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);
 		virtual ~Player() {};
@@ -81,6 +86,8 @@ namespace basecross {
 		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
 			return m_StateMachine;
 		}
+
+		Target GetTarget() { return m_target; };
 
 		//衝突したとき
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
@@ -116,8 +123,10 @@ namespace basecross {
 		}
 		//照準の位置を変える
 		void SightingDeviceChangePosition();
-		//ベジエ曲線で飛ぶ処理
+		//ベジエ曲線でリンクへ飛ぶ処理
 		void LinkGo();
+		//ベジエ曲線でリンクへ飛ぶ処理
+		void DroneGo();
 		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
 		//Rayを飛ばす
