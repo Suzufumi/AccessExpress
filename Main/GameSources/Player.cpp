@@ -369,8 +369,8 @@ namespace basecross{
 		}
 		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
 		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
-		//着地寸前でスローになっていなかったら
-		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false) {
+		//着地寸前でスローになっていない、ドローンに向かって飛んでいない
+		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false && m_DroneNo == NULL) {
 			//スローにする
 			gameManager.SetOnSlow(true);
 		}
@@ -383,6 +383,8 @@ namespace basecross{
 			if (drone) {
 				//現在チェインがドローンの死にチェイン数を超えていた場合
 				if (drone->GetDeadChain() <= GetChain()) {
+					//ドローンを倒したのでスコアアップ
+					gameManager.AddScore(GetChain() * 30 + GetChain() * 10);
 					//動かなくする
 					drone->Die();
 				}
@@ -526,7 +528,7 @@ namespace basecross{
 		for (auto& drone : droneGroup->GetGroupVector()) {
 			auto droneObj = drone.lock();
 			auto droneTrans = droneObj->GetComponent<Transform>();
-			//リンクオブジェクトのOBBを作る
+			//ドローンオブジェクトのOBBを作る
 			OBB obb(droneTrans->GetScale() * 3, droneTrans->GetWorldMatrix());
 			//プレイヤーからでるRayとOBBで判定
 			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
