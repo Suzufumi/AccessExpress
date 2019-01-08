@@ -14,7 +14,7 @@ namespace basecross {
 		 ~GameManager() {} // デストラクタを private に置く。
 
 		 bool m_isSlow = false;		//スロー状態だったらtrue
-		 float m_slowSpeed = 20.0f;	//スロー状態で何分の１になるかの変数	
+		 float m_slowSpeed = 30.0f;	//スロー状態で何分の１になるかの変数	
 		 CONTROLER_STATE m_pad;		//パッドの全情報
 		 int m_nowScore = 0;		//現在のスコアの値
 		 float m_slowPassage;		//スローになってからの経過(1.0fが最大として扱う)
@@ -74,8 +74,8 @@ namespace basecross {
 		//--------------------------------------------------------------------------------------
 		//スローからの経過を設定する
 		//--------------------------------------------------------------------------------------
-		void SetSlowPassage(float passage) {
-			m_slowPassage = passage;
+		void AddSlowPassage(float passage) {
+			m_slowPassage += passage;
 		}
 		//--------------------------------------------------------------------------------------
 		//スローからの経過の値を返す
@@ -83,7 +83,12 @@ namespace basecross {
 		float GetSlowPassage() {
 			return m_slowPassage;
 		}
-
+		//--------------------------------------------------------------------------------------
+		//スローからの経過を初期化する
+		//--------------------------------------------------------------------------------------
+		void ResetSloawPassage() {
+			m_slowPassage = 0;
+		}
 	};
 
 }

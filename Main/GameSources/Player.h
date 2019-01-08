@@ -39,7 +39,8 @@ namespace basecross {
 		bool m_isJummer;				//妨害を受けているかどうか
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
-		bool m_lockon = false;			//リンクオブジェクトをロックオンしている際にtrue
+		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
+		float m_rayRange = 30.0f;		//レイの届く距離
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 

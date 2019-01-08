@@ -307,7 +307,7 @@ namespace basecross{
 	void Player::Rock(Vec3 origin, Vec3 originDir) {
 		//Lボタンを押し続けているとき
 		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
-			if (!m_lockon) {
+			if (!m_islockon) {
 				//リンクオブジェクトの入っているグループを持ってくる
 				auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
 				//一つずつ取り出す
@@ -317,10 +317,10 @@ namespace basecross{
 					//リンクオブジェクトのOBBを作る
 					OBB obb(linkTrans->GetScale() * 5, linkTrans->GetWorldMatrix());
 					//照準からでるRayとOBBで判定
-					bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+					bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 					if (hit) {
 						m_LockOnObj = dynamic_pointer_cast<LinkObject>(linkObj);
-						m_lockon = true;
+						m_islockon = true;
 						break;
 					}
 				}
@@ -328,10 +328,10 @@ namespace basecross{
 		}
 		//Lボタンを押していないとき
 		else {
-			m_lockon = false;
+			m_islockon = false;
 		}
 		//リンクオブジェクトを照準にとらえてロックオンしているとき
-		if (m_lockon) {
+		if (m_islockon) {
 			//カメラの制御をおこなう
 			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
 			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
@@ -356,15 +356,14 @@ namespace basecross{
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto& gameManager = GameManager::GetInstance();
 		//計算のための時間加算
-		//auto addLerp = (App::GetApp()->GetElapsedTime() * m_JummerSpeed * (30.0f + m_chain)) / (m_BezierSpeedLeap);
 		//移動の経過にチェイン数による加速をいれた
 		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
 		//スロー状態かどうかで処理
 		if (gameManager.GetOnSlow()) {
 			//20分の1の更新速度にする
 			m_Lerp += addLerp / gameManager.GetSlowSpeed();
-			//マネージャーにスローになってからのLeapの経過を伝える
-			gameManager.SetSlowPassage((m_Lerp * 10) - 9.0f);
+			//マネージャーにスローの経過を伝える
+			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
 		}
 		else {
 			m_Lerp += addLerp;
@@ -373,6 +372,8 @@ namespace basecross{
 		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
 		//着地寸前でスローになっていない、ドローンに向かって飛んでいない
 		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false && m_DroneNo == NULL) {
+			//スローの経過時間をリセット
+			gameManager.ResetSloawPassage();
 			//スローにする
 			gameManager.SetOnSlow(true);
 		}
@@ -443,7 +444,7 @@ namespace basecross{
 		//プレイヤーの正面向き飛ぶ方向にする
 		m_forward = Vec3(p2 - p0).normalize();
 		//リンクオブジェのロックオンを解除
-		m_lockon = false;
+		m_islockon = false;
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -499,7 +500,7 @@ namespace basecross{
 			//リンクオブジェクトのOBBを作る
 			OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
 			//プレイヤーからでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
