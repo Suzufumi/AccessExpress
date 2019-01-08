@@ -65,7 +65,10 @@ namespace basecross{
 			{ L"Num2.png", L"Stage2" },
 			{ L"Num3.png", L"Stage3" },
 			{ L"Num4.png", L"Stage4" },
-			{ L"Num5.png", L"Stage5" }
+			{ L"Num5.png", L"Stage5" },
+			{ L"SlowTimeGage.png", L"SlowTimeGage_TX"},
+			{ L"SlowText.png", L"SlowText_TX"},
+			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"}
 		};
 
 		for (auto texture : textures)
@@ -123,8 +126,12 @@ namespace basecross{
 		};
 		//ファイル名とキーの設定
 		InitializedParam musics[] = {
-			{L"yayoi.wav",L"yayoi_mus"},
+			//BGM
 			{L"nanika.wav",L"nanika_mus"},
+			{L"tw015.wav",L"tw015_mus"},
+			{L"tw014b.wav",L"tw014b_mus"}
+			//SE
+			
 		};
 		//プロジェクトに登録
 		for (auto music : musics){
@@ -152,13 +159,13 @@ namespace basecross{
 		auto audioMana = m_audioManager.lock();
 		audioMana->Stop(m_numMusic.lock());
 		if (event->m_MsgStr == L"ToGameStage") {
-			m_numMusic = MusicRoopStart(L"yayoi_mus", 1.0f);
+			m_numMusic = MusicRoopStart(L"tw015_mus", 1.0f);
 
 			//最初のアクティブステージの設定
 			ResetActiveStage<GameStage>();
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {
-			m_numMusic = MusicRoopStart(L"yayoi_mus", 1.0f);
+			m_numMusic = MusicRoopStart(L"tw014b_mus", 1.0f);
 			
 			ResetActiveStage<TitleStage>();
 		}

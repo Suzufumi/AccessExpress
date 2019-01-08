@@ -93,6 +93,7 @@ namespace basecross {
 		SetSharedGameObject(L"Player", player);
 		AddGameObject<ViewChainLetter>();
 		AddGameObject<ViewChainNum>();
+		AddGameObject<SlowTimeUI>();
 	}
 
 	void GameStage::CreateBill()
@@ -215,8 +216,13 @@ namespace basecross {
 			//AddGameObject<Drone>(Vec3(-35, 25, -35));
 			CreateDrone();
 			
-			auto score = AddGameObject<RemainingTimerSprite>(60);
-			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
+			//制限時間を作成（中央上）
+			auto timer = AddGameObject<RemainingTimerSprite>(60);
+			timer->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
+			//スコアUIを作成
+			auto score = AddGameObject<ScoreUI>();
+			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 3, 0, 0);
+
 			AddGameObject<SkySphere>();
 			AddGameObject<EnergyGaugeUI>();
 		}

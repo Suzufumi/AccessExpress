@@ -181,7 +181,7 @@ namespace basecross {
 		}
 	}
 	//-------------------------------------------------------------------------------------------------
-	//チェインの文字を見せるオブジェクト
+	//チェインの数字を見せるオブジェクト
 	//-------------------------------------------------------------------------------------------------
 	ViewChainNum::ViewChainNum(const shared_ptr<Stage>& stagePtr)
 		: Sprite(stagePtr, L"Number_TX", Vec2(32, 64))
@@ -237,6 +237,46 @@ namespace basecross {
 		}
 		else {
 			SetDrawActive(false);
+		}
+	}
+
+	//-------------------------------------------------------------------------------------------------
+	//スローの残り時間を見せるオブジェクト
+	//-------------------------------------------------------------------------------------------------
+	SlowTimeUI::SlowTimeUI(const shared_ptr<Stage>& stagePtr)
+		: Sprite(stagePtr, L"SlowTimeGage_TX", Vec2(32, 124))
+	{
+
+	}
+
+	void SlowTimeUI::OnCreate() {
+		Sprite::OnCreate();
+		SetPosition(Vec2(540, 600));
+		SetDrawLayer(2);
+		//SLOWの文字のスプライト
+		m_text = GetStage()->AddGameObject<Sprite>(L"SlowText_TX", Vec2(32,124));
+		m_text.lock()->SetPosition(Vec2(540,600));
+		m_text.lock()->SetDrawLayer(3);
+		//ゲージバーの背後の土台
+		m_gageBase = GetStage()->AddGameObject<Sprite>(L"SlowTimeGageBase_TX", Vec2(32, 124));
+		m_gageBase.lock()->SetPosition(Vec2(540, 600));
+		m_gageBase.lock()->SetDrawLayer(1);
+	}
+	void SlowTimeUI::OnUpdate() {
+		auto& manager = GameManager::GetInstance();
+		float remainingGage = 1.0f - manager.GetSlowPassage();
+		GetComponent<Transform>()->SetScale(1.0f, remainingGage, 1.0f);
+		SetPosition(Vec2(540.0f, 662.0f - (62.0f * remainingGage)));
+
+		if (manager.GetOnSlow()) {
+			SetDrawActive(true);
+			m_text.lock()->SetDrawActive(true);
+			m_gageBase.lock()->SetDrawActive(true);
+		}
+		else {
+			SetDrawActive(false);
+			m_text.lock()->SetDrawActive(false);
+			m_gageBase.lock()->SetDrawActive(false);
 		}
 	}
 

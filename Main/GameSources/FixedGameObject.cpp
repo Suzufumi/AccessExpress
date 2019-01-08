@@ -36,6 +36,7 @@ namespace basecross {
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		//Col4 Color(0.4f, 0.4f, 0.4f, 1.0f);
 		//drawComp->SetDiffuse(Color);
+		SetDrawLayer(-1);
 	}
 
 	Goal::Goal(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale)
