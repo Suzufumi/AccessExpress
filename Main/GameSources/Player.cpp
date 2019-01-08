@@ -363,6 +363,8 @@ namespace basecross{
 		if (gameManager.GetOnSlow()) {
 			//20分の1の更新速度にする
 			m_Lerp += addLerp / gameManager.GetSlowSpeed();
+			//マネージャーにスローになってからのLeapの経過を伝える
+			gameManager.SetSlowPassage((m_Lerp * 10) - 9.0f);
 		}
 		else {
 			m_Lerp += addLerp;

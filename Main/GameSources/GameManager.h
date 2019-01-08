@@ -17,6 +17,7 @@ namespace basecross {
 		 float m_slowSpeed = 20.0f;	//スロー状態で何分の１になるかの変数	
 		 CONTROLER_STATE m_pad;		//パッドの全情報
 		 int m_nowScore = 0;		//現在のスコアの値
+		 float m_slowPassage;		//スローになってからの経過(1.0fが最大として扱う)
 	public:
 		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
@@ -69,6 +70,18 @@ namespace basecross {
 		//--------------------------------------------------------------------------------------
 		int GetScore() {
 			return m_nowScore; 
+		}
+		//--------------------------------------------------------------------------------------
+		//スローからの経過を設定する
+		//--------------------------------------------------------------------------------------
+		void SetSlowPassage(float passage) {
+			m_slowPassage = passage;
+		}
+		//--------------------------------------------------------------------------------------
+		//スローからの経過の値を返す
+		//--------------------------------------------------------------------------------------
+		float GetSlowPassage() {
+			return m_slowPassage;
 		}
 
 	};

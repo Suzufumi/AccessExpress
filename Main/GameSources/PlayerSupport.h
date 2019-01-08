@@ -94,7 +94,6 @@ namespace basecross {
 	class SlowTimeUI : public Sprite {
 		weak_ptr<Sprite> m_text;
 		weak_ptr<Sprite> m_gageBase;
-		float m_remainingGage;
 	public:
 		SlowTimeUI(const shared_ptr<Stage>& stagePtr);
 		virtual ~SlowTimeUI() {};

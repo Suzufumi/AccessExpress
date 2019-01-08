@@ -264,7 +264,9 @@ namespace basecross {
 	}
 	void SlowTimeUI::OnUpdate() {
 		auto& manager = GameManager::GetInstance();
-		GetComponent<Transform>()->SetScale(1.0f, m_remainingGage, 1.0f);
+		float remainingGage = 1.0f - manager.GetSlowPassage();
+		GetComponent<Transform>()->SetScale(1.0f, remainingGage, 1.0f);
+		SetPosition(Vec2(540.0f, 662.0f - (62.0f * remainingGage)));
 
 		if (manager.GetOnSlow()) {
 			SetDrawActive(true);
