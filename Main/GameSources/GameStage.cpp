@@ -93,6 +93,7 @@ namespace basecross {
 		SetSharedGameObject(L"Player", player);
 		AddGameObject<ViewChainLetter>();
 		AddGameObject<ViewChainNum>();
+		AddGameObject<SlowTimeUI>();
 	}
 
 	void GameStage::CreateBill()

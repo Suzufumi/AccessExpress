@@ -65,7 +65,10 @@ namespace basecross{
 			{ L"Num2.png", L"Stage2" },
 			{ L"Num3.png", L"Stage3" },
 			{ L"Num4.png", L"Stage4" },
-			{ L"Num5.png", L"Stage5" }
+			{ L"Num5.png", L"Stage5" },
+			{ L"SlowTimeGage.png", L"SlowTimeGage_TX"},
+			{ L"SlowText.png", L"SlowText_TX"},
+			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"}
 		};
 
 		for (auto texture : textures)
@@ -123,10 +126,12 @@ namespace basecross{
 		};
 		//ファイル名とキーの設定
 		InitializedParam musics[] = {
-			{L"yayoi.wav",L"yayoi_mus"},
+			//BGM
 			{L"nanika.wav",L"nanika_mus"},
 			{L"tw015.wav",L"tw015_mus"},
 			{L"tw014b.wav",L"tw014b_mus"}
+			//SE
+			
 		};
 		//プロジェクトに登録
 		for (auto music : musics){
