@@ -125,6 +125,13 @@ namespace basecross{
 		//内部スコアの値まで表示スコアをカウントアップする
 		if (gameManager.GetScore() != m_displayScore) {
 			m_displayScore += 1;
+			//表示スコアが内部スコアに追い付いていないので加速させる
+			if (gameManager.GetScore() - m_displayScore >= 200) {
+				m_displayScore += 2;
+			}
+			if (gameManager.GetScore() - m_displayScore >= 400) {
+				m_displayScore += 2;
+			}
 		}
 
 		int score = m_displayScore;
