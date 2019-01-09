@@ -258,24 +258,29 @@ namespace basecross{
 		float delta = App::GetApp()->GetElapsedTime();
 
 		//‰EƒXƒeƒBƒbƒN‚É’l‚ª“ü—Í‚³‚ê‚Ä‚¢‚½‚ç
-		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
+		if (m_pad.fThumbRX > 0.7f || m_pad.fThumbRX < -0.7f ||
+			m_pad.fThumbRY > 0.7f || m_pad.fThumbRY < -0.7f) {
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed*2 * delta; // ƒJƒƒ‰‚ð‰ñ“]‚³‚¹‚é
+			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed*2 * delta; // ƒJƒƒ‰‚ð¸~‚³‚¹‚é
+		}
+		else if(m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
 			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
 			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // ƒJƒƒ‰‚ð‰ñ“]‚³‚¹‚é
 			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // ƒJƒƒ‰‚ð¸~‚³‚¹‚é
-			//YŽ²Šî€Šp“x‚ÌŠÛ‚ß(-360<360)
-			if (m_angleY > Deg2Rad(360.0f)) {
-				m_angleY = Deg2Rad(0.0f);
-			}
-			if (m_angleY < Deg2Rad(0.0f)) {
-				m_angleY = Deg2Rad(360.0f);
-			}
-			//XŽ²Šî€Šp“x‚ÌŠÛ‚ß(-70<70)
-			if (m_angleX > Deg2Rad(m_angeleXMax)) {
-				m_angleX = Deg2Rad(m_angeleXMax);
-			}
-			if (m_angleX < -Deg2Rad(m_angeleXMax)) {
-				m_angleX = -Deg2Rad(m_angeleXMax);
-			}
+		}
+		//YŽ²Šî€Šp“x‚ÌŠÛ‚ß(-360<360)
+		if (m_angleY > Deg2Rad(360.0f)) {
+			m_angleY = Deg2Rad(0.0f);
+		}
+		if (m_angleY < Deg2Rad(0.0f)) {
+			m_angleY = Deg2Rad(360.0f);
+		}
+		//XŽ²Šî€Šp“x‚ÌŠÛ‚ß(-70<70)
+		if (m_angleX > Deg2Rad(m_angeleXMax)) {
+			m_angleX = Deg2Rad(m_angeleXMax);
+		}
+		if (m_angleX < -Deg2Rad(m_angeleXMax)) {
+			m_angleX = -Deg2Rad(m_angeleXMax);
 		}
 
 		// ƒXƒeƒBƒbƒN‚ÌŒX‚«‚ðŠp“x‚É•ÏŠ·‚·‚é
