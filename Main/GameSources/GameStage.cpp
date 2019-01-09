@@ -189,6 +189,8 @@ namespace basecross {
 			App::GetApp()->GetScene<Scene>()->SetGameStart(false);
 			//スローフラグをオフにしておく
 			GameManager::GetInstance().SetOnSlow(false);
+			//スコアを初期化する
+			GameManager::GetInstance().ResetNowScore();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			//物理計算有効
