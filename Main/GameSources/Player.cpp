@@ -269,12 +269,12 @@ namespace basecross{
 			if (m_angleY < Deg2Rad(0.0f)) {
 				m_angleY = Deg2Rad(360.0f);
 			}
-			//X軸基準角度の丸め(-60<60)
-			if (m_angleX > Deg2Rad(60.0f)) {
-				m_angleX = Deg2Rad(60.0f);
+			//X軸基準角度の丸め(-70<70)
+			if (m_angleX > Deg2Rad(m_angeleXMax)) {
+				m_angleX = Deg2Rad(m_angeleXMax);
 			}
-			if (m_angleX < -Deg2Rad(60.0f)) {
-				m_angleX = -Deg2Rad(60.0f);
+			if (m_angleX < -Deg2Rad(m_angeleXMax)) {
+				m_angleX = -Deg2Rad(m_angeleXMax);
 			}
 		}
 
@@ -307,7 +307,7 @@ namespace basecross{
 	void Player::Rock(Vec3 origin, Vec3 originDir) {
 		//Lボタンを押し続けているとき
 		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
-			if (!m_lockon) {
+			if (!m_islockon) {
 				//リンクオブジェクトの入っているグループを持ってくる
 				auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
 				//一つずつ取り出す
@@ -317,10 +317,10 @@ namespace basecross{
 					//リンクオブジェクトのOBBを作る
 					OBB obb(linkTrans->GetScale() * 5, linkTrans->GetWorldMatrix());
 					//照準からでるRayとOBBで判定
-					bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+					bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 					if (hit) {
 						m_LockOnObj = dynamic_pointer_cast<LinkObject>(linkObj);
-						m_lockon = true;
+						m_islockon = true;
 						break;
 					}
 				}
@@ -328,10 +328,10 @@ namespace basecross{
 		}
 		//Lボタンを押していないとき
 		else {
-			m_lockon = false;
+			m_islockon = false;
 		}
 		//リンクオブジェクトを照準にとらえてロックオンしているとき
-		if (m_lockon) {
+		if (m_islockon) {
 			//カメラの制御をおこなう
 			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
 			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
@@ -350,29 +350,28 @@ namespace basecross{
 		}
 	}
 	//---------------------------------------------------------------------------------------------
-	//リンクからリンクへ飛ぶ処理
+	//リンクへ飛ぶ処理
 	//---------------------------------------------------------------------------------------------
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto& gameManager = GameManager::GetInstance();
 		//計算のための時間加算
-		//auto addLerp = (App::GetApp()->GetElapsedTime() * m_JummerSpeed * (30.0f + m_chain)) / (m_BezierSpeedLeap);
 		//移動の経過にチェイン数による加速をいれた
 		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
 		//スロー状態かどうかで処理
 		if (gameManager.GetOnSlow()) {
 			//20分の1の更新速度にする
 			m_Lerp += addLerp / gameManager.GetSlowSpeed();
-			//マネージャーにスローになってからのLeapの経過を伝える
-			gameManager.SetSlowPassage((m_Lerp * 10) - 9.0f);
+			//マネージャーにスローの経過を伝える
+			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
 		}
 		else {
 			m_Lerp += addLerp;
 		}
-		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
-		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
-		//着地寸前でスローになっていない、ドローンに向かって飛んでいない
-		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false && m_DroneNo == NULL) {
+		//着地寸前でスローになっていない
+		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false) {
+			//スローの経過時間をリセット
+			gameManager.ResetSloawPassage();
 			//スローにする
 			gameManager.SetOnSlow(true);
 		}
@@ -381,19 +380,6 @@ namespace basecross{
 			m_Lerp = 1.0f;
 			//スローを終わる
 			gameManager.SetOnSlow(false);
-			//ドローンに向かって飛んでいたら
-			if (drone) {
-				//現在チェインがドローンの死にチェイン数を超えていた場合
-				if (drone->GetDeadChain() <= GetChain()) {
-					//ドローンを倒したのでスコアアップ
-					gameManager.AddScore(GetChain() * 30 + GetChain() * 10);
-					//動かなくする
-					drone->Die();
-				}
-				//向かっているドローンの初期化
-				m_DroneNo = NULL;
-			}
-			auto& gameManager = GameManager::GetInstance();
 			//スコアを増やす
 			gameManager.AddScore(GetChain() * 20 + GetChain() * 10);
 			//次のリンクへ飛べなかったのでコンボリセットする
@@ -401,9 +387,69 @@ namespace basecross{
 			//飛び終わったらステートをデータ体にする
 			m_StateMachine->ChangeState(DataState::Instance());
 		}
-		//ドローンに向かっていたら、動いているので終点の位置を更新する
-		if (m_DroneNo != NULL) {
+		//ベジエ曲線の計算
+		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
+		GetComponent<Transform>()->SetWorldPosition(pos);
+		if (!gameManager.GetOnSlow()) {
+			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
+		}
+	}
+	//---------------------------------------------------------------------------------------------
+	//ドローンへ飛ぶ処理
+	//---------------------------------------------------------------------------------------------
+	void Player::DroneGo() {
+		auto& gameManager = GameManager::GetInstance();
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
+		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
+		//計算のための時間加算
+		//移動の経過にチェイン数による加速をいれた
+		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
+		//スロー状態かどうかで処理
+		if (gameManager.GetOnSlow()) {
+			//マネージャーにスローの経過を伝える
+			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
+			if (gameManager.GetSlowPassage() >= 1.0f) {
+				//スローを終わる
+				gameManager.SetOnSlow(false);
+				//向かっているドローンの初期化
+				m_DroneNo = NULL;
+				//次の目標へ飛べなかったのでコンボリセット
+				ResetCombo();
+				//スロー時間が終了したためステートをデータ体にする
+				m_StateMachine->ChangeState(DataState::Instance());
+			}
+		}
+		else {
+			//経過に加算
+			m_Lerp += addLerp;
+			//動いているので終点の位置を更新する
 			p2 = drone->GetComponent<Transform>()->GetWorldPosition();
+		}
+		//飛ぶ処理が終わったあとで、スロー状態でなければ
+		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && m_DroneNo != NULL) {
+			m_Lerp = 1.0f;
+			//現在チェインがドローンの死にチェイン数を超えていた場合
+			if (drone->GetDeadChain() <= GetChain()) {
+				//ドローンを倒したのでスコアアップ
+				gameManager.AddScore(GetChain() * 30 + GetChain() * 10);
+				//動かなくする
+				drone->Die();
+				//スローの経過時間をリセット
+				gameManager.ResetSloawPassage();
+				//スローにする
+				gameManager.SetOnSlow(true);
+			}
+			else {
+				//倒せなかったのでコンボリセットする
+				ResetCombo();
+				//向かっているドローンの初期化
+				m_DroneNo = NULL;
+				//飛び終わったらステートをデータ体にする
+				m_StateMachine->ChangeState(DataState::Instance());
+			}
 		}
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
@@ -443,7 +489,7 @@ namespace basecross{
 		//プレイヤーの正面向き飛ぶ方向にする
 		m_forward = Vec3(p2 - p0).normalize();
 		//リンクオブジェのロックオンを解除
-		m_lockon = false;
+		m_islockon = false;
 	}
 	//---------------------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
@@ -499,7 +545,7 @@ namespace basecross{
 			//リンクオブジェクトのOBBを作る
 			OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
 			//プレイヤーからでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//照準に当たっていることを教える
@@ -512,6 +558,7 @@ namespace basecross{
 					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
 					m_DroneNo = NULL;
 					m_StateMachine->ChangeState(LinkState::Instance());
+					m_target = Target::LINK;
 					break;
 				}
 			}
@@ -543,6 +590,7 @@ namespace basecross{
 					m_DroneNo = count;
 					m_Lerp = 0;
 					m_StateMachine->ChangeState(LinkState::Instance());
+					m_target = Target::DRONE;
 					break;
 				}
 			}
@@ -704,7 +752,12 @@ namespace basecross{
 		else {
 			Obj->PlayerRoll();
 		}
-		Obj->LinkGo();
+		if (Obj->GetTarget() == Obj->LINK){
+			Obj->LinkGo();
+		}
+		if (Obj->GetTarget() == Obj->DRONE) {
+			Obj->DroneGo();
+		}
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
 			Obj->GetStateMachine()->ChangeState(WalkState::Instance());

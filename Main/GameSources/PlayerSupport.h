@@ -79,14 +79,18 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//チェインの数字
 	//--------------------------------------------------------------------------------------
-	class ViewChainNum : public Sprite {
-		shared_ptr<MeshResource> m_SquareMeshResource;
-
+	class ViewChainNum : public GameObject {
+	protected:
+		int m_places;	// 表示桁
+		vector <Rect2D<float>> m_numRects;
+		vector<shared_ptr<Sprite>>m_numbers;
+		vector<vector<VertexPositionTexture>> m_vertices;
 	public:
 		ViewChainNum(const shared_ptr<Stage>& stagePtr);
 		virtual ~ViewChainNum() {};
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		virtual void OnDraw() override;
 	};
 	//--------------------------------------------------------------------------------------
 	//スローの残り時間を見せるオブジェクト

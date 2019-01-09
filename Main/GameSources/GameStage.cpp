@@ -92,7 +92,8 @@ namespace basecross {
 		player->SetSightingDevice(dev);
 		SetSharedGameObject(L"Player", player);
 		AddGameObject<ViewChainLetter>();
-		AddGameObject<ViewChainNum>();
+		auto chainNum = AddGameObject<ViewChainNum>();
+		chainNum->GetComponent<Transform>()->SetPosition(Vec3(800, -480, 0));
 		AddGameObject<SlowTimeUI>();
 	}
 
@@ -188,6 +189,8 @@ namespace basecross {
 			App::GetApp()->GetScene<Scene>()->SetGameStart(false);
 			//スローフラグをオフにしておく
 			GameManager::GetInstance().SetOnSlow(false);
+			//スコアを初期化する
+			GameManager::GetInstance().ResetNowScore();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			//物理計算有効

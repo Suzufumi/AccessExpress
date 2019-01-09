@@ -17,10 +17,11 @@ namespace basecross {
 		float m_humanWalkSpeed = 15.0f;		//人間状態の移動スピード
 		float m_dataWalkSpeed = 10.0f;		//データ状態の移動スピード
 		float m_angleX;
+		float m_angeleXMax = 70.0f;				//縦方向を管理する変数のマックス値
 		float m_angleY;
 		float m_maxAngleSpeed;			//カメラが回転するスピード
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
-		float m_cameraLookUp;	//カメラが見上げる高さ
+		float m_cameraLookUp;			//カメラが見上げる高さ
 		bool m_isFall = true;					//Y軸方向の力を加えるかどうか
 		bool m_isHaveFile = false;
 		bool m_isHit = false;					//オブジェクトに当たっているかどうか
@@ -39,7 +40,8 @@ namespace basecross {
 		bool m_isJummer;				//妨害を受けているかどうか
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
-		bool m_lockon = false;			//リンクオブジェクトをロックオンしている際にtrue
+		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
+		float m_rayRange = 30.0f;		//レイの届く距離
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -70,6 +72,11 @@ namespace basecross {
 			HUMAN = 0,
 			DATA = 1
 		};
+		enum Target {
+			LINK = 0,
+			DRONE = 1
+		};
+		Target m_target;
 
 		Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca);
 		virtual ~Player() {};
@@ -80,6 +87,8 @@ namespace basecross {
 		const unique_ptr<StateMachine<Player>>& GetStateMachine() {
 			return m_StateMachine;
 		}
+
+		Target GetTarget() { return m_target; };
 
 		//衝突したとき
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
@@ -115,8 +124,10 @@ namespace basecross {
 		}
 		//照準の位置を変える
 		void SightingDeviceChangePosition();
-		//ベジエ曲線で飛ぶ処理
+		//ベジエ曲線でリンクへ飛ぶ処理
 		void LinkGo();
+		//ベジエ曲線でリンクへ飛ぶ処理
+		void DroneGo();
 		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
 		//Rayを飛ばす
