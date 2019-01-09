@@ -78,6 +78,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Score.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyUtil.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)PlayerAnimState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
@@ -140,5 +142,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MainUi.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyUtil.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)PlayerAnimState.cpp" />
   </ItemGroup>
 </Project>
