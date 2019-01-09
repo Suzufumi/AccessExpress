@@ -3,9 +3,42 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Drone::Drone(const shared_ptr<Stage>& stage, Vec3 pos, DroneMotion dir,int chain)
-		: OBBObject(stage, pos, Vec3(1.0f, 1.0f, 1.0f)), m_position(pos), m_roopDir(dir),m_deadChain(chain)
+	Drone::Drone(const shared_ptr<Stage>& stage, IXMLDOMNodePtr pNode)
+		: GameObject(stage)
 	{
+		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
+		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+
+		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		auto quat = MyUtil::unityQuatStrToBCQuat(rotStr);
+		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
+
+		m_position = pos;
+		m_quat = quat;
+		m_scale = scale;
+
+		auto type = XmlDocReader::GetAttribute(pNode, L"DroneType");
+		if (type == L"ClockWise")
+		{
+			m_roopDir = ClockWise;
+		}
+		else if (type == L"CounterClockwise")
+		{
+			m_roopDir = CounterClockwise;
+		}
+		else if (type == L"VerticalMotion")
+		{
+			m_roopDir = VerticalMotion;
+		}
+		else if (type == L"Wave")
+		{
+			m_roopDir = Wave;
+		}
+
+		auto chainStr = XmlDocReader::GetAttribute(pNode, L"Chain");
+		m_deadChain = MyUtil::wstrToInt(chainStr);
+
 	}
 	void Drone::OnCreate() {
 
@@ -22,7 +55,14 @@ namespace basecross {
 			SetWaveMotion();
 		}
 
-		OBBObject::OnCreate();
+		auto transComp = GetComponent<Transform>();
+		transComp->SetWorldPosition(m_pos);
+		transComp->SetQuaternion(m_quat);
+		transComp->SetScale(m_scale);
+
+		auto drawComp = AddComponent<PNTStaticDraw>();
+		drawComp->SetMeshResource(L"DEFAULT_CUBE");
+
 		GetStage()->AddGameObject<ViewDeadChain>(GetThis<Drone>(), m_deadChain);
 
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());

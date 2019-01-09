@@ -12,10 +12,10 @@ namespace basecross {
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage {
+		// ステージのパスを保存する
+		wstring m_stageXmlPath;
 		//ビューの作成
 		void CreateViewLight();
-		// 背景の設定
-		void SetBackGround();
 		//床の作成
 		void CreateFloor();
 		//プレイヤーとプレイヤー回り
@@ -24,6 +24,7 @@ namespace basecross {
 		void CreateBill();
 		void CreateLinkObject();
 		void CreateDrone();
+		void CreateGoal();
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}

@@ -10,7 +10,8 @@ namespace basecross {
 		Quat m_quat;
 		Vec3 m_scale;
 	public:
-		Wall(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
+		//Wall(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
+		Wall(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		virtual ~Wall() {};
 		virtual void OnCreate();
 	};
@@ -19,10 +20,9 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------------------------------
 	class Goal : public GameObject {
 		Vec3 m_position;
-		Quat m_quat;
 		Vec3 m_scale;
 	public:
-		Goal(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
+		Goal(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		virtual ~Goal() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();

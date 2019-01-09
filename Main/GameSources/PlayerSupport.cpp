@@ -33,21 +33,21 @@ namespace basecross {
 	//-------------------------------------------------------------------------------------------------------------
 	void RadioTowerHitJudgment::OnCollisionExcute(shared_ptr<GameObject>& Other) {
 		//衝突したものが電波塔か調べる
-		auto radioTower = dynamic_pointer_cast<RadioTower>(Other);
-		//電波塔だった
-		if (radioTower) {
-			//Player位置から電波塔の位置を引く
-			Vec3 d = this->GetComponent<Transform>()->GetWorldPosition() - radioTower->GetComponent<Transform>()->GetWorldPosition();
-			//位置の差から距離を出す
-			float leng = d.length();
-			//導き出した距離が現在持っている距離よりも近かったら
-			if (m_length > leng) {
-				//一番近い距離を更新する
-				m_length = leng;
-				//速度を取得する
-				m_Acceleration = radioTower->GetAcceleration();
-			}
-		}
+		//auto radioTower = dynamic_pointer_cast<RadioTower>(Other);
+		////電波塔だった
+		//if (radioTower) {
+		//	//Player位置から電波塔の位置を引く
+		//	Vec3 d = this->GetComponent<Transform>()->GetWorldPosition() - radioTower->GetComponent<Transform>()->GetWorldPosition();
+		//	//位置の差から距離を出す
+		//	float leng = d.length();
+		//	//導き出した距離が現在持っている距離よりも近かったら
+		//	if (m_length > leng) {
+		//		//一番近い距離を更新する
+		//		m_length = leng;
+		//		//速度を取得する
+		//		m_Acceleration = radioTower->GetAcceleration();
+		//	}
+		//}
 	}
 
 	//-------------------------------------------------------------------------------------
