@@ -82,12 +82,9 @@ namespace basecross{
 		// レイヤーの調整
 		SetDrawLayer(1);
 
+		GetStage()->SetSharedGameObject(L"Player", GetThis<Player>());
 		auto dev = GetStage()->AddGameObject<SightingDevice>();
 		this->SetSightingDevice(dev);
-		GetStage()->AddGameObject<ViewChainLetter>();
-		GetStage()->AddGameObject<ViewChainNum>();
-
-		GetStage()->SetSharedGameObject(L"Player", GetThis<Player>());
 
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		//最初のステートをDataStateに設定
@@ -283,24 +280,29 @@ namespace basecross{
 		float delta = App::GetApp()->GetElapsedTime();
 
 		//右スティックに値が入力されていたら
-		if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
+		if (m_pad.fThumbRX > 0.7f || m_pad.fThumbRX < -0.7f ||
+			m_pad.fThumbRY > 0.7f || m_pad.fThumbRY < -0.7f) {
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed*2 * delta; // カメラを回転させる
+			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed*2 * delta; // カメラを昇降させる
+		}
+		else if(m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
 			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
 			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
 			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
-			//Y軸基準角度の丸め(-360<360)
-			if (m_angleY > Deg2Rad(360.0f)) {
-				m_angleY = Deg2Rad(0.0f);
-			}
-			if (m_angleY < Deg2Rad(0.0f)) {
-				m_angleY = Deg2Rad(360.0f);
-			}
-			//X軸基準角度の丸め(-70<70)
-			if (m_angleX > Deg2Rad(m_angeleXMax)) {
-				m_angleX = Deg2Rad(m_angeleXMax);
-			}
-			if (m_angleX < -Deg2Rad(m_angeleXMax)) {
-				m_angleX = -Deg2Rad(m_angeleXMax);
-			}
+		}
+		//Y軸基準角度の丸め(-360<360)
+		if (m_angleY > Deg2Rad(360.0f)) {
+			m_angleY = Deg2Rad(0.0f);
+		}
+		if (m_angleY < Deg2Rad(0.0f)) {
+			m_angleY = Deg2Rad(360.0f);
+		}
+		//X軸基準角度の丸め(-70<70)
+		if (m_angleX > Deg2Rad(m_angeleXMax)) {
+			m_angleX = Deg2Rad(m_angeleXMax);
+		}
+		if (m_angleX < -Deg2Rad(m_angeleXMax)) {
+			m_angleX = -Deg2Rad(m_angeleXMax);
 		}
 
 		// スティックの傾きを角度に変換する

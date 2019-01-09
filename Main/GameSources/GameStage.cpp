@@ -70,12 +70,10 @@ namespace basecross {
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Player");
 
 		//ÉvÉåÉCÉÑÅ[
-		//auto player = AddGameObject<Player>(Vec3(pos), Quat(qt), Vec3(scale));
-		//auto dev = AddGameObject<SightingDevice>();
-		//player->SetSightingDevice(dev);
-		//SetSharedGameObject(L"Player", player);
-		//AddGameObject<ViewChainLetter>();
-		//AddGameObject<ViewChainNum>();
+		AddGameObject<ViewChainLetter>();
+		auto chainNum = AddGameObject<ViewChainNum>();
+		chainNum->GetComponent<Transform>()->SetPosition(Vec3(800, -480, 0));
+		AddGameObject<SlowTimeUI>();
 	}
 
 	void GameStage::CreateBill()
