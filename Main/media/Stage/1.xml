@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <GameStage>
-  <Player Type="Player" Pos="(6.5, 13.8, 5.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Player Type="Player" Pos="(6.5, 13.8, 3.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
   <Wall Type="Wall" Pos="(41.5, 4.5, 37.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
   <Wall Type="Wall" Pos="(15.1, 4.5, 84.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
   <Wall Type="Wall" Pos="(62.5, 4.5, 50.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
@@ -24,6 +24,7 @@
   <Wall Type="Wall" Pos="(29.5, 4.5, 8.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
   <Wall Type="Wall" Pos="(74.5, 4.5, 7.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
   <Wall Type="Wall" Pos="(65.5, 4.5, 28.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
+  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(11.5, -499.5, 14.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="1" />
   <Enemy Type="Enemy" DroneType="VerticalMotion" Pos="(13.5, 10.2, 28.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
   <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(52.5, 10.2, 24.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="4" />
   <Enemy Type="Enemy" DroneType="Wave" Pos="(21.5, 12.2, 73.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
@@ -31,7 +32,7 @@
   <Enemy Type="Enemy" DroneType="VerticalMotion" Pos="(54.5, 10.2, 45.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
   <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(42.5, 10.2, 54.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="4" />
   <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(69.5, 10.2, 77.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
-  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(11.5, 10.2, 14.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="1" />
+  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(11.5, 10.5, 14.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="1" />
   <RadioTower Type="RadioTower" Pos="(14.5, 5.1, 49.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
   <RadioTower Type="RadioTower" Pos="(32.5, 5.1, 101.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
   <RadioTower Type="RadioTower" Pos="(79.5, 5.1, 47.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
