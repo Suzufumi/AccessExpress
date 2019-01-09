@@ -21,6 +21,7 @@ namespace basecross {
 	void Wall::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 		auto col = AddComponent<CollisionObb>();
+		//col->SetDrawActive(true);
 		col->SetAfterCollision(AfterCollision::None);
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
@@ -29,10 +30,10 @@ namespace basecross {
 		ptrTrans->SetScale(m_scale);
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.5f, 0.5f, 0.5f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -3.5f, 0.0f)
+			Vec3(0.0f, -1.4f, 0.0f)
 		);
 
 		//描画コンポーネントの追加

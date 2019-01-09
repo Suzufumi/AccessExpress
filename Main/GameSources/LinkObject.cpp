@@ -15,6 +15,7 @@ namespace basecross
 		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 
 		m_position = pos;
+		m_position += Vec3(2.8f, 3.7f, -9.5f);
 		m_quat = quat;
 		m_scale = scale;
 
@@ -24,19 +25,22 @@ namespace basecross
 	{
 		m_accessType = AppType::Link;
 		auto ptrTrans = GetComponent<Transform>();
-		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
 		ptrTrans->SetWorldPosition(m_position);
 		ptrTrans->SetQuaternion(m_quat);
 		ptrTrans->SetScale(m_scale);
 
+		auto col = AddComponent<CollisionObb>();
+		col->SetDrawActive(true);
+		col->SetAfterCollision(AfterCollision::None);
+
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.8f, 0.8f, 0.8f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f)
+			Vec3(0.0f, -0.5f, 0.0f)
 		);
+
 		//プレイヤーとぶつからないようにする
 		AddTag(L"PlayerUse");
 		//描画コンポーネントの追加
@@ -50,6 +54,7 @@ namespace basecross
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
 		SetAlphaActive(true);
 		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
+
 	}
 
 	void LinkObject::OnUpdate()
