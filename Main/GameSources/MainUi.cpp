@@ -3,7 +3,7 @@
 
 namespace basecross{
 	EnergyGaugeUI::EnergyGaugeUI(const shared_ptr<Stage>& stagePtr)
-		: Sprite(stagePtr, L"UI_BASE_TX", Vec2(256, 256))
+		: Sprite(stagePtr, L"UI_BASE_TX", Vec2(128, 128))
 	{
 
 	}
@@ -13,26 +13,26 @@ namespace basecross{
 
 	void EnergyGaugeUI::OnCreate() {
 		Sprite::OnCreate();
-		SetPosition(Vec2(133,123));
+		SetPosition(Vec2(66,61));
 		struct GaugeParam {
 			const wstring key;
 			Vec2 size;
 			Vec2 pos;
 		};
-		Vec2 size = Vec2(28,28);
+		Vec2 size = Vec2(14,14);
 		GaugeParam gauges[] = {
-			{L"RED_GAUGE_TX", size,Vec2(117,191)},
-			{L"RED_GAUGE_TX", size,Vec2(117,160)},
-			{L"RED_GAUGE_TX", size,Vec2(117,129)},
-			{L"YELLOW_GAUGE_TX", size,Vec2(168,192)},
-			{L"YELLOW_GAUGE_TX", size,Vec2(168,161)},
-			{L"YELLOW_GAUGE_TX", size,Vec2(168,130)},
-			{L"YELLOW_GAUGE_TX", size,Vec2(168,99)},
-			{L"GREEN_GAUGE_TX", size,Vec2(220,192)},
-			{L"GREEN_GAUGE_TX", size,Vec2(220,161)},
-			{L"GREEN_GAUGE_TX", size,Vec2(220,130)},
-			{L"GREEN_GAUGE_TX", size,Vec2(220,99)},
-			{L"GREEN_GAUGE_TX", size,Vec2(220,68)}
+			{L"RED_GAUGE_TX", size,Vec2(58,95)},
+			{L"RED_GAUGE_TX", size,Vec2(58,80)},
+			{L"RED_GAUGE_TX", size,Vec2(58,64)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(83,95)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(83,80)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(83,64)},
+			{L"YELLOW_GAUGE_TX", size,Vec2(83,49)},
+			{L"GREEN_GAUGE_TX", size,Vec2(109,95)},
+			{L"GREEN_GAUGE_TX", size,Vec2(109,80)},
+			{L"GREEN_GAUGE_TX", size,Vec2(109,64)},
+			{L"GREEN_GAUGE_TX", size,Vec2(109,49)},
+			{L"GREEN_GAUGE_TX", size,Vec2(109,34)}
 		};
 		int count = 0;
 		for (auto gauge : gauges) {
