@@ -82,12 +82,9 @@ namespace basecross{
 		// レイヤーの調整
 		SetDrawLayer(1);
 
+		GetStage()->SetSharedGameObject(L"Player", GetThis<Player>());
 		auto dev = GetStage()->AddGameObject<SightingDevice>();
 		this->SetSightingDevice(dev);
-		GetStage()->AddGameObject<ViewChainLetter>();
-		GetStage()->AddGameObject<ViewChainNum>();
-
-		GetStage()->SetSharedGameObject(L"Player", GetThis<Player>());
 
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		//最初のステートをDataStateに設定
