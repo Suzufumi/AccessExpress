@@ -6,10 +6,11 @@ namespace basecross
 {
 	class LinkObject : public AccessObject{
 		Vec3 m_position;
+		Quat m_quat;
 		Vec3 m_scale;
 		Vec3 m_goPosition;
 	public:
-		LinkObject(const shared_ptr<Stage>& stagePtr,Vec3 pos,Vec3 scale);
+		LinkObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		~LinkObject() {}
 
 		virtual void OnCreate() override;

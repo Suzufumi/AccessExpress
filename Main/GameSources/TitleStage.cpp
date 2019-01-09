@@ -20,7 +20,7 @@ namespace basecross {
 	void TitleStage::OnUpdate() {
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		if (CntlVec[0].wPressedButtons) {
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToStageSelect");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}
 		float delta = App::GetApp()->GetElapsedTime();
 		m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(delta);

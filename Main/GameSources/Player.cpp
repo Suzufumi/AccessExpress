@@ -11,9 +11,21 @@ namespace basecross{
 	//------------------------------------------------------------------------------------------------
 	//playerのコンストラクタ
 	//------------------------------------------------------------------------------------------------
-	Player::Player(const shared_ptr<Stage>& StagePtr, Vec3 pos, Quat quat, Vec3 sca)
-		:GameObject(StagePtr), m_position(pos), m_quaternion(quat), m_scale(sca)
-	{
+	Player::Player(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
+		:GameObject(StagePtr)
+	{	
+		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
+		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+
+		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		auto quat = MyUtil::unityQuatStrToBCQuat(rotStr);
+		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
+
+		m_position = pos;
+		m_quaternion = quat;
+		m_scale = scale;
+
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		m_tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 		m_angleX = m_tpsCamera.lock()->GetCameraAngleX();
@@ -47,7 +59,7 @@ namespace basecross{
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(1.0f, 0.5f, 1.0f),
+			Vec3(0.8f, 0.8f, 0.8f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, Deg2Rad(180), 0.0f),
 			Vec3(0.0f, -0.5f, 0.0f)
@@ -62,17 +74,27 @@ namespace basecross{
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		// アニメーションを追加する
 		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
-		// アニメーションの設定
-		drawComp->ChangeCurrentAnimation(L"Default");
+		drawComp->AddAnimation(L"Move", 200, 30, true, 30.0f);
+		drawComp->AddAnimation(L"Fly", 300, 40, false, 30.0f);
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
 		//drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);
 		// レイヤーの調整
 		SetDrawLayer(1);
 
+		auto dev = GetStage()->AddGameObject<SightingDevice>();
+		this->SetSightingDevice(dev);
+		GetStage()->AddGameObject<ViewChainLetter>();
+		GetStage()->AddGameObject<ViewChainNum>();
+
+		GetStage()->SetSharedGameObject(L"Player", GetThis<Player>());
+
 		m_StateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		//最初のステートをDataStateに設定
 		m_StateMachine->ChangeState(DataState::Instance());
+
+		m_animStateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
+		m_animStateMachine->ChangeState(PlayerDefaultAnim::Instance());
 	}
 	//-------------------------------------------------------------------------------------------------------------
 	//Update
@@ -99,6 +121,8 @@ namespace basecross{
 
 		//ステートマシンのアップデート
 		m_StateMachine->Update();
+
+		m_animStateMachine->Update();
 		// アニメーションを更新する
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->UpdateAnimation(delta);
@@ -190,7 +214,7 @@ namespace basecross{
 		}
 	}
 
-
+																	
 	//--------------------------------------------------------------------------------------------
 	//XZ平面の移動処理
 	//--------------------------------------------------------------------------------------------
@@ -203,6 +227,7 @@ namespace basecross{
 			//方向と移動スピードを掛け算してpositonを変更する
 			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
+			GetAnimStateMachine()->ChangeState(PlayerMoveAnim::Instance());
 		}
 		playerTrans->SetWorldPosition(playerPos);
 	}
@@ -729,6 +754,7 @@ namespace basecross{
 
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
+		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
 		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
@@ -778,6 +804,7 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void DataState::Enter(const shared_ptr<Player>& Obj) {
+		//Obj->GetAnimStateMachine()->ChangeState(PlayerDefaultAnim::Instance());
 		if (Obj->GetChain() >= 4)
 		{
 			// 現在のチェインに応じて制限時間を設定
