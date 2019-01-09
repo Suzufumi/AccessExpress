@@ -72,7 +72,7 @@ namespace basecross {
 		//ƒvƒŒƒCƒ„[
 		AddGameObject<ViewChainLetter>();
 		auto chainNum = AddGameObject<ViewChainNum>();
-		chainNum->GetComponent<Transform>()->SetPosition(Vec3(800, -480, 0));
+		chainNum->GetComponent<Transform>()->SetPosition(Vec3(780, -480, 0));
 		AddGameObject<SlowTimeUI>();
 	}
 

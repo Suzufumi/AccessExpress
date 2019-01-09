@@ -185,7 +185,7 @@ namespace basecross {
 	//-------------------------------------------------------------------------------------------------
 	ViewChainNum::ViewChainNum(const shared_ptr<Stage>& stagePtr)
 		: GameObject(stagePtr){
-		m_places = 1;
+		m_places = 2;
 	}
 	//------------------------------------------------------------------------------------
 	//\’z
@@ -229,8 +229,9 @@ namespace basecross {
 	void ViewChainNum::OnUpdate() {
 		auto& gameManager = GameManager::GetInstance();
 		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
-
 		int chain = player->GetChain();
+
+		//”š‚ğ•À‚×‚é
 		for (int i = 0; i < m_places; i++) {
 			int num = chain % 10;	// ˆê‚ÌˆÊ‚ğ”²‚«o‚·
 			chain /= 10;			// ˆê‚ÌˆÊ‚ğØ‚èÌ‚Ä‚é
