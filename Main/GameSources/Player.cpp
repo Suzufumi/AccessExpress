@@ -59,7 +59,7 @@ namespace basecross{
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.8f, 0.8f, 0.8f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, Deg2Rad(180), 0.0f),
 			Vec3(0.0f, -0.5f, 0.0f)
@@ -219,7 +219,6 @@ namespace basecross{
 	//XZ平面の移動処理
 	//--------------------------------------------------------------------------------------------
 	void Player::Walk() {
-		//GetDynamicComponent<SmBaseDraw>()->ChangeCurrentAnimation(L"Move");
 		auto playerTrans = GetComponent<Transform>();
 		auto playerPos = playerTrans->GetWorldPosition();
 		//左スティックに値が入力されていたら
@@ -228,6 +227,7 @@ namespace basecross{
 			//方向と移動スピードを掛け算してpositonを変更する
 			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
+			GetAnimStateMachine()->ChangeState(PlayerMoveAnim::Instance());
 		}
 		playerTrans->SetWorldPosition(playerPos);
 	}
