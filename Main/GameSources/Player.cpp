@@ -269,12 +269,12 @@ namespace basecross{
 			if (m_angleY < Deg2Rad(0.0f)) {
 				m_angleY = Deg2Rad(360.0f);
 			}
-			//X²Šî€Šp“x‚ÌŠÛ‚ß(-60<60)
-			if (m_angleX > Deg2Rad(60.0f)) {
-				m_angleX = Deg2Rad(60.0f);
+			//X²Šî€Šp“x‚ÌŠÛ‚ß(-70<70)
+			if (m_angleX > Deg2Rad(m_angeleXMax)) {
+				m_angleX = Deg2Rad(m_angeleXMax);
 			}
-			if (m_angleX < -Deg2Rad(60.0f)) {
-				m_angleX = -Deg2Rad(60.0f);
+			if (m_angleX < -Deg2Rad(m_angeleXMax)) {
+				m_angleX = -Deg2Rad(m_angeleXMax);
 			}
 		}
 

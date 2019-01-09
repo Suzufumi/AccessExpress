@@ -17,10 +17,11 @@ namespace basecross {
 		float m_humanWalkSpeed = 15.0f;		//人間状態の移動スピード
 		float m_dataWalkSpeed = 10.0f;		//データ状態の移動スピード
 		float m_angleX;
+		float m_angeleXMax = 70.0f;				//縦方向を管理する変数のマックス値
 		float m_angleY;
 		float m_maxAngleSpeed;			//カメラが回転するスピード
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
-		float m_cameraLookUp;	//カメラが見上げる高さ
+		float m_cameraLookUp;			//カメラが見上げる高さ
 		bool m_isFall = true;					//Y軸方向の力を加えるかどうか
 		bool m_isHaveFile = false;
 		bool m_isHit = false;					//オブジェクトに当たっているかどうか
