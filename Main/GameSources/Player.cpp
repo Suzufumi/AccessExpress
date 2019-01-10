@@ -74,7 +74,7 @@ namespace basecross{
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		// アニメーションを追加する
 		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
-		drawComp->AddAnimation(L"Move", 210, 20, true, 30.0f);
+		drawComp->AddAnimation(L"Move", 200, 30, true, 30.0f);
 		drawComp->AddAnimation(L"Fly", 310, 30, false, 17.0f);
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
 		//drawComp->SetDiffuse(Color);
@@ -224,7 +224,17 @@ namespace basecross{
 			//方向と移動スピードを掛け算してpositonを変更する
 			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
 			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
-			GetAnimStateMachine()->ChangeState(PlayerMoveAnim::Instance());
+			// 現在のアニムステートがDefaultだったら
+			if (GetAnimStateMachine()->GetCurrentState() == PlayerDefaultAnim::Instance())
+			{
+				GetAnimStateMachine()->ChangeState(PlayerMoveAnim::Instance());
+			}
+		}
+		// padが入力されてないかつ現在のアニムステートがMoveだったら
+		else if(m_padDir.x == 0.0f && m_padDir.z == 0.0f && 
+				GetAnimStateMachine()->GetCurrentState() == PlayerMoveAnim::Instance())
+		{
+			GetAnimStateMachine()->ChangeState(PlayerDefaultAnim::Instance());
 		}
 		playerTrans->SetWorldPosition(playerPos);
 	}
