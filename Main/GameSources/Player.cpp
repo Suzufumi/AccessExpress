@@ -324,7 +324,7 @@ namespace basecross{
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
-		//ï¿½Æï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//Æ€‚ğŒ©‚é
 		camera->SetAt(sightPos);
 		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
 			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
@@ -362,20 +362,24 @@ namespace basecross{
 		//ƒŠƒ“ƒNƒIƒuƒWƒFƒNƒg‚ğÆ€‚É‚Æ‚ç‚¦‚ÄƒƒbƒNƒIƒ“‚µ‚Ä‚¢‚é‚Æ‚«
 		if (m_islockon) {
 			//ƒJƒƒ‰‚Ì§Œä‚ğ‚¨‚±‚È‚¤
-			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+			auto sightingDevicePos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
-			float deltaX = m_cameraPos.x - linkTrans->GetWorldPosition().x;
-			float deltaZ = m_cameraPos.z - linkTrans->GetWorldPosition().z;
-			float deltaY = m_cameraPos.y - linkTrans->GetWorldPosition().y;
+			float deltaX = sightingDevicePos.x - linkTrans->GetWorldPosition().x;
+			float deltaZ = sightingDevicePos.z - linkTrans->GetWorldPosition().z;
+			float deltaY = sightingDevicePos.y - linkTrans->GetWorldPosition().y + m_cameraLookUp*2;
 			//‰¡‚ÌƒJƒƒ‰ˆÊ’u‚ğ§Œä‚·‚éŠp“x
 			m_angleY = atan2f(deltaZ, deltaX);
 			if (m_angleY < 0.0f) {
 				m_angleY += Deg2Rad(360.0f);
 			}
+			//c‚ÌƒJƒƒ‰ˆÊ’u‚ğ‚¾‚·‚½‚ß‚Ì•Óo‚·
+			float syahenB = hypotf(deltaX, deltaZ);
+			float syahenC = hypotf(syahenB, deltaY);
 			//c‚ÌƒJƒƒ‰ˆÊ’u‚ğ§Œä‚·‚éŠp“x
-			float syahen = hypotf(deltaX, deltaZ);
 			//ƒvƒŒƒCƒ„[‚Ìã‚ğŒ©‚é‚æ‚¤‚É‚µ‚Ä‚¢‚é‚Ì‚Å‚»‚Ì•ªã‚É‚¸‚ç‚·
-			m_angleX = atan2f(deltaY, syahen) + (m_cameraLookUp / m_cameraDistance);
+			float ƒ¿ = ((syahenB*syahenB) + (syahenC*syahenC) - (deltaY*deltaY)) / (2 * syahenB*syahenC);
+			float b = deltaY / syahenC;
+			m_angleX = acosf(ƒ¿);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -533,7 +537,7 @@ namespace basecross{
 
 		auto sightingDevice = m_SightingDevice.lock();
 		//player‚Ì“ª•Ó‚è‚ÉA”í‚ç‚È‚¢‚æ‚¤ƒJƒƒ‰‚©‚ç‚Ì•ûŒü‚ğ‰Á–¡‚µ‚Ä’u‚­
-		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)) + (dir * 2.0f));
+		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)));
 
 		Quat rot;
 		rot.rotationRollPitchYawFromVector(Vec3(0.0f,atan2f(dir.x, dir.z), 0.0f));
