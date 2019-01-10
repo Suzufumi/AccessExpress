@@ -322,8 +322,10 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::CameraControll(){
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
-		camera->SetAt(pos + Vec3(0.0f, m_cameraLookUp, 0.0f));
+		//�Ə������
+		camera->SetAt(sightPos);
 		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
 			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
