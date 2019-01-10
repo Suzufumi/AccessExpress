@@ -37,10 +37,12 @@ namespace basecross {
 		);
 
 		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticDraw>();
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMeshResource(L"BUILDING_MODEL");
 		drawComp->SetTextureResource(L"Building_TX");
+		drawComp->SetLightingEnabled(false);
+		//drawComp->SetOwnShadowActive(false);
 		SetAlphaActive(true);
 		//drawComp->SetBlendState(BlendState::AlphaBlend);
 		drawComp->SetMeshToTransformMatrix(spanMat);

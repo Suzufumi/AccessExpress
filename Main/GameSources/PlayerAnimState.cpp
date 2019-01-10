@@ -50,7 +50,7 @@ namespace basecross
 	{
 		auto drawComp = Obj->GetDynamicComponent<SmBaseDraw>();
 		auto animTime = drawComp->GetCurrentAnimationTime();
-		if (drawComp->IsTargetAnimeEnd())
+		if (Obj->GetStateMachine()->GetCurrentState() == DataState::Instance())
 		{
 			Obj->GetAnimStateMachine()->ChangeState(PlayerDefaultAnim::Instance());
 		}
