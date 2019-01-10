@@ -332,8 +332,10 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::CameraControll(){
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
-		camera->SetAt(pos + Vec3(0.0f, m_cameraLookUp, 0.0f));
+		//照準を見る
+		camera->SetAt(sightPos);
 		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
 			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
@@ -370,20 +372,24 @@ namespace basecross{
 		//リンクオブジェクトを照準にとらえてロックオンしているとき
 		if (m_islockon) {
 			//カメラの制御をおこなう
-			auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+			auto sightingDevicePos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
-			float deltaX = m_cameraPos.x - linkTrans->GetWorldPosition().x;
-			float deltaZ = m_cameraPos.z - linkTrans->GetWorldPosition().z;
-			float deltaY = m_cameraPos.y - linkTrans->GetWorldPosition().y;
+			float deltaX = sightingDevicePos.x - linkTrans->GetWorldPosition().x;
+			float deltaZ = sightingDevicePos.z - linkTrans->GetWorldPosition().z;
+			float deltaY = sightingDevicePos.y - linkTrans->GetWorldPosition().y + m_cameraLookUp*2;
 			//横のカメラ位置を制御する角度
 			m_angleY = atan2f(deltaZ, deltaX);
 			if (m_angleY < 0.0f) {
 				m_angleY += Deg2Rad(360.0f);
 			}
+			//縦のカメラ位置をだすための辺出す
+			float syahenB = hypotf(deltaX, deltaZ);
+			float syahenC = hypotf(syahenB, deltaY);
 			//縦のカメラ位置を制御する角度
-			float syahen = hypotf(deltaX, deltaZ);
 			//プレイヤーの上を見るようにしているのでその分上にずらす
-			m_angleX = atan2f(deltaY, syahen) + (m_cameraLookUp / m_cameraDistance);
+			float α = ((syahenB*syahenB) + (syahenC*syahenC) - (deltaY*deltaY)) / (2 * syahenB*syahenC);
+			float b = deltaY / syahenC;
+			m_angleX = acosf(α);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -470,8 +476,8 @@ namespace basecross{
 			m_Lerp = 1.0f;
 			//現在チェインがドローンの死にチェイン数を超えていた場合
 			if (drone->GetDeadChain() <= GetChain()) {
-				//ドローンを倒したのでスコアアップ
-				gameManager.AddScore(GetChain() * 30 + GetChain() * 10);
+				//演出でチェイン数を飛ばすために値を与える
+				GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
 				//動かなくする
 				drone->Die();
 				//スローの経過時間をリセット
@@ -541,7 +547,7 @@ namespace basecross{
 
 		auto sightingDevice = m_SightingDevice.lock();
 		//playerの頭辺りに、被らないようカメラからの方向を加味して置く
-		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)) + (dir * 2.0f));
+		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)));
 
 		Quat rot;
 		rot.rotationRollPitchYawFromVector(Vec3(0.0f,atan2f(dir.x, dir.z), 0.0f));

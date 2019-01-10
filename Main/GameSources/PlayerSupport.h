@@ -104,5 +104,28 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 	};
+	//--------------------------------------------------------------------------------------
+	//スコアに飛んでいくチェインの数字
+	//--------------------------------------------------------------------------------------
+	class FlyingChain : public GameObject {
+	protected:
+		int m_places;	// 表示桁
+		int m_chain;	// 表示するチェイン数
+		float m_leap;
+		Vec3 p0 = Vec3(780, -480, 0);
+		Vec3 p1 = Vec3(1000,-500,0);
+		Vec3 p2 = Vec3(1152, 0, 0);
 
+		bool m_isFly;	//飛んでいるときtrue
+		vector <Rect2D<float>> m_numRects;
+		vector<shared_ptr<Sprite>>m_numbers;
+		vector<vector<VertexPositionTexture>> m_vertices;
+	public:
+		FlyingChain(const shared_ptr<Stage>& stagePtr);
+		virtual ~FlyingChain() {};
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		virtual void OnDraw() override;
+		void FlySet(int chain);
+	};
 }
