@@ -224,10 +224,12 @@ namespace basecross {
 			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 128));
 			m_numbers.push_back(number);
 		}
+
+		auto flyingChain = GetStage()->AddGameObject<FlyingChain>();
+		flyingChain->FlySet(3);
 	}
 
 	void ViewChainNum::OnUpdate() {
-		auto& gameManager = GameManager::GetInstance();
 		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
 		int chain = player->GetChain();
 
@@ -299,5 +301,99 @@ namespace basecross {
 			m_gageBase.lock()->SetDrawActive(false);
 		}
 	}
+	//--------------------------------------------------------------------------------------
+	//チェインの数字
+	//--------------------------------------------------------------------------------------
+	FlyingChain::FlyingChain(const shared_ptr<Stage>& stagePtr)
+		: GameObject(stagePtr) {
+		m_places = 2;
+	}
+	//------------------------------------------------------------------------------------
+	//構築
+	//------------------------------------------------------------------------------------
+	void FlyingChain::OnCreate() {
+		// 数字ごとの範囲を設定する
+		for (int i = 0; i < 10; i++) {
+			m_numRects.push_back({
+				static_cast<float>(64 * i),			// left
+				static_cast<float>(0),				// top
+				static_cast<float>(64 * (i + 1)),	// right
+				static_cast<float>(128)				// bottom
+				});
+		}
 
+		float start_x = m_numRects[5].left / 640.0f;
+		float end_x = m_numRects[5].right / 640.0f;
+		float start_y = m_numRects[5].top / 128.0f;
+		float end_y = m_numRects[5].bottom / 128.0f;
+
+		for (int i = 0; i < m_places; i++) {
+			m_vertices.push_back({
+				{ Vec3(0.0f,128.0f,0.0f),Vec2(start_x,start_y) },
+				{ Vec3(64.0f,128.0f,0.0f),Vec2(end_x,start_y) },
+				{ Vec3(0.0f,0.0f,0.0f),Vec2(start_x,end_y) },
+				{ Vec3(64.0f,0.0f,0.0f),Vec2(end_x,end_y) }
+				});
+		}
+
+		for (int i = 0; i < m_places; i++) {
+			auto number = ObjectFactory::Create<Sprite>(
+				GetStage(), L"Number_TX", Vec2(640, 128), m_numRects[0]);
+			auto transComp = number->GetComponent<Transform>();
+			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
+			transComp->SetParent(GetThis<FlyingChain>());	// 基準点が画面の左上からScoreUIの場所になった
+			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 128));
+			m_numbers.push_back(number);
+		}
+		GetStage()->SetSharedGameObject(L"FlyingChain", GetThis<FlyingChain>());
+	}
+
+	void FlyingChain::OnUpdate() {
+		int chain = m_chain;
+
+		//数字を並べる
+		for (int i = 0; i < m_places; i++) {
+			int num = chain % 10;	// 一の位を抜き出す
+			chain /= 10;			// 一の位を切り捨てる
+
+			float start_x = m_numRects[num].left / 640.0f;
+			float end_x = m_numRects[num].right / 640.0f;
+			float start_y = m_numRects[num].top / 128.0f;
+			float end_y = m_numRects[num].bottom / 128.0f;
+
+			m_vertices[i][0].textureCoordinate = Vec2(start_x, start_y);
+			m_vertices[i][1].textureCoordinate = Vec2(end_x, start_y);
+			m_vertices[i][2].textureCoordinate = Vec2(start_x, end_y);
+			m_vertices[i][3].textureCoordinate = Vec2(end_x, end_y);
+
+			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
+			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
+		}
+		//飛んでいる状態での処理
+		if (m_isFly) {
+			m_leap += App::GetApp()->GetElapsedTime() * 2.0f;
+			auto pos = (1 - m_leap)*(1 - m_leap)*p0 + 2 * (1 - m_leap)*m_leap*p1 + m_leap * m_leap*p2;
+			GetComponent<Transform>()->SetPosition(pos);
+			if (m_leap >= 1.0f) {
+				//スコアについたのでスコアの値を増加させる
+				GameManager::GetInstance().AddScore(m_chain * 30 + m_chain * 10);
+				m_leap = 0;
+				m_isFly = false;
+			}
+		}
+
+		OnDraw();
+	}
+
+	void FlyingChain::OnDraw() {
+		if (m_isFly) {
+			for (auto number : m_numbers) {
+				number->OnDraw();
+			}
+		}
+	}
+	void FlyingChain::FlySet(int chain) {
+		m_chain = chain;
+		m_isFly = true;
+	}
 }

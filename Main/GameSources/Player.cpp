@@ -460,8 +460,8 @@ namespace basecross{
 			m_Lerp = 1.0f;
 			//現在チェインがドローンの死にチェイン数を超えていた場合
 			if (drone->GetDeadChain() <= GetChain()) {
-				//ドローンを倒したのでスコアアップ
-				gameManager.AddScore(GetChain() * 30 + GetChain() * 10);
+				//演出でチェイン数を飛ばすために値を与える
+				GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
 				//動かなくする
 				drone->Die();
 				//スローの経過時間をリセット
