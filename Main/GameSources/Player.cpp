@@ -498,6 +498,7 @@ namespace basecross{
 				gameManager.ResetSloawPassage();
 				//スローにする
 				gameManager.SetOnSlow(true);
+				App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"bomb_se", 1.0f);
 			}
 			else {
 				//倒せなかったのでコンボリセットする
