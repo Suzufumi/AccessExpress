@@ -804,6 +804,9 @@ namespace basecross{
 
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
+		auto scenePtr = App::GetApp()->GetScene<Scene>();
+		// 効果音を鳴らす
+		scenePtr->MusicOnceStart(L"Jump_SE", 1.0f);
 		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
 		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();

@@ -127,7 +127,8 @@ namespace basecross{
 			{L"tw015.wav",L"tw015_mus"},
 			{L"tw014b.wav",L"tw014b_mus"},
 			//SE
-			{L"bomb.wav",L"bomb_se"}
+			{L"bomb.wav",L"bomb_se"},
+			{L"jumpAnime.wav", L"Jump_SE"}
 		};
 		//プロジェクトに登録
 		for (auto music : musics){
