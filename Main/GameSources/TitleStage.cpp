@@ -49,6 +49,13 @@ namespace basecross {
 		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
 		// アニメーションの設定
 		drawComp->ChangeCurrentAnimation(L"Default");
-
+		drawComp->SetMultiMeshIsDraw(0, false); // 一番上の線
+		drawComp->SetMultiMeshIsDraw(1, false);	// 真ん中の線
+		drawComp->SetMultiMeshIsDraw(2, false);	// 一番下の線
+		drawComp->SetMultiMeshIsDraw(3, true);	// 通常顔
+		drawComp->SetMultiMeshIsDraw(4, false);	// うれしい
+		drawComp->SetMultiMeshIsDraw(5, true); // 体
+		drawComp->SetMultiMeshIsDraw(6, false);	// 寝てる顔
+		drawComp->SetMultiMeshIsDraw(7, false);	// 悲しい顔
 	}
 }
