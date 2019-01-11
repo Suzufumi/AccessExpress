@@ -43,6 +43,8 @@ namespace basecross {
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
 		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
 		float m_rayRange = 30.0f;		//レイの届く距離
+		bool m_isdrawFlg = true;		// マルチメッシュの描画フラグ
+		bool m_isMultiUse = true;		// マルチメッシュを有効にするかどうかのフラグ
 
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
@@ -147,6 +149,10 @@ namespace basecross {
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
 		//Aボタンが押された
 		bool CheckAButton();
+		// Yボタンが押された
+		bool CheckYButton();
+		// 描画するしないの切り替え
+		void DrawSwitch();
 
 		//エネルギーが減るようにする
 		void ChengeEnergyMai() { m_changeEnergy = -5.0f; }

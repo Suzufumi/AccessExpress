@@ -55,7 +55,7 @@ namespace basecross{
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
-		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 640.0f, 480.0f));
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 120.0f, 640.0f, 480.0f));
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
@@ -69,7 +69,7 @@ namespace basecross{
 		auto drawComp = AddComponent<PNTBoneModelDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMultiMeshResource(L"PLAYER_MODEL");
-		drawComp->SetTextureResource(L"PLAYER_TX");
+		//drawComp->SetTextureResource(L"PLAYER_TX");
 		// 変換した行列を代入
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		// アニメーションを追加する
@@ -159,6 +159,8 @@ namespace basecross{
 
 		// デバッグ文字の表示
 		DrawStrings();
+		DrawSwitch();
+
 	}
 	//--------------------------------------------------------------------------------------------------------------
 	//衝突したとき
@@ -686,6 +688,22 @@ namespace basecross{
 		return false;
 	}
 
+	// Yボタンが押されたかどうかを返す
+	bool Player::CheckYButton()
+	{
+		if (m_pad.wButtons & XINPUT_GAMEPAD_Y)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	void Player::DrawSwitch()
+	{
+		auto drawComp = GetComponent<PNTBoneModelDraw>();
+		drawComp->SetMultiMeshIsDraw(0, CheckYButton());
+	}
+
 	//---------------------------------------------------------------------------------------------
 	//コンボ数に応じてボーナスを与える
 	//---------------------------------------------------------------------------------------------
@@ -703,14 +721,6 @@ namespace basecross{
 		wstring strFps(L"FPS: ");
 		strFps += Util::UintToWStr(fps);
 		strFps += L"\n";
-		auto cameraPos = GetStage()->GetView()->GetTargetCamera();
-		wstring cameraStr(L"Camera :");
-		cameraStr += L"X:" + Util::FloatToWStr(cameraPos->GetEye().x, 6, Util::FloatModify::Fixed) + L"\t";
-		cameraStr += L"Y:" + Util::FloatToWStr(cameraPos->GetEye().y, 6, Util::FloatModify::Fixed) + L"\t";
-		cameraStr += L"Z:" + Util::FloatToWStr(cameraPos->GetEye().z, 6, Util::FloatModify::Fixed) + L"\n";
-		cameraStr += L"X:" + Util::FloatToWStr(cameraPos->GetAt().x, 6, Util::FloatModify::Fixed) + L"\t";
-		cameraStr += L"Y:" + Util::FloatToWStr(cameraPos->GetAt().y, 6, Util::FloatModify::Fixed) + L"\t";
-		cameraStr += L"Z:" + Util::FloatToWStr(cameraPos->GetAt().z, 6, Util::FloatModify::Fixed) + L"\n";
 		wstring energy(L"Energy : ");
 		energy += Util::FloatToWStr(m_energy) + L"\n";
 		wstring combo(L"Combo : ");
@@ -719,10 +729,11 @@ namespace basecross{
 		chainLimit += Util::IntToWStr(m_chainTime) + L"\n";
 		wstring timeLimit(L"Limit : ");
 		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
+
 		//文字列をつける
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
 
-		wstring str = combo + chainLimit + energy + timeLimit;
+		wstring str = strFps;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 	}
