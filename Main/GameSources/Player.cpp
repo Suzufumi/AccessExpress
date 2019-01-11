@@ -69,8 +69,13 @@ namespace basecross{
 		auto drawComp = AddComponent<PNTBoneModelDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMultiMeshResource(L"PLAYER_MODEL");
-		//drawComp->SetMultiMeshIsDraw(2, false);
-		//drawComp->SetTextureResource(L"PLAYER_TX");
+		drawComp->SetTextureResource(L"PLAYER_TX");
+		drawComp->SetMultiMeshIsDraw(0, false);
+		drawComp->SetMultiMeshIsDraw(1, false);
+		drawComp->SetMultiMeshIsDraw(2, false);
+		drawComp->SetMultiMeshIsDraw(FaceState::Smile, false);
+		drawComp->SetMultiMeshIsDraw(FaceState::EyeClose, false);
+		drawComp->SetMultiMeshIsDraw(FaceState::Regret, false);
 		// 変換した行列を代入
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		// アニメーションを追加する
@@ -161,7 +166,6 @@ namespace basecross{
 		// デバッグ文字の表示
 		DrawStrings();
 		CheckYButton();
-		DrawSwitch();
 	}
 	//--------------------------------------------------------------------------------------------------------------
 	//衝突したとき
@@ -688,16 +692,17 @@ namespace basecross{
 	{
 		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_Y)
 		{
-			m_faceNum++;
+			FaceChanger(m_faceNum, FaceState::Smile);
 			return true;
 		}
 		return false;
 	}
 
-	void Player::DrawSwitch()
+	void Player::FaceChanger(FaceState beforeFace, FaceState afterFace)
 	{
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
-		drawComp->SetMultiMeshIsDraw(m_faceNum, false);
+		drawComp->SetMultiMeshIsDraw(beforeFace, false);
+		drawComp->SetMultiMeshIsDraw(afterFace, true);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -777,7 +782,6 @@ namespace basecross{
 		return instance;
 	}
 
-	const int CHAIN_TIMELIMIT = 180;	// コンボが途切れる時間
 
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
@@ -831,46 +835,12 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void DataState::Enter(const shared_ptr<Player>& Obj) {
-		//Obj->GetAnimStateMachine()->ChangeState(PlayerDefaultAnim::Instance());
-		if (Obj->GetChain() >= 4)
-		{
-			// 現在のチェインに応じて制限時間を設定
-			Obj->SetComboChainLimit(Obj->GetFirstTime() / (Obj->GetChain() - 2));
-		}
-		else
-		{
-			Obj->SetComboChainLimit(Obj->GetFirstTime());
-		}
 		Obj->ChengeEnergyMai();
 		Obj->ChangeWalkSpeed(Player::State::DATA);
 
-		// 以前のステートがLinkStateだったら
-		if (Obj->GetStateMachine()->GetPreviousState() == LinkState::Instance())
-		{
-			// タイムチェッカーフラグをオンにする
-			Obj->SetAdvanceTimeActive(true);
-		}
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void DataState::Execute(const shared_ptr<Player>& Obj) {
-		//// コンボ間の時間を進めるかどうか
-		//if (Obj->GetAdvanceTimeActive())
-		//{
-		//	// 時間を加算する
-		//	Obj->AddChainTime();
-		//}
-		//// 現在の時間を取得
-		//int timeLimit = Obj->GetComboChainLimit();
-		// 制限時間に達したら
-		//if (Obj->GetChainTimeLim() >= Obj->GetComboChainLimit())
-		//{
-		//	
-		//	// コンボのリセット
-		//	Obj->ResetCombo();
-		//	// 制限時間をリセット
-		//	Obj->ResetTimeLim();
-		//	Obj->SetAdvanceTimeActive(false);
-		//}
 		Obj->Walk();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
