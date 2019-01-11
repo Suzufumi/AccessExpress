@@ -69,6 +69,7 @@ namespace basecross{
 		auto drawComp = AddComponent<PNTBoneModelDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		drawComp->SetMultiMeshResource(L"PLAYER_MODEL");
+		//drawComp->SetMultiMeshIsDraw(2, false);
 		//drawComp->SetTextureResource(L"PLAYER_TX");
 		// 変換した行列を代入
 		drawComp->SetMeshToTransformMatrix(spanMat);
@@ -159,8 +160,8 @@ namespace basecross{
 
 		// デバッグ文字の表示
 		DrawStrings();
+		CheckYButton();
 		DrawSwitch();
-
 	}
 	//--------------------------------------------------------------------------------------------------------------
 	//衝突したとき
@@ -704,17 +705,18 @@ namespace basecross{
 	// Yボタンが押されたかどうかを返す
 	bool Player::CheckYButton()
 	{
-		if (m_pad.wButtons & XINPUT_GAMEPAD_Y)
+		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_Y)
 		{
-			return false;
+			m_faceNum++;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	void Player::DrawSwitch()
 	{
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
-		drawComp->SetMultiMeshIsDraw(0, CheckYButton());
+		drawComp->SetMultiMeshIsDraw(m_faceNum, false);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -742,11 +744,13 @@ namespace basecross{
 		chainLimit += Util::IntToWStr(m_chainTime) + L"\n";
 		wstring timeLimit(L"Limit : ");
 		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
+		wstring faceNum(L"FACE_NUM : ");
+		faceNum += Util::IntToWStr(m_faceNum);
 
 		//文字列をつける
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
 
-		wstring str = strFps;
+		wstring str = strFps + faceNum;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 	}

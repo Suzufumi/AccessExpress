@@ -45,7 +45,7 @@ namespace basecross {
 		float m_rayRange = 30.0f;		//レイの届く距離
 		bool m_isdrawFlg = true;		// マルチメッシュの描画フラグ
 		bool m_isMultiUse = true;		// マルチメッシュを有効にするかどうかのフラグ
-
+		int m_faceNum = 0;
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
 		//コンストラクタで持ってきた引数を入れる
