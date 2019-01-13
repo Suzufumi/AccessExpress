@@ -34,7 +34,6 @@ namespace basecross {
 		int m_chain = 0;		// コンボのための変数
 		int m_chainTime = 0;	// コンボとコンボの時間を図る時間
 		int m_comboChainLimit = 0; // コンボが進んでいくにつれて更新する制限時間
-		bool m_isAdvanceTime = false; // 時間をすすめるかどうかのフラグ
 		Vec3 m_response;				//落ちた時に復帰する場所
 		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
 		float m_JummerSpeed = 1.0f;		//スピードにかけられる妨害
@@ -43,9 +42,6 @@ namespace basecross {
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
 		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
 		float m_rayRange = 30.0f;		//レイの届く距離
-		bool m_isdrawFlg = true;		// マルチメッシュの描画フラグ
-		bool m_isMultiUse = true;		// マルチメッシュを有効にするかどうかのフラグ
-		int m_faceNum = 0;
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
 		//コンストラクタで持ってきた引数を入れる
@@ -79,6 +75,14 @@ namespace basecross {
 			LINK = 0,
 			DRONE = 1
 		};
+		enum FaceState
+		{
+			Default = 3,
+			Smile = 4,
+			EyeClose = 6,
+			Regret = 7
+		};
+		FaceState m_faceNum = Default;
 		Target m_target;
 
 		Player(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode);
@@ -151,8 +155,8 @@ namespace basecross {
 		bool CheckAButton();
 		// Yボタンが押された
 		bool CheckYButton();
-		// 描画するしないの切り替え
-		void DrawSwitch();
+		// 表情の切り替え
+		void FaceChanger(FaceState beforeFace, FaceState afterFace);
 
 		//エネルギーが減るようにする
 		void ChengeEnergyMai() { m_changeEnergy = -5.0f; }
@@ -182,8 +186,6 @@ namespace basecross {
 		void ResetTimeLim() { m_chainTime = 0; }
 		int GetComboChainLimit() const{ return m_comboChainLimit; }
 		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
-		bool GetAdvanceTimeActive() const { return m_isAdvanceTime; }
-		void SetAdvanceTimeActive(bool advanceTime) { m_isAdvanceTime = advanceTime; }
 		//落下した際にリスポーン位置へワープする
 		void Response();
 		//妨害を受けているかどうかを返す
