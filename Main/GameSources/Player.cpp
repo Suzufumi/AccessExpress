@@ -365,6 +365,12 @@ namespace basecross{
 					//照準からでるRayとOBBで判定
 					bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 					if (hit) {
+						Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
+						//近いときはロックオンしない
+						float deltaLength = delta.length();
+						if (deltaLength <= 4.0f) {
+							break;
+						}
 						m_LockOnObj = dynamic_pointer_cast<LinkObject>(linkObj);
 						m_islockon = true;
 						break;
@@ -375,6 +381,13 @@ namespace basecross{
 		//Lボタンを押していないとき
 		else {
 			m_islockon = false;
+		}
+		if (m_islockon) {
+			Vec3 delta = GetComponent<Transform>()->GetWorldPosition() -
+				m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
+			if (delta.length() <= 4.0f) {
+				m_islockon = false;
+			}
 		}
 		//リンクオブジェクトを照準にとらえてロックオンしているとき
 		if (m_islockon) {
@@ -395,7 +408,6 @@ namespace basecross{
 			//縦のカメラ位置を制御する角度
 			//プレイヤーの上を見るようにしているのでその分上にずらす
 			float α = ((syahenB*syahenB) + (syahenC*syahenC) - (deltaY*deltaY)) / (2 * syahenB*syahenC);
-			float b = deltaY / syahenC;
 			m_angleX = acosf(α);
 		}
 	}
@@ -491,6 +503,7 @@ namespace basecross{
 				gameManager.ResetSloawPassage();
 				//スローにする
 				gameManager.SetOnSlow(true);
+				App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"bomb_se", 1.0f);
 			}
 			else {
 				//倒せなかったのでコンボリセットする

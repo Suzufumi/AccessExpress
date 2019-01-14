@@ -129,9 +129,9 @@ namespace basecross{
 			//BGM
 			{L"tw061.wav",L"tw061_mus"},
 			{L"tw015.wav",L"tw015_mus"},
-			{L"tw014b.wav",L"tw014b_mus"}
+			{L"tw014b.wav",L"tw014b_mus"},
 			//SE
-			
+			{L"bomb.wav",L"bomb_se"}
 		};
 		//プロジェクトに登録
 		for (auto music : musics){

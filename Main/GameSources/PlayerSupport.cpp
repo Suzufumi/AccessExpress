@@ -226,7 +226,6 @@ namespace basecross {
 		}
 
 		auto flyingChain = GetStage()->AddGameObject<FlyingChain>();
-		flyingChain->FlySet(3);
 	}
 
 	void ViewChainNum::OnUpdate() {
