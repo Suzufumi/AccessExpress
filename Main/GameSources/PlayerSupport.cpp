@@ -395,4 +395,67 @@ namespace basecross {
 		m_chain = chain;
 		m_isFly = true;
 	}
+	//--------------------------------------------------------------------------------------
+	///	ライン
+	//--------------------------------------------------------------------------------------
+	ActionLine::ActionLine(const shared_ptr<Stage>& StagePtr, Vec3 StartObj,
+		Vec3 EndObj) :
+	GameObject(StagePtr),
+	m_StartObj(StartObj),
+	m_EndObj(EndObj)
+		{}
+	
+		//初期化
+	void ActionLine::OnCreate() {
+		auto ptrTrans = GetComponent<Transform>();
+		ptrTrans->SetScale(Vec3(1.0f));
+		ptrTrans->SetQuaternion(Quat());
+		ptrTrans->SetPosition(Vec3(0.0f));
+
+		//描画コンポーネント
+		auto ptrDraw = AddComponent<PCStaticDraw>();
+
+		auto startPos = m_StartObj;
+		auto endPos = m_EndObj;
+
+		vector<VertexPositionColor> vertices = {
+		{ VertexPositionColor(startPos,  Vec4(1.0f, 1.0f,0.0f,1.0f)) },
+		{ VertexPositionColor(endPos,  Vec4(1.0f, 1.0f,0.0f,1.0f)) }
+
+		};
+		vector<uint16_t> indices = {
+		0, 1
+		};
+
+		auto meshRes = MeshResource::CreateMeshResource(vertices, indices, true);
+		meshRes->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+		ptrDraw->SetOriginalMeshResource(meshRes);
+		ptrDraw->SetOriginalMeshUse(true);
+
+
+	}
+	
+	void ActionLine::OnUpdate() {
+		auto startPos = m_StartObj;
+		auto endPos = m_EndObj;
+
+		auto ptrDraw = GetComponent<PCStaticDraw>();
+		const vector<VertexPositionColor>& backupVec = ptrDraw->GetOriginalMeshResource()->GetBackupVerteces<VertexPositionColor>();
+		vector<VertexPositionColor> new_vec;
+		VertexPositionColor new_v;
+		new_v = backupVec[0];
+		new_v.position = startPos;
+		new_vec.push_back(new_v);
+
+		new_v = backupVec[1];
+		new_v.position = endPos;
+		new_vec.push_back(new_v);
+
+		ptrDraw->UpdateVertices(new_vec);
+
+	}
+	void ActionLine::SetOnDraw(bool f) {
+		SetDrawActive(f); 
+	};
+
 }
