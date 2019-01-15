@@ -722,6 +722,7 @@ namespace basecross{
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->SetMultiMeshIsDraw(beforeFace, false);
 		drawComp->SetMultiMeshIsDraw(afterFace, true);
+		m_faceNum = afterFace;
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -804,6 +805,7 @@ namespace basecross{
 
 	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
+		Obj->FaceChanger(Obj->m_faceNum, Player::FaceState::Smile);
 		auto scenePtr = App::GetApp()->GetScene<Scene>();
 		// 効果音を鳴らす
 		scenePtr->MusicOnceStart(L"Jump_SE", 1.0f);
@@ -845,6 +847,7 @@ namespace basecross{
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
+		Obj->FaceChanger(Obj->m_faceNum, Player::FaceState::Default);
 	}
 	//--------------------------------------------------------------------------------------
 	//	class DataState : public ObjState<Player>;
