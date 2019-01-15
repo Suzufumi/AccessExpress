@@ -444,6 +444,8 @@ namespace basecross{
 			gameManager.SetOnSlow(false);
 			//スコアを増やす
 			gameManager.AddScore(GetChain() * 20 + GetChain() * 10);
+			//軌跡を消す
+			m_ActionLine.lock()->SetOnDraw(false);
 			//次のリンクへ飛べなかったのでコンボリセットする
 			ResetCombo();
 			//飛び終わったらステートをデータ体にする
@@ -579,20 +581,39 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::RayShot() {
 		auto sightingDevice = m_SightingDevice.lock();
-		//リンクオブジェクトに当たっているフラグをfalseに戻す
+		//Rayが当たったフラグをfalseに戻す
 		sightingDevice->ResetCaptureLink();
+		//Rayの射程を設定、コンボ数で伸びる
+		m_rayRange = m_rayRangeDefolt + (m_chain * 0.5f);
 
-		auto pos = sightingDevice->GetComponent<Transform>()->GetWorldPosition();
+		auto sightPos = sightingDevice->GetComponent<Transform>()->GetWorldPosition();
 		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
 		//照準とカメラの位置から飛ばす方向を求める
-		auto dir = pos - m_cameraPos;
+		auto dir = sightPos - m_cameraPos;
 		dir = dir.normalize();
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
-		Rock(pos, dir);
+		Rock(sightPos, dir);
 		//リンクオブジェクトとの判定
-		LinkRayCheck(pos, dir);
+		LinkRayCheck(sightPos, dir);
 		//ドローンとの判定
-		DroneRayCheck(pos, dir);
+		DroneRayCheck(sightPos, dir);
+	}
+	//---------------------------------------------------------------------------------------------
+	//Rayを可視化する	
+	//---------------------------------------------------------------------------------------------
+	void Player::RayView(Vec3 origin, Vec3 end) {
+		auto ptrActionLine = m_ActionLine.lock();
+		if (ptrActionLine) {
+			ptrActionLine->ResetObject(origin,end);
+			ptrActionLine->SetOnDraw(true);
+		}
+		else {
+			//ラインの作成
+			auto ptrLine = GetStage()->AddGameObject<ActionLine>(origin, end);
+			m_ActionLine = ptrLine;
+			ptrLine->SetDrawActive(true);
+		}
+
 	}
 	//---------------------------------------------------------------------------------------------
 	//RayとLinkオブジェクトが当たっているかを調べる
@@ -616,7 +637,10 @@ namespace basecross{
 				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
 					dir.y = 0;
+					//オブジェクトに被らないように方向を加味してずらした値を渡す
 					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
+					//軌跡
+					RayView(origin, linkTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
 					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
 					m_DroneNo = NULL;
@@ -651,6 +675,9 @@ namespace basecross{
 				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					SetBezierPoint(droneTrans->GetWorldPosition());
 					m_DroneNo = count;
+					if (m_ActionLine.lock()) {
+						m_ActionLine.lock()->SetDrawActive(false);
+					}
 					m_Lerp = 0;
 					m_StateMachine->ChangeState(LinkState::Instance());
 					m_target = Target::DRONE;

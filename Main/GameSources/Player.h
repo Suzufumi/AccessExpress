@@ -41,7 +41,8 @@ namespace basecross {
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
 		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
-		float m_rayRange = 30.0f;		//レイの届く距離
+		float m_rayRange;				//レイの届く距離
+		float m_rayRangeDefolt = 30.0f;	//レイの届く距離基準値
 		CONTROLER_STATE m_pad;					//パッドの全情報
 
 		//コンストラクタで持ってきた引数を入れる
@@ -51,10 +52,11 @@ namespace basecross {
 
 		weak_ptr<RadioTowerHitJudgment> m_RadioTowerHitJudgment;
 		weak_ptr<File> m_File;
-		weak_ptr<SightingDevice> m_SightingDevice;
+		weak_ptr<SightingDevice> m_SightingDevice;	//照準
 		weak_ptr<Drone> m_Drone;
 		int m_DroneNo = NULL;
 		weak_ptr<LinkObject> m_LockOnObj;		//ロックオンしているオブジェクト
+		weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
@@ -145,6 +147,8 @@ namespace basecross {
 		void SetBezierPoint(Vec3 point);
 		//Rayを飛ばす
 		void RayShot();
+		//Rayを可視化する
+		void RayView(Vec3 origin,Vec3 originDir);
 		//レイが修正範囲内に入っていてLボタンを押していたら修正する
 		void Rock(Vec3 origin, Vec3 originDir);
 		//Rayとリンクオブジェクトが当たっているかを見る処理
