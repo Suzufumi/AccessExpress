@@ -293,6 +293,7 @@ namespace basecross {
 		// 全ての面にカメラの座標を適用する
 		for (auto plane : m_planes) {
 			auto transComp = plane->GetComponent<Transform>();
+			// スカイボックスが下すぎたので位置を調整
 			eye.y = 90.0f;
 			transComp->SetPosition(eye);
 		}

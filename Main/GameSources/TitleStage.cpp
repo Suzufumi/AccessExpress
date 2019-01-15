@@ -9,7 +9,8 @@ namespace basecross {
 
 		CreateViewLight();
 		CreatePlayer();
-		AddGameObject<SkySprite>(Vec3(0.0f), Vec3(0.0f));
+		auto titleBack = AddGameObject<Sprite>(L"SKY_TX", Vec2(1280, 1080));
+		titleBack->SetPosition(Vec2(640, 480));
 		auto titleSprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(600, 200));
 		titleSprite->SetPosition(Vec2(640, 140));
 		auto buttonSprite = AddGameObject<Sprite>(L"Title_BUTTON_TX", Vec2(1000, 100));
