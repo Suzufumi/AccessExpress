@@ -241,7 +241,7 @@ namespace basecross {
 
 			auto drawComp = AddComponent<PCTStaticDraw>();
 			drawComp->SetMeshResource(m_SquareMeshResource);
-			drawComp->SetTextureResource(L"Number_TX");
+			drawComp->SetTextureResource(L"Number2_TX");
 			SetAlphaActive(true);
 			SetDrawLayer(1);
 		}
