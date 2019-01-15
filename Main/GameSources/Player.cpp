@@ -722,6 +722,7 @@ namespace basecross{
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->SetMultiMeshIsDraw(beforeFace, false);
 		drawComp->SetMultiMeshIsDraw(afterFace, true);
+		m_faceNum = afterFace;
 	}
 
 	//---------------------------------------------------------------------------------------------
