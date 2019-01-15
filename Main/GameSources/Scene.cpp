@@ -61,14 +61,10 @@ namespace basecross{
 			{ L"fade.png", L"FADE_TX"},	
 			{ L"chain.png",L"chain_TX"},
 			{ L"fade.png", L"FADE_TX"},
-			{ L"Num1.png", L"Stage1" },
-			{ L"Num2.png", L"Stage2" },
-			{ L"Num3.png", L"Stage3" },
-			{ L"Num4.png", L"Stage4" },
-			{ L"Num5.png", L"Stage5" },
 			{ L"SlowTimeGage.png", L"SlowTimeGage_TX"},
 			{ L"SlowText.png", L"SlowText_TX"},
-			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"}
+			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"},
+			{ L"num.png", L"Number2_TX"} 
 		};
 
 		for (auto texture : textures)
@@ -131,7 +127,8 @@ namespace basecross{
 			{L"tw015.wav",L"tw015_mus"},
 			{L"tw014b.wav",L"tw014b_mus"},
 			//SE
-			{L"bomb.wav",L"bomb_se"}
+			{L"bomb.wav",L"bomb_se"},
+			{L"jumpAnime.wav", L"Jump_SE"}
 		};
 		//プロジェクトに登録
 		for (auto music : musics){
