@@ -141,7 +141,7 @@ namespace basecross {
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 3, 0, 0);
 
 			CreateGoal();
-			AddGameObject<SkySphere>();
+			AddGameObject<SkyBox>();
 			AddGameObject<EnergyGaugeUI>();
 		}
 		catch (...) {

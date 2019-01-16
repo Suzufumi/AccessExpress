@@ -64,7 +64,10 @@ namespace basecross{
 			{ L"SlowTimeGage.png", L"SlowTimeGage_TX"},
 			{ L"SlowText.png", L"SlowText_TX"},
 			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"},
-			{ L"num.png", L"Number2_TX"} 
+			{ L"num.png", L"Number2_TX"},
+			{ L"Plane.png", L"SkyBox_Plane_TX"}, 
+			{ L"Sky.png", L"SkyBox_TX"},
+			{ L"BackGr.png", L"SkyBox_Back_TX"}
 		};
 
 		for (auto texture : textures)
