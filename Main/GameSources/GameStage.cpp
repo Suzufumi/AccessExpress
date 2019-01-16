@@ -120,6 +120,7 @@ namespace basecross {
 			GameManager::GetInstance().ResetNowScore();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
+			CreateSharedObjectGroup(L"CheckPoints");
 			//物理計算有効
 			SetPhysicsActive(true);
 			//ビューとライトの作成

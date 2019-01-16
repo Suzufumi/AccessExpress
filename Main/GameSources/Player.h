@@ -151,6 +151,8 @@ namespace basecross {
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
 		//Rayとドローンが当たっているかを見る処理
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
+		//Rayと届け先が当たっているかを見る
+		void CheckPointsRayCheck(Vec3 origin, Vec3 originDir);
 		//Aボタンが押された
 		bool CheckAButton();
 		// Yボタンが押された

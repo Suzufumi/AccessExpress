@@ -593,6 +593,8 @@ namespace basecross{
 		LinkRayCheck(sightPos, dir);
 		//ドローンとの判定
 		DroneRayCheck(sightPos, dir);
+		// チェックポイントとの判定
+		CheckPointsRayCheck(sightPos, dir);
 	}
 	//---------------------------------------------------------------------------------------------
 	//Rayを可視化する	
@@ -681,6 +683,40 @@ namespace basecross{
 				}
 			}
 			count++;
+		}
+	}
+
+	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir)
+	{
+		auto sightingDevice = m_SightingDevice.lock();
+		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
+		for (auto& checkPoint : checkPointsGroup->GetGroupVector())
+		{
+			auto pointObj = checkPoint.lock();
+			auto pointTrans = pointObj->GetComponent<Transform>();
+			OBB obb(pointTrans->GetScale() * 3, pointTrans->GetWorldMatrix());
+			//プレイヤーからでるRayとOBBで判定
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
+			if (hit && p2 + Vec3(0, -1, 0) != pointTrans->GetWorldPosition()) {
+				//照準に当たっていることを教える
+				sightingDevice->SetCaptureLink(true);
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - pointTrans->GetWorldPosition();
+					dir.y = 0;
+					//オブジェクトに被らないように方向を加味してずらした値を渡す
+					SetBezierPoint(pointTrans->GetWorldPosition() + dir.normalize());
+					//軌跡
+					RayView(origin, pointTrans->GetWorldPosition() + dir.normalize());
+					m_Lerp = 0;
+					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+					m_DroneNo = NULL;
+					m_StateMachine->ChangeState(LinkState::Instance());
+					m_target = Target::LINK;
+					break;
+				}
+
+			}
 		}
 	}
 	//---------------------------------------------------------------------------------------------

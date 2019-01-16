@@ -80,6 +80,8 @@ namespace basecross {
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
 		drawComp->SetDiffuse(Color);
+
+		GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
 	void Goal::OnUpdate() {
 
