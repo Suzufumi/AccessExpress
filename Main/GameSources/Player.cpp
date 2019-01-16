@@ -82,6 +82,8 @@ namespace basecross{
 		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
 		drawComp->AddAnimation(L"Move", 200, 30, true, 30.0f);
 		drawComp->AddAnimation(L"Fly", 310, 30, false, 17.0f);
+		drawComp->AddAnimation(L"Over", 350, 40, true, 30.0f);
+		drawComp->AddAnimation(L"Clear", 400, 50, true, 30.0f);
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
 		//drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);
@@ -179,10 +181,10 @@ namespace basecross{
 			m_isFall = false;
 		}
 
-		auto goal = dynamic_pointer_cast<Goal>(Other);
-		if (goal){
-			goal->ArriveGoal();
-		}
+		//auto goal = dynamic_pointer_cast<CheckPoint>(Other);
+		//if (goal){
+		//	goal->ArriveGoal();
+		//}
 		if (!App::GetApp()->GetScene<Scene>()->GetGameStart()) {
 			App::GetApp()->GetScene<Scene>()->SetGameStart(true);
 			m_nowFallSpeed = 8.0f;
@@ -593,6 +595,8 @@ namespace basecross{
 		LinkRayCheck(sightPos, dir);
 		//ドローンとの判定
 		DroneRayCheck(sightPos, dir);
+		// チェックポイントとの判定
+		CheckPointsRayCheck(sightPos, dir);
 	}
 	//---------------------------------------------------------------------------------------------
 	//Rayを可視化する	
@@ -681,6 +685,40 @@ namespace basecross{
 				}
 			}
 			count++;
+		}
+	}
+
+	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir)
+	{
+		auto sightingDevice = m_SightingDevice.lock();
+		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
+		for (auto& checkPoint : checkPointsGroup->GetGroupVector())
+		{
+			auto pointObj = checkPoint.lock();
+			auto pointTrans = pointObj->GetComponent<Transform>();
+			OBB obb(pointTrans->GetScale() * 3, pointTrans->GetWorldMatrix());
+			//プレイヤーからでるRayとOBBで判定
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
+			if (hit && p2 + Vec3(0, -1, 0) != pointTrans->GetWorldPosition()) {
+				//照準に当たっていることを教える
+				sightingDevice->SetCaptureLink(true);
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - pointTrans->GetWorldPosition();
+					dir.y = 0;
+					//オブジェクトに被らないように方向を加味してずらした値を渡す
+					SetBezierPoint(pointTrans->GetWorldPosition() + dir.normalize());
+					//軌跡
+					RayView(origin, pointTrans->GetWorldPosition() + dir.normalize());
+					m_Lerp = 0;
+					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+					m_DroneNo = NULL;
+					m_StateMachine->ChangeState(LinkState::Instance());
+					m_target = Target::LINK;
+					break;
+				}
+
+			}
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -861,6 +899,10 @@ namespace basecross{
 		}
 		if (Obj->GetTarget() == Obj->DRONE) {
 			Obj->DroneGo();
+		}
+		if (Obj->GetTarget() == Obj->CHECKPOINT)
+		{
+			Obj->LinkGo();
 		}
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {

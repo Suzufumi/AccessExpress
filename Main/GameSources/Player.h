@@ -75,7 +75,8 @@ namespace basecross {
 		};
 		enum Target {
 			LINK = 0,
-			DRONE = 1
+			DRONE = 1,
+			CHECKPOINT
 		};
 		enum FaceState
 		{
@@ -147,10 +148,14 @@ namespace basecross {
 		void RayView(Vec3 origin,Vec3 originDir);
 		//レイが修正範囲内に入っていてLボタンを押していたら修正する
 		void Rock(Vec3 origin, Vec3 originDir);
+		// ロックオンするオブジェクトを設定
+		//void RockonObject(/*shared_ptr<GameObjectGroup>&, */wstring groupName);
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
 		//Rayとドローンが当たっているかを見る処理
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
+		//Rayと届け先が当たっているかを見る
+		void CheckPointsRayCheck(Vec3 origin, Vec3 originDir);
 		//Aボタンが押された
 		bool CheckAButton();
 		// Yボタンが押された

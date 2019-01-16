@@ -3,6 +3,9 @@
 
 namespace basecross
 {
+	///---------------------------------------------------------------------------------
+	// Default
+	///---------------------------------------------------------------------------------
 	IMPLEMENT_SINGLETON_INSTANCE(PlayerDefaultAnim)
 	
 	void PlayerDefaultAnim::Enter(const shared_ptr<Player>& Obj)
@@ -20,7 +23,9 @@ namespace basecross
 
 	}
 
-
+	///---------------------------------------------------------------------------------
+	// Move
+	///---------------------------------------------------------------------------------
 	IMPLEMENT_SINGLETON_INSTANCE(PlayerMoveAnim)
 
 	void PlayerMoveAnim::Enter(const shared_ptr<Player>& Obj)
@@ -38,6 +43,9 @@ namespace basecross
 
 	}
 
+	///---------------------------------------------------------------------------------
+	// Fly
+	///---------------------------------------------------------------------------------
 
 	IMPLEMENT_SINGLETON_INSTANCE(PlayerFlyAnim)
 
@@ -61,5 +69,42 @@ namespace basecross
 
 	}
 
+	///---------------------------------------------------------------------------------
+	// Clear
+	///---------------------------------------------------------------------------------
+	IMPLEMENT_SINGLETON_INSTANCE(PlayerClearAnim)
+
+	void PlayerClearAnim::Enter(const shared_ptr<Player>& Obj)
+	{
+		Obj->GetDynamicComponent<SmBaseDraw>()->ChangeCurrentAnimation(L"Clear");
+	}
+
+	void PlayerClearAnim::Execute(const shared_ptr<Player>& Obj)
+	{
+	}
+
+	void PlayerClearAnim::Exit(const shared_ptr<Player>& Obj)
+	{
+
+	}
+
+	///---------------------------------------------------------------------------------
+	// Over
+	///---------------------------------------------------------------------------------
+	IMPLEMENT_SINGLETON_INSTANCE(PlayerOverAnim)
+
+	void PlayerOverAnim::Enter(const shared_ptr<Player>& Obj)
+	{
+		Obj->GetDynamicComponent<SmBaseDraw>()->ChangeCurrentAnimation(L"Over");
+	}
+
+	void PlayerOverAnim::Execute(const shared_ptr<Player>& Obj)
+	{
+	}
+
+	void PlayerOverAnim::Exit(const shared_ptr<Player>& Obj)
+	{
+
+	}
 
 }

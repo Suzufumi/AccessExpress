@@ -101,7 +101,7 @@ namespace basecross {
 	void GameStage::CreateGoal()
 	{
 		GameObjecttXMLBuilder builder;
-		builder.Register<Goal>(L"Goal");
+		builder.Register<CheckPoint>(L"Goal");
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Goal");
 	}
 
@@ -120,6 +120,7 @@ namespace basecross {
 			GameManager::GetInstance().ResetNowScore();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
+			CreateSharedObjectGroup(L"CheckPoints");
 			//物理計算有効
 			SetPhysicsActive(true);
 			//ビューとライトの作成
