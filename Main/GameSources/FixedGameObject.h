@@ -18,12 +18,12 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------------------------------
 	//ÉSÅ[Éã
 	//--------------------------------------------------------------------------------------------------------------
-	class Goal : public GameObject {
+	class CheckPoint : public GameObject {
 		Vec3 m_position;
 		Vec3 m_scale;
 	public:
-		Goal(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
-		virtual ~Goal() {};
+		CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
+		virtual ~CheckPoint() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
 		void ArriveGoal();

@@ -101,7 +101,7 @@ namespace basecross {
 	void GameStage::CreateGoal()
 	{
 		GameObjecttXMLBuilder builder;
-		builder.Register<Goal>(L"Goal");
+		builder.Register<CheckPoint>(L"Goal");
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Goal");
 	}
 

@@ -51,7 +51,11 @@ namespace basecross {
 		SetDrawLayer(-1);
 	}
 
-	Goal::Goal(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
+	///-----------------------------------------------------------------------------------
+	// CheckPoint
+	///-----------------------------------------------------------------------------------
+
+	CheckPoint::CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
 		: GameObject(stagePtr)
 	{
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
@@ -65,7 +69,7 @@ namespace basecross {
 
 	}
 
-	void Goal::OnCreate() {
+	void CheckPoint::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
@@ -83,10 +87,10 @@ namespace basecross {
 
 		GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
-	void Goal::OnUpdate() {
+	void CheckPoint::OnUpdate() {
 
 	}
-	void Goal::ArriveGoal() {
+	void CheckPoint::ArriveGoal() {
 		PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 	}
 

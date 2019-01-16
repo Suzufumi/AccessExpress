@@ -181,7 +181,7 @@ namespace basecross{
 			m_isFall = false;
 		}
 
-		auto goal = dynamic_pointer_cast<Goal>(Other);
+		auto goal = dynamic_pointer_cast<CheckPoint>(Other);
 		if (goal){
 			goal->ArriveGoal();
 		}
