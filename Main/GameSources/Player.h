@@ -50,7 +50,7 @@ namespace basecross {
 		Quat m_quaternion;
 		Vec3 m_scale;
 
-		weak_ptr<RadioTowerHitJudgment> m_RadioTowerHitJudgment;
+		weak_ptr<RayRangeViewObj> m_RayRangeViewObj;
 		weak_ptr<File> m_File;
 		weak_ptr<SightingDevice> m_SightingDevice;	//照準
 		weak_ptr<Drone> m_Drone;
@@ -128,10 +128,6 @@ namespace basecross {
 		void ChangeWalkSpeed(State state);
 		//妨害電波による速度低下値をセットする
 		void SetJummerSpeed(float speed) { m_JummerSpeed = speed; };
-		//子オブジェクトしてもっている電波塔との当たり判定をプレイヤーのほうでも認知する
-		void SetRadioTowerHitJudgment(weak_ptr<RadioTowerHitJudgment> hit) {
-			m_RadioTowerHitJudgment = hit;
-		}
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
@@ -196,6 +192,7 @@ namespace basecross {
 		bool GetJummer() { return m_isJummer; };
 		//妨害を受けている状況を設定する
 		void SetJummer(bool f) { m_isJummer = f; };
+		float GetRayRange() { return m_rayRange; };
 
 		void DrawStrings();
 	};

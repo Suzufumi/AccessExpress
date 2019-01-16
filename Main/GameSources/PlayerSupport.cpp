@@ -5,49 +5,37 @@ namespace basecross {
 	//---------------------------------------------------------------------------------------------
 	//電波塔との衝突判定を行う当たり判定のコンストラクタ
 	//---------------------------------------------------------------------------------------------
-	RadioTowerHitJudgment::RadioTowerHitJudgment(const shared_ptr<Stage>& StagePtr, weak_ptr<GameObject> player)
-		:GameObject(StagePtr), m_player(player)
+	RayRangeViewObj::RayRangeViewObj(const shared_ptr<Stage>& StagePtr)
+		:GameObject(StagePtr)
 	{
 	}
-	void RadioTowerHitJudgment::OnCreate() {
+	void RayRangeViewObj::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetScale(10.0f, 10.0f, 10.0f);
 
-		//球形の当たり判定をセット
-		auto col = AddComponent<CollisionSphere>();
-		//オブジェクトと当たっても反発しない
-		col->SetAfterCollision(AfterCollision::None);
-		//当たり判定が見えるようにする
-		//col->SetDrawActive(true);
-		//Playerとぶつからないようにするためのタグ
-		AddTag(L"PlayerUse");
-		//コンストラクタで取得したプレイヤーにアクセス
-		auto obj = m_player.lock();
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
+		drawComp->SetMeshResource(L"DEFAULT_SPHERE");
+		//Col4 Color(0.4f, 1.0f, 0.7f, 0.1f);
+		//drawComp->SetDiffuse(Color);
+		drawComp->SetRasterizerState(RasterizerState::CullFront);
+		drawComp->SetTextureResource(L"RayRange_TX");
+		SetAlphaActive(true);
+
+		//プレイヤーにアクセス
+		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
 		//playerと親子関係になる
-		ptrTrans->SetParent(obj);
-		//playerと同位置になる
-		ptrTrans->SetWorldPosition(obj->GetComponent<Transform>()->GetWorldPosition());
+		ptrTrans->SetParent(player);
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		auto m_tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+		//照準位置と同位置になる
+		ptrTrans->SetWorldPosition(
+			player->GetComponent<Transform>()->GetWorldPosition() + Vec3(0, m_tpsCamera->GetCameraLookUp(),0));
 	}
-	//-------------------------------------------------------------------------------------------------------------
-	//ヒットしている最中
-	//-------------------------------------------------------------------------------------------------------------
-	void RadioTowerHitJudgment::OnCollisionExcute(shared_ptr<GameObject>& Other) {
-		//衝突したものが電波塔か調べる
-		//auto radioTower = dynamic_pointer_cast<RadioTower>(Other);
-		////電波塔だった
-		//if (radioTower) {
-		//	//Player位置から電波塔の位置を引く
-		//	Vec3 d = this->GetComponent<Transform>()->GetWorldPosition() - radioTower->GetComponent<Transform>()->GetWorldPosition();
-		//	//位置の差から距離を出す
-		//	float leng = d.length();
-		//	//導き出した距離が現在持っている距離よりも近かったら
-		//	if (m_length > leng) {
-		//		//一番近い距離を更新する
-		//		m_length = leng;
-		//		//速度を取得する
-		//		m_Acceleration = radioTower->GetAcceleration();
-		//	}
-		//}
+	void RayRangeViewObj::OnUpdate() {
+		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
+		//Rayの射程を取得して球の大きさ変更
+		float scale = player->GetRayRange()*2.1f;
+		GetComponent<Transform>()->SetScale(scale, scale, scale);
 	}
 
 	//-------------------------------------------------------------------------------------

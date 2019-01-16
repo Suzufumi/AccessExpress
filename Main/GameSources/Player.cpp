@@ -775,15 +775,11 @@ namespace basecross{
 		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
 		wstring faceNum(L"FACE_NUM : ");
 		faceNum += Util::IntToWStr(m_faceNum) + L"\n";
-		wstring anglex(L"angleX : ");
-		anglex += Util::FloatToWStr(m_angleX);
-		wstring angley(L"angleY : ");
-		angley += Util::FloatToWStr(m_angleY);
 
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
 
-		wstring str = strFps + faceNum + anglex + angley;
+		wstring str = strFps + faceNum;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 	}
