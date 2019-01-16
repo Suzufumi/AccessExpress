@@ -82,6 +82,8 @@ namespace basecross{
 		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
 		drawComp->AddAnimation(L"Move", 200, 30, true, 30.0f);
 		drawComp->AddAnimation(L"Fly", 310, 30, false, 17.0f);
+		drawComp->AddAnimation(L"Over", 350, 40, true, 30.0f);
+		drawComp->AddAnimation(L"Clear", 400, 50, true, 30.0f);
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
 		//drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);

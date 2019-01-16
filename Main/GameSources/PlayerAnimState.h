@@ -34,4 +34,24 @@ namespace basecross
 		virtual void Execute(const shared_ptr<Player>& Obj) override;
 		virtual void Exit(const shared_ptr<Player>& Obj) override;
 	};
+
+	class PlayerClearAnim : public ObjState<Player>
+	{
+		PlayerClearAnim() {};
+	public:
+		DECLARE_SINGLETON_INSTANCE(PlayerClearAnim)
+		virtual void Enter(const shared_ptr<Player>& Obj) override;
+		virtual void Execute(const shared_ptr<Player>& Obj) override;
+		virtual void Exit(const shared_ptr<Player>& Obj) override;
+	};
+
+	class PlayerOverAnim : public ObjState<Player>
+	{
+		PlayerOverAnim() {};
+	public:
+		DECLARE_SINGLETON_INSTANCE(PlayerOverAnim)
+		virtual void Enter(const shared_ptr<Player>& Obj) override;
+		virtual void Execute(const shared_ptr<Player>& Obj) override;
+		virtual void Exit(const shared_ptr<Player>& Obj) override;
+	};
 }
