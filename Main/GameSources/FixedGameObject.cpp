@@ -90,8 +90,8 @@ namespace basecross {
 	void CheckPoint::OnUpdate() {
 
 	}
-	void CheckPoint::ArriveGoal() {
-		PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+	void CheckPoint::ArriveCheckPoint() {
+		//PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 	}
 
 	//---------------------------------------------------------------------------------------------

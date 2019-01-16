@@ -21,12 +21,16 @@ namespace basecross {
 	class CheckPoint : public GameObject {
 		Vec3 m_position;
 		Vec3 m_scale;
+		// CheckPointについたかどうか
+		bool m_isArrive = false;
 	public:
 		CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		virtual ~CheckPoint() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
-		void ArriveGoal();
+		void ArriveCheckPoint();
+		bool GetIsArrive() { return m_isArrive; }
+		void SetIsArrive(bool isArrive) { m_isArrive = isArrive; }
 	};
 	//-------------------------------------------------------------------------------------------------------------
 	//電波を発するオブジェクト、近づくとplayerのスピードが変わる

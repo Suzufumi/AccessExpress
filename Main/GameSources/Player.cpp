@@ -181,10 +181,10 @@ namespace basecross{
 			m_isFall = false;
 		}
 
-		auto goal = dynamic_pointer_cast<CheckPoint>(Other);
-		if (goal){
-			goal->ArriveGoal();
-		}
+		//auto goal = dynamic_pointer_cast<CheckPoint>(Other);
+		//if (goal){
+		//	goal->ArriveGoal();
+		//}
 		if (!App::GetApp()->GetScene<Scene>()->GetGameStart()) {
 			App::GetApp()->GetScene<Scene>()->SetGameStart(true);
 			m_nowFallSpeed = 8.0f;
@@ -899,6 +899,10 @@ namespace basecross{
 		}
 		if (Obj->GetTarget() == Obj->DRONE) {
 			Obj->DroneGo();
+		}
+		if (Obj->GetTarget() == Obj->CHECKPOINT)
+		{
+			Obj->LinkGo();
 		}
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {
