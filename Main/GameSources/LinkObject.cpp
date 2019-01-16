@@ -30,12 +30,12 @@ namespace basecross
 		ptrTrans->SetScale(m_scale);
 
 		auto col = AddComponent<CollisionObb>();
-		col->SetDrawActive(true);
+		col->SetDrawActive(false);
 		col->SetAfterCollision(AfterCollision::None);
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(0.8f, 0.8f, 0.8f),
+			Vec3(0.9f, 0.9f, 0.9f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, -0.5f, 0.0f)
