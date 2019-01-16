@@ -69,11 +69,12 @@ namespace basecross {
 		// XmlファイルからL"Player"を探す
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Player");
 
-		//プレイヤー
+		//プレイヤー関連
 		AddGameObject<ViewChainLetter>();
 		auto chainNum = AddGameObject<ViewChainNum>();
 		chainNum->GetComponent<Transform>()->SetPosition(Vec3(780, -480, 0));
 		AddGameObject<SlowTimeUI>();
+		AddGameObject<RayRangeViewObj>();
 	}
 
 	void GameStage::CreateBill()

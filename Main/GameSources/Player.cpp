@@ -338,12 +338,11 @@ namespace basecross{
 	//カメラのプレイヤー追従処理
 	//---------------------------------------------------------------------------------------------
 	void Player::CameraControll(){
-		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		//照準を見る
 		camera->SetAt(sightPos);
-		auto eye = pos + Vec3(cos(m_angleY) * m_cameraDistance,
+		auto eye = sightPos + Vec3(cos(m_angleY) * m_cameraDistance,
 			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
 		camera->SetEye(eye);
 	}
@@ -396,19 +395,16 @@ namespace basecross{
 			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
 			float deltaX = sightingDevicePos.x - linkTrans->GetWorldPosition().x;
 			float deltaZ = sightingDevicePos.z - linkTrans->GetWorldPosition().z;
-			float deltaY = sightingDevicePos.y - linkTrans->GetWorldPosition().y + m_cameraLookUp*2;
+			float deltaY = sightingDevicePos.y - linkTrans->GetWorldPosition().y;
 			//横のカメラ位置を制御する角度
 			m_angleY = atan2f(deltaZ, deltaX);
 			if (m_angleY < 0.0f) {
 				m_angleY += Deg2Rad(360.0f);
 			}
 			//縦のカメラ位置をだすための辺出す
-			float syahenB = hypotf(deltaX, deltaZ);
-			float syahenC = hypotf(syahenB, deltaY);
+			float syahen = hypotf(deltaX, deltaZ);
 			//縦のカメラ位置を制御する角度
-			//プレイヤーの上を見るようにしているのでその分上にずらす
-			float α = ((syahenB*syahenB) + (syahenC*syahenC) - (deltaY*deltaY)) / (2 * syahenB*syahenC);
-			m_angleX = acosf(α);
+			m_angleX = atan2f(deltaY, syahen);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -778,7 +774,7 @@ namespace basecross{
 		wstring timeLimit(L"Limit : ");
 		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
 		wstring faceNum(L"FACE_NUM : ");
-		faceNum += Util::IntToWStr(m_faceNum);
+		faceNum += Util::IntToWStr(m_faceNum) + L"\n";
 
 		//文字列をつける
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
