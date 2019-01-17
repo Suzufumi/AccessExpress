@@ -55,7 +55,8 @@ namespace basecross {
 		weak_ptr<SightingDevice> m_SightingDevice;	//照準
 		weak_ptr<Drone> m_Drone;
 		int m_DroneNo = NULL;
-		weak_ptr<LinkObject> m_LockOnObj;		//ロックオンしているオブジェクト
+		int m_checkPointNum = NULL;
+		weak_ptr<GameObject> m_LockOnObj;		//ロックオンしているオブジェクト
 		weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
@@ -140,6 +141,8 @@ namespace basecross {
 		void LinkGo();
 		//ベジエ曲線でリンクへ飛ぶ処理
 		void DroneGo();
+		// ベジェ曲線でチェックポイントへ飛ぶ処理
+		void CheckPointGo();
 		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
 		//Rayを飛ばす
@@ -147,9 +150,9 @@ namespace basecross {
 		//Rayを可視化する
 		void RayView(Vec3 origin,Vec3 originDir);
 		//レイが修正範囲内に入っていてLボタンを押していたら修正する
-		void Rock(Vec3 origin, Vec3 originDir);
+		void Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		// ロックオンするオブジェクトを設定
-		//void RockonObject(/*shared_ptr<GameObjectGroup>&, */wstring groupName);
+		void RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
 		//Rayとドローンが当たっているかを見る処理
@@ -162,7 +165,8 @@ namespace basecross {
 		bool CheckYButton();
 		// 表情の切り替え
 		void FaceChanger(FaceState beforeFace, FaceState afterFace);
-
+		// チェックポイントについたときに更新する
+		void CheckPointArrived();
 		//エネルギーが減るようにする
 		void ChengeEnergyMai() { m_changeEnergy = -5.0f; }
 		//エネルギーが増えるようにする
