@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <GameStage>
-  <Player Type="Player" Pos="(6.5, 13.8, 3.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Player Type="Player" Pos="(6.5, 16.8, 3.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
   <Wall Type="Wall" Pos="(65.5, 4.5, 28.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
   <Wall Type="Wall" Pos="(74.5, 4.5, 7.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
   <Wall Type="Wall" Pos="(29.5, 4.5, 8.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
@@ -56,7 +56,8 @@
   <RadioTower Type="RadioTower" Pos="(36.5, 5.1, 33.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
   <RadioTower Type="RadioTower" Pos="(60.5, 5.1, 61.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
   <RadioTower Type="RadioTower" Pos="(15.2, 5.1, 117.7)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Goal Type="Goal" Pos="(30.5, 9.1, 70.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Goal Type="Goal" Pos="(81.5, 9.0, 88.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Goal Type="Goal" Pos="(-15.1, 13.5, 36.6)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Goal Type="Goal" Pos="(82.6, 499.0, 88.7)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.5, 1.5, 1.5)" />
+  <Goal Type="Goal" Pos="(30.3, 9.3, 70.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.5, 1.5, 1.5)" />
+  <Goal Type="Goal" Pos="(-15.1, 13.8, 37.8)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.5, 1.5, 1.5)" />
+  <Goal Type="Goal" Pos="(82.6, 9.3, 88.7)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.5, 1.5, 1.5)" />
 </GameStage>

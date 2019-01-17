@@ -33,7 +33,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Result.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Score.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)SearchObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShapeObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Sprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageSelect.h" />
@@ -56,7 +55,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Result.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)SearchObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShapeObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Sprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageSelect.cpp" />

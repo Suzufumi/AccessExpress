@@ -9,7 +9,7 @@ namespace basecross
 		m_AngleY(Deg2Rad(270)),
 		m_maxAngleSpeed(2.0f),
 		m_cameraDistance(13.0f),
-		m_cameraLookUp(3.0f)
+		m_cameraLookUp(3.5f)
 	{}
 
 	TpsCamera::~TpsCamera()

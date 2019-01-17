@@ -44,7 +44,7 @@ namespace basecross
 
 		int getDigit(int number)
 		{
-			return std::to_string(number).length();
+			return static_cast<int>(std::to_string(number).length());
 		}
 
 		std::vector<int> extractTotalDigitsSpotCount(int number,int digit)
