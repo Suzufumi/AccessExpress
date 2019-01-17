@@ -110,6 +110,9 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"TOWER_MODEL", staticModel);
 		modelTex = modelDir + L"RadioTower.tga";
 		App::GetApp()->RegisterTexture(L"TOWER_TX", modelTex);
+
+		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"Drone.bmf");
+		App::GetApp()->RegisterResource(L"ENEMY_MODEL", staticModel);
 	}
 	//----------------------------------------------------------------------------------------
 	//‰¹‚ð“o˜^‚·‚é

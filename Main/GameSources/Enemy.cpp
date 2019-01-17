@@ -60,9 +60,18 @@ namespace basecross {
 		transComp->SetQuaternion(m_quat);
 		transComp->SetScale(m_scale);
 
-		auto drawComp = AddComponent<PNTStaticDraw>();
-		drawComp->SetMeshResource(L"DEFAULT_CUBE");
+		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
+		spanMat.affineTransformation(
+			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f)
+		);
 
+
+		auto drawComp = AddComponent<PNTStaticDraw>();
+		drawComp->SetMeshResource(L"ENEMY_MODEL");
+		drawComp->SetMeshToTransformMatrix(spanMat);
 		GetStage()->AddGameObject<ViewDeadChain>(GetThis<Drone>(), m_deadChain);
 
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());

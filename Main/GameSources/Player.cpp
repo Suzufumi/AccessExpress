@@ -181,10 +181,10 @@ namespace basecross{
 			m_isFall = false;
 		}
 
-		//auto goal = dynamic_pointer_cast<CheckPoint>(Other);
-		//if (goal){
-		//	goal->ArriveGoal();
-		//}
+		auto checkPoint = dynamic_pointer_cast<CheckPoint>(Other);
+		if (checkPoint){
+			checkPoint->ArriveCheckPoint();
+		}
 		if (!App::GetApp()->GetScene<Scene>()->GetGameStart()) {
 			App::GetApp()->GetScene<Scene>()->SetGameStart(true);
 			m_nowFallSpeed = 8.0f;
@@ -351,32 +351,11 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//Lボタンを押しているときにリンクオブジェが照準の近くだったらそっちを向く
 	//---------------------------------------------------------------------------------------------
-	void Player::Rock(Vec3 origin, Vec3 originDir) {
+	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
 		//Lボタンを押し続けているとき
 		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
 			if (!m_islockon) {
-				//リンクオブジェクトの入っているグループを持ってくる
-				auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
-				//一つずつ取り出す
-				for (auto& link : linkGroup->GetGroupVector()) {
-					auto linkObj = link.lock();
-					auto linkTrans = linkObj->GetComponent<Transform>();
-					//リンクオブジェクトのOBBを作る
-					OBB obb(linkTrans->GetScale() * 5.0f, linkTrans->GetWorldMatrix());
-					//照準からでるRayとOBBで判定、
-					bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange - 1.2f, obb);
-					if (hit) {
-						Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
-						//近いときはロックオンしない
-						float deltaLength = delta.length();
-						if (deltaLength <= 4.0f) {
-							break;
-						}
-						m_LockOnObj = dynamic_pointer_cast<LinkObject>(linkObj);
-						m_islockon = true;
-						break;
-					}
-				}
+				RockonObject(origin, originDir, groupName, correction);
 			}
 		}
 		//Lボタンを押していないとき
@@ -409,6 +388,37 @@ namespace basecross{
 			m_angleX = atan2f(deltaY, syahen);
 		}
 	}
+
+	///---------------------------------------------------------------------------------------------
+	//ロックオンするオブジェクトを設定
+	///---------------------------------------------------------------------------------------------
+	void Player::RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction)
+	{
+		//リンクオブジェクトの入っているグループを持ってくる
+		auto& objectsGroup = GetStage()->GetSharedObjectGroup(groupName);
+		//一つずつ取り出す
+		for (auto& object : objectsGroup->GetGroupVector()) {
+			auto lockonObj = object.lock();
+			auto objTrans = lockonObj->GetComponent<Transform>();
+			//リンクオブジェクトのOBBを作る
+			OBB obb(objTrans->GetScale() * correction, objTrans->GetWorldMatrix());
+			//照準からでるRayとOBBで判定
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+			if (hit) {
+				Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - objTrans->GetWorldPosition();
+				//近いときはロックオンしない
+				float deltaLength = delta.length();
+				if (deltaLength <= 4.0f) {
+					break;
+				}
+				m_LockOnObj = lockonObj;
+				m_islockon = true;
+				break;
+			}
+		}
+
+	}
+	
 	//---------------------------------------------------------------------------------------------
 	//リンクへ飛ぶ処理
 	//---------------------------------------------------------------------------------------------
@@ -521,6 +531,67 @@ namespace basecross{
 			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 		}
 	}
+
+	void Player::CheckPointGo()
+	{
+		auto& gameManager = GameManager::GetInstance();
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto checkPointGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
+		auto checkPoint = dynamic_pointer_cast<CheckPoint>(checkPointGroup->at(m_checkPointNum));
+		//計算のための時間加算
+		//移動の経過にチェイン数による加速をいれた
+		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
+		//スロー状態かどうかで処理
+		if (gameManager.GetOnSlow()) {
+			//マネージャーにスローの経過を伝える
+			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
+			if (gameManager.GetSlowPassage() >= 1.0f) {
+				//スローを終わる
+				gameManager.SetOnSlow(false);
+				//向かっているドローンの初期化
+				m_checkPointNum = NULL;
+				//次の目標へ飛べなかったのでコンボリセット
+				ResetCombo();
+				//スロー時間が終了したためステートをデータ体にする
+				m_StateMachine->ChangeState(DataState::Instance());
+			}
+		}
+		else {
+			//経過に加算
+			m_Lerp += addLerp;
+			//動いているので終点の位置を更新する
+			p2 = checkPoint->GetComponent<Transform>()->GetWorldPosition();
+		}
+		//飛ぶ処理が終わったあとで、スロー状態でなければ
+		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && m_checkPointNum != NULL) {
+			m_Lerp = 1.0f;
+			// 対象のチェックポイントがfalseだったら
+			if (!checkPoint->GetIsArrive()) {
+				//演出でチェイン数を飛ばすために値を与える
+				GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
+				// フラグを立てる
+				checkPoint->ArriveCheckPoint();
+				//スローの経過時間をリセット
+				gameManager.ResetSloawPassage();
+				//スローにする
+				gameManager.SetOnSlow(true);
+			}
+			else 
+			{
+				//スロー時間が終了したためステートをデータ体にする
+				m_StateMachine->ChangeState(DataState::Instance());
+			}
+		}
+		//ベジエ曲線の計算
+		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
+		GetComponent<Transform>()->SetWorldPosition(pos);
+		if (!gameManager.GetOnSlow()) {
+			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
+		}
+
+	}
 	//---------------------------------------------------------------------------------------------
 	//ベジエ曲線の制御点設定
 	//---------------------------------------------------------------------------------------------
@@ -588,7 +659,8 @@ namespace basecross{
 		auto dir = sightPos - m_cameraPos;
 		dir = dir.normalize();
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
-		Rock(sightPos, dir);
+		Rock(sightPos, dir, L"Link", 3.0f);
+		Rock(sightPos, dir, L"CheckPoints", 2.0f);
 		//リンクオブジェクトとの判定
 		LinkRayCheck(sightPos, dir);
 		//ドローンとの判定
@@ -696,6 +768,7 @@ namespace basecross{
 	{
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
+		int count = 0;
 		for (auto& checkPoint : checkPointsGroup->GetGroupVector())
 		{
 			auto pointObj = checkPoint.lock();
@@ -712,17 +785,18 @@ namespace basecross{
 					dir.y = 0;
 					//オブジェクトに被らないように方向を加味してずらした値を渡す
 					SetBezierPoint(pointTrans->GetWorldPosition() + dir.normalize());
+					m_checkPointNum = count;
 					//軌跡
 					RayView(origin, pointTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
 					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
 					m_DroneNo = NULL;
 					m_StateMachine->ChangeState(LinkState::Instance());
-					m_target = Target::LINK;
+					m_target = Target::CHECKPOINT;
 					break;
 				}
-
 			}
+			count++;
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -788,6 +862,17 @@ namespace basecross{
 		drawComp->SetMultiMeshIsDraw(beforeFace, false);
 		drawComp->SetMultiMeshIsDraw(afterFace, true);
 		m_faceNum = afterFace;
+	}
+
+	void Player::CheckPointArrived()
+	{
+		auto& checkPointGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
+		for (auto& checkPoint : checkPointGroup->GetGroupVector())
+		{
+			auto pointObj = checkPoint.lock();
+			auto obj = dynamic_pointer_cast<CheckPoint>(pointObj);
+			obj->ArriveCheckPoint();
+		}
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -906,7 +991,8 @@ namespace basecross{
 		}
 		if (Obj->GetTarget() == Obj->CHECKPOINT)
 		{
-			Obj->LinkGo();
+			Obj->CheckPointGo();
+			//Obj->CheckPointArrived();
 		}
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {

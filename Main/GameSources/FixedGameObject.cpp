@@ -71,8 +71,8 @@ namespace basecross {
 
 	void CheckPoint::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
+		//auto col = AddComponent<CollisionObb>();
+		//col->SetAfterCollision(AfterCollision::None);
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
 		ptrTrans->SetWorldPosition(m_position);
@@ -91,6 +91,10 @@ namespace basecross {
 
 	}
 	void CheckPoint::ArriveCheckPoint() {
+		m_isArrive = true;
+		Col4 col(1.0f, 0.0f, 0.0f, 1.0f);
+		auto drawComp = GetComponent<PNTStaticDraw>();
+		drawComp->SetDiffuse(col);
 		//PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 	}
 
