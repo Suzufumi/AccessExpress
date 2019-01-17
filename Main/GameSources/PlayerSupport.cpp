@@ -3,7 +3,7 @@
 
 namespace basecross {
 	//---------------------------------------------------------------------------------------------
-	//電波塔との衝突判定を行う当たり判定のコンストラクタ
+	//Rayの判定範囲を見せるオブジェ
 	//---------------------------------------------------------------------------------------------
 	RayRangeViewObj::RayRangeViewObj(const shared_ptr<Stage>& StagePtr)
 		:GameObject(StagePtr)
@@ -36,6 +36,12 @@ namespace basecross {
 		//Rayの射程を取得して球の大きさ変更
 		float scale = player->GetRayRange()*2.1f;
 		GetComponent<Transform>()->SetScale(scale, scale, scale);
+		if (App::GetApp()->GetScene<Scene>()->GetGameStart() == true) {
+			SetDrawActive(true);
+		}
+		else {
+			SetDrawActive(false);
+		}
 	}
 
 	//-------------------------------------------------------------------------------------
