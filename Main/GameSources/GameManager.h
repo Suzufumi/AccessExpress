@@ -105,6 +105,9 @@ namespace basecross {
 		///
 		void SetCheckPointNum(int checkPointNum)
 		{ m_checkPointNum = checkPointNum; }
+		
+		void ResetCheckPointNum()
+		{ m_checkPointNum = 3; }
 	};
 
 }
