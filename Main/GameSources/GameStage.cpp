@@ -23,6 +23,8 @@ namespace basecross {
 		//ビューのカメラの設定
 		auto ptrCamera = ObjectFactory::Create<TpsCamera>();
 		ptrView->SetCamera(ptrCamera);
+		//カメラが判定を持てないので、個別に判定を作成
+		AddGameObject<TpsCameraJudgment>();
 		//ptrCamera->SetEye(Vec3(0.0f, 10.0f, -5.0f));
 		//ptrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 		//マルチライトの作成

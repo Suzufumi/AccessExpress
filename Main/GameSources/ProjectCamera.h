@@ -40,4 +40,16 @@ namespace basecross
 		float GetCameraLookUp() const
 		{ return m_cameraLookUp; }
 	};
+
+	class TpsCameraJudgment : public GameObject {
+	public:
+		TpsCameraJudgment(const shared_ptr<Stage>& StagePtr);
+		virtual ~TpsCameraJudgment() {};
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		//Õ“Ë‚µ‚½‚Æ‚«
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
+		//Õ“Ë‚ª‰ğœ‚³‚ê‚½‚Æ‚«
+		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
+	};
 }
