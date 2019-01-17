@@ -82,7 +82,7 @@ namespace basecross{
 		m_places = 4;
 	}
 	//------------------------------------------------------------------------------------
-	//構築
+	//スコアUI構築
 	//------------------------------------------------------------------------------------
 	void ScoreUI::OnCreate() {
 		// 数字ごとの範囲を設定する
@@ -94,7 +94,7 @@ namespace basecross{
 				static_cast<float>(128)				// bottom
 				});
 		}
-
+		
 		float start_x = m_numRects[5].left / 640.0f;
 		float end_x = m_numRects[5].right / 640.0f;
 		float start_y = m_numRects[5].top / 128.0f;
@@ -119,19 +119,16 @@ namespace basecross{
 			m_numbers.push_back(number);
 		}
 	}
-
+	//------------------------------------------------------------------------------------
+	//スコアUI更新
+	//------------------------------------------------------------------------------------
 	void ScoreUI::OnUpdate() {
 		auto& gameManager = GameManager::GetInstance();
 		//内部スコアの値まで表示スコアをカウントアップする
 		if (gameManager.GetScore() != m_displayScore) {
 			m_displayScore += 1;
-			//表示スコアが内部スコアに追い付いていないので加速させる
-			if (gameManager.GetScore() - m_displayScore >= 200) {
-				m_displayScore += 2;
-			}
-			if (gameManager.GetScore() - m_displayScore >= 400) {
-				m_displayScore += 2;
-			}
+			//表示スコアが内部スコアに追い付いていない際に加速する
+			m_displayScore += ((gameManager.GetScore() - m_displayScore) / 100);
 		}
 
 		int score = m_displayScore;

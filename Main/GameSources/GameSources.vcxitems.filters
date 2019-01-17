@@ -72,9 +72,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Score.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerAnimState.h">
       <Filter>Headers</Filter>
     </ClInclude>

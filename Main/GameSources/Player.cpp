@@ -433,20 +433,18 @@ namespace basecross{
 			//20分の1の更新速度にする
 			m_Lerp += addLerp / gameManager.GetSlowSpeed();
 			//マネージャーにスローの経過を伝える
-			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
+			gameManager.AddSlowPassage((addLerp / gameManager.GetSlowSpeed()) * 10.0f);
 		}
 		else {
 			m_Lerp += addLerp;
 		}
 		//着地寸前でスローになっていない
 		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false) {
-			//スローの経過時間をリセット
-			gameManager.ResetSloawPassage();
 			//スローにする
 			gameManager.SetOnSlow(true);
 		}
 		//飛ぶ処理が終わったら
-		if (m_Lerp >= 1.0f) {
+		if (gameManager.GetSlowPassage() >= 1.0f) {
 			m_Lerp = 1.0f;
 			//スローを終わる
 			gameManager.SetOnSlow(false);
@@ -478,11 +476,11 @@ namespace basecross{
 		auto drone = dynamic_pointer_cast<Drone>(droneGroup->at(m_DroneNo));
 		//計算のための時間加算
 		//移動の経過にチェイン数による加速をいれた
-		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
+		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / m_BezierSpeedLeap;
 		//スロー状態かどうかで処理
 		if (gameManager.GetOnSlow()) {
 			//マネージャーにスローの経過を伝える
-			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
+			gameManager.AddSlowPassage((addLerp / gameManager.GetSlowSpeed()) * 10.0f);
 			if (gameManager.GetSlowPassage() >= 1.0f) {
 				//スローを終わる
 				gameManager.SetOnSlow(false);
@@ -713,7 +711,10 @@ namespace basecross{
 					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
 					//軌跡
 					RayView(origin, linkTrans->GetWorldPosition() + dir.normalize());
+					//経過をリセット
 					m_Lerp = 0;
+					//スローの経過時間をリセット
+					GameManager::GetInstance().ResetSloawPassage();
 					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
 					m_DroneNo = NULL;
 					m_StateMachine->ChangeState(LinkState::Instance());
@@ -750,7 +751,10 @@ namespace basecross{
 					if (m_ActionLine.lock()) {
 						m_ActionLine.lock()->SetDrawActive(false);
 					}
+					//経過をリセット
 					m_Lerp = 0;
+					//スローの経過時間をリセット
+					GameManager::GetInstance().ResetSloawPassage();
 					m_StateMachine->ChangeState(LinkState::Instance());
 					m_target = Target::DRONE;
 					break;
