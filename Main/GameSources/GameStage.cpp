@@ -120,6 +120,7 @@ namespace basecross {
 			GameManager::GetInstance().SetOnSlow(false);
 			//ƒXƒRƒA‚ğ‰Šú‰»‚·‚é
 			GameManager::GetInstance().ResetNowScore();
+			GameManager::GetInstance().ResetCheckPointNum();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			CreateSharedObjectGroup(L"CheckPoints");

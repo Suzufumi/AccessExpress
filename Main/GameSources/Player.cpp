@@ -773,7 +773,7 @@ namespace basecross{
 		{
 			auto pointObj = checkPoint.lock();
 			auto pointTrans = pointObj->GetComponent<Transform>();
-			OBB obb(pointTrans->GetScale() * 3, pointTrans->GetWorldMatrix());
+			OBB obb(pointTrans->GetScale(), pointTrans->GetWorldMatrix());
 			//プレイヤーからでるRayとOBBで判定
 			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
