@@ -53,6 +53,7 @@ namespace basecross
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
 		SetAlphaActive(true);
+		SetDrawLayer(-2);
 		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
 
 	}

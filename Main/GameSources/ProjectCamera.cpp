@@ -17,7 +17,7 @@ namespace basecross
 
 	void TpsCamera::OnCreate()
 	{
-
+		
 	}
 
 	void TpsCamera::OnUpdate()
@@ -48,5 +48,48 @@ namespace basecross
 		p2 = p2Player - a;	//終点
 		//始点と終点の中点からaの方向にずらして与える
 		p1 = (p2 - ((p2 - p0) / 2)) - a.normalize() * Vec3(p2 - p0).length();
+	}
+	//--------------------------------------------------------------------------------------------
+	//カメラとともに動く判定のコンストラクタ
+	//--------------------------------------------------------------------------------------------
+	TpsCameraJudgment::TpsCameraJudgment(const shared_ptr<Stage>& StagePtr)
+		:GameObject(StagePtr)
+	{
+	}
+	//--------------------------------------------------------------------------------------------
+	//作成
+	//--------------------------------------------------------------------------------------------
+	void TpsCameraJudgment::OnCreate() {
+		GetComponent<Transform>()->SetScale(3.0f, 3.0f, 3.0f);
+
+		AddComponent<CollisionObb>();
+	}
+	//--------------------------------------------------------------------------------------------
+	//更新
+	//--------------------------------------------------------------------------------------------
+	void TpsCameraJudgment::OnUpdate() {
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+		GetComponent<Transform>()->SetWorldPosition(tpsCamera->GetEye());
+	}
+	//--------------------------------------------------------------------------------------------
+	//衝突時判定
+	//--------------------------------------------------------------------------------------------
+	void TpsCameraJudgment::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		auto wall = dynamic_pointer_cast<Wall>(Other);
+		//壁にカメラが当たったら、壁を見えなくする
+		if (wall) {
+			wall->SetDrawActive(false);
+		}
+	}
+	//--------------------------------------------------------------------------------------------
+	//衝突解除時判定
+	//--------------------------------------------------------------------------------------------
+	void TpsCameraJudgment::OnCollisionExit(shared_ptr<GameObject>& Other) {
+		auto wall = dynamic_pointer_cast<Wall>(Other);
+		//衝突が解除された壁を見えるようにする
+		if (wall) {
+			wall->SetDrawActive(true);
+		}
 	}
 }
