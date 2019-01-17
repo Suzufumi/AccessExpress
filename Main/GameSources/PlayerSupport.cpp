@@ -20,6 +20,7 @@ namespace basecross {
 		drawComp->SetRasterizerState(RasterizerState::CullFront);
 		drawComp->SetTextureResource(L"RayRange_TX");
 		SetAlphaActive(true);
+		SetDrawLayer(-1);
 
 		//プレイヤーにアクセス
 		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");

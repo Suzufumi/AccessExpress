@@ -48,7 +48,7 @@ namespace basecross {
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		//Col4 Color(0.4f, 0.4f, 0.4f, 1.0f);
 		//drawComp->SetDiffuse(Color);
-		SetDrawLayer(-1);
+		SetDrawLayer(-2);
 	}
 
 	///-----------------------------------------------------------------------------------
