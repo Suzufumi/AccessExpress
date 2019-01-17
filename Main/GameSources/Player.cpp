@@ -873,6 +873,7 @@ namespace basecross{
 			auto obj = dynamic_pointer_cast<CheckPoint>(pointObj);
 			obj->ArriveCheckPoint();
 		}
+		GetAnimStateMachine()->ChangeState(PlayerClearAnim::Instance());
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -892,8 +893,9 @@ namespace basecross{
 		wstring strFps(L"FPS: ");
 		strFps += Util::UintToWStr(fps);
 		strFps += L"\n";
-		wstring energy(L"Energy : ");
-		energy += Util::FloatToWStr(m_energy) + L"\n";
+		wstring checkNum(L"CheckPointNum : ");
+		auto& gm = GameManager::GetInstance();
+		checkNum += Util::IntToWStr(gm.GetCheckPointNum()) + L"\n";
 		wstring combo(L"Combo : ");
 		combo += Util::IntToWStr(m_chain) + L"\n";
 		wstring chainLimit(L"CHAIN_TIME : ");
@@ -906,7 +908,7 @@ namespace basecross{
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
 		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
 
-		wstring str = strFps + faceNum;
+		wstring str = strFps + faceNum + checkNum;
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 	}

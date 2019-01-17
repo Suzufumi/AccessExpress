@@ -91,11 +91,16 @@ namespace basecross {
 
 	}
 	void CheckPoint::ArriveCheckPoint() {
+		auto& gm = GameManager::GetInstance();
+		gm.SetCheckPointNum((gm.GetCheckPointNum() - 1));
 		m_isArrive = true;
 		Col4 col(1.0f, 0.0f, 0.0f, 1.0f);
 		auto drawComp = GetComponent<PNTStaticDraw>();
 		drawComp->SetDiffuse(col);
-		//PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+		if(gm.GetCheckPointNum() == 0)
+		{
+			PostEvent(2.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+		}
 	}
 
 	//---------------------------------------------------------------------------------------------
