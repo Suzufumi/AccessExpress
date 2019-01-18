@@ -148,6 +148,10 @@ namespace basecross {
 			CreateGoal();
 			AddGameObject<SkyBox>();
 			AddGameObject<EnergyGaugeUI>();
+			auto scoreSprite = AddGameObject<Sprite>(L"SCORE_TX", Vec2(100, 40));
+			scoreSprite->SetPosition(Vec2(1120, 30));
+			auto timeSprite = AddGameObject<Sprite>(L"TIME_TX", Vec2(100, 35));
+			timeSprite->SetPosition(Vec2(640, 27));
 		}
 		catch (...) {
 			throw;

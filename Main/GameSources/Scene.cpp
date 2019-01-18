@@ -71,7 +71,9 @@ namespace basecross{
 			{ L"RayRange.png",L"RayRange_TX"},
 			{ L"RemainingTimeText.png",L"RemainingTimeText_TX"},
 			{ L"MaxChainText.png",L"MaxChainText_TX"},
-			{ L"ScoreText.png",L"ScoreText_TX"}
+			{ L"ScoreText.png",L"ScoreText_TX"},
+			{ L"Time.png", L"TIME_TX"},
+			{ L"score.png", L"SCORE_TX"}
 		};
 
 		for (auto texture : textures)
