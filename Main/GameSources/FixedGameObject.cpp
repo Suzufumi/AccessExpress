@@ -90,13 +90,23 @@ namespace basecross {
 		ptrTrans->SetWorldPosition(m_position);
 		ptrTrans->SetQuaternion(Qt);
 		ptrTrans->SetScale(m_scale);
+
+		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
+		spanMat.affineTransformation(
+			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, -0.7f, 0.0f)
+		);
+
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
-		drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
-		drawComp->SetDiffuse(Color);
 		SetDrawLayer(-1);
+		drawComp->SetMeshResource(L"CHECKPOINT_MODEL");
+		drawComp->SetMeshToTransformMatrix(spanMat);
+		//Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
+		//drawComp->SetDiffuse(Color);
 
 		GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
