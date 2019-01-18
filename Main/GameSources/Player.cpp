@@ -959,7 +959,7 @@ namespace basecross{
 		Obj->FaceChanger(Obj->m_faceNum, Player::FaceState::Smile);
 		auto scenePtr = App::GetApp()->GetScene<Scene>();
 		// Œø‰Ê‰¹‚ð–Â‚ç‚·
-		scenePtr->MusicOnceStart(L"Jump_SE", 1.0f);
+		scenePtr->MusicOnceStart(L"Jump_SE", 0.3f);
 		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
 		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
