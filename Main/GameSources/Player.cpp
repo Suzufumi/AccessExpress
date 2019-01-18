@@ -1032,10 +1032,6 @@ namespace basecross{
 		Obj->CameraRoll();
 		//プレイヤーの体の向きを変える
 		Obj->PlayerRoll();
-		if (Obj->CheckAButton() || Obj->GetEnergy() <= 0.0f) {
-			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
-			Obj->SightingDeviceDrawActive(false);
-		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void DataState::Exit(const shared_ptr<Player>& Obj) {
