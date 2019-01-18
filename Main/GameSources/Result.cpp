@@ -4,8 +4,11 @@
 namespace basecross {
 	void ResultStage::OnCreate() {
 		CreateViewLight();
-		auto clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(1000.0f, 150.0f));
-		clearSprite->SetPosition(Vec2(App::GetApp()->GetGameWidth() / 2.0f, App::GetApp()->GetGameHeight() / 5.0f));
+		CreateRemainingTime();
+		CreateMaximumChain();
+		CreateScore();
+		auto clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(800.0f, 120.0f));
+		clearSprite->SetPosition(Vec2(App::GetApp()->GetGameWidth() / 2.0f, App::GetApp()->GetGameHeight() / 6.0f));
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
 	}
@@ -22,4 +25,17 @@ namespace basecross {
 		//デフォルトのライティングを指定
 		ptrMultiLight->SetDefaultLighting();
 	}
+	void ResultStage::CreateRemainingTime() {
+		auto timeSprite = AddGameObject<Sprite>(L"RemainingTimeText_TX", Vec2(410, 205));
+		timeSprite->SetPosition(Vec2((App::GetApp()->GetGameWidth() / 10.0f) * 2.0f, (App::GetApp()->GetGameHeight() / 10.0f)* 4));
+	};
+	void ResultStage::CreateMaximumChain() {
+		auto timeSprite = AddGameObject<Sprite>(L"MaxChainText_TX", Vec2(461, 230));
+		timeSprite->SetPosition(Vec2((App::GetApp()->GetGameWidth() / 10.0f) * 2.0f, (App::GetApp()->GetGameHeight() / 10.0f) * 6));
+	};
+	void ResultStage::CreateScore() {
+		auto timeSprite = AddGameObject<Sprite>(L"ScoreText_TX", Vec2(410, 205));
+		timeSprite->SetPosition(Vec2((App::GetApp()->GetGameWidth() / 10.0f) * 2.0f, (App::GetApp()->GetGameHeight() / 10.0f) * 8));
+	};
+
 }
