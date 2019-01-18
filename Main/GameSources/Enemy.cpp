@@ -75,6 +75,7 @@ namespace basecross {
 		GetStage()->AddGameObject<ViewDeadChain>(GetThis<Drone>(), m_deadChain);
 
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());
+		SetDrawLayer(-1);
 	}
 	void Drone::OnUpdate() {
 		Jammer();
