@@ -163,7 +163,6 @@ namespace basecross{
 		}
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
-		SetJummer(false);
 
 		// デバッグ文字の表示
 		DrawStrings();
@@ -231,8 +230,8 @@ namespace basecross{
 		if (m_padDir.x > 0.4f || m_padDir.x < -0.4f ||
 			m_padDir.z > 0.4f || m_padDir.z < -0.4f) {
 			//方向と移動スピードを掛け算してpositonを変更する
-			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
-			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
+			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime();
+			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime();
 			// 現在のアニムステートがDefaultだったら
 			if (GetAnimStateMachine()->GetCurrentState() == PlayerDefaultAnim::Instance())
 			{
@@ -254,7 +253,7 @@ namespace basecross{
 		if (m_isFall) {
 			auto playerTrans = GetComponent<Transform>();
 			auto playerPos = playerTrans->GetWorldPosition();
-			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime() * m_JummerSpeed;
+			playerPos.y += -m_nowFallSpeed * App::GetApp()->GetElapsedTime();
 			playerTrans->SetWorldPosition(playerPos);
 		}
 		m_isFall = true;

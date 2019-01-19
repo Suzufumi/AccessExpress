@@ -78,8 +78,6 @@ namespace basecross {
 		SetDrawLayer(-1);
 	}
 	void Drone::OnUpdate() {
-		Jammer();
-
 		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
 
 		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * m_roop[m_joinNum].p0.x +
@@ -107,28 +105,9 @@ namespace basecross {
 		GetComponent<Transform>()->SetWorldPosition(pos);
 
 		if (m_isDead) {
-			GetStage()->GetSharedGameObject<Player>(L"Player")->SetJummerSpeed(1.0f);
 			SetUpdateActive(false);
 			//GetStage()->RemoveGameObject<Drone>(GetThis<Drone>());
 		}
-	}
-	void Drone::Jammer() {
-		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
-		auto playerPos = player->GetComponent<Transform>()->GetWorldPosition();
-		auto dronePos = GetComponent<Transform>()->GetWorldPosition();
-
-		auto length = (dronePos - playerPos).length();
-		length = fabsf(length);
-		if (length < m_JammerRang) {
-			player->SetJummerSpeed(0.5f);
-			player->SetJummer(true);
-		}
-		else {
-			//他のオブジェクトによって妨害されてなかったら
-			if (!player->GetJummer()) {
-				player->SetJummerSpeed(1.0f);
-			}
-		};
 	}
 	void Drone::SetBezierClock() {
 		m_joinNumMax = 4;

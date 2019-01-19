@@ -36,8 +36,6 @@ namespace basecross {
 		int m_comboChainLimit = 0; // コンボが進んでいくにつれて更新する制限時間
 		Vec3 m_response;				//落ちた時に復帰する場所
 		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
-		float m_JummerSpeed = 1.0f;		//スピードにかけられる妨害
-		bool m_isJummer;				//妨害を受けているかどうか
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
 		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
@@ -128,8 +126,6 @@ namespace basecross {
 
 		//ステートに応じて平行移動のスピードを変える
 		void ChangeWalkSpeed(State state);
-		//妨害電波による速度低下値をセットする
-		void SetJummerSpeed(float speed) { m_JummerSpeed = speed; };
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
@@ -197,10 +193,6 @@ namespace basecross {
 		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
 		//落下した際にリスポーン位置へワープする
 		void Response();
-		//妨害を受けているかどうかを返す
-		bool GetJummer() { return m_isJummer; };
-		//妨害を受けている状況を設定する
-		void SetJummer(bool f) { m_isJummer = f; };
 		float GetRayRange() { return m_rayRange; };
 
 		void DrawStrings();
