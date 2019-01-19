@@ -14,6 +14,7 @@ namespace basecross {
 		Wall(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		virtual ~Wall() {};
 		virtual void OnCreate();
+		virtual void OnUpdate();
 	};
 	//--------------------------------------------------------------------------------------------------------------
 	//ÉSÅ[Éã
