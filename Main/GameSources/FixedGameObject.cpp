@@ -50,7 +50,19 @@ namespace basecross {
 		//drawComp->SetDiffuse(Color);
 		SetDrawLayer(-2);
 	}
-
+	///-----------------------------------------------------------------------------------
+	// XVˆ—
+	///-----------------------------------------------------------------------------------
+	void Wall::OnUpdate() {
+		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		if (80.0f >= (pos - player->GetComponent<Transform>()->GetWorldPosition()).length()) {
+			SetDrawActive(true);
+		}
+		else {
+			SetDrawActive(false);
+		}
+	}
 	///-----------------------------------------------------------------------------------
 	// CheckPoint
 	///-----------------------------------------------------------------------------------
@@ -84,6 +96,7 @@ namespace basecross {
 		drawComp->SetMeshResource(L"DEFAULT_CUBE");
 		Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
 		drawComp->SetDiffuse(Color);
+		SetDrawLayer(-1);
 
 		GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
