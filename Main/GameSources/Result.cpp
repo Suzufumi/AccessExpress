@@ -22,4 +22,21 @@ namespace basecross {
 		//デフォルトのライティングを指定
 		ptrMultiLight->SetDefaultLighting();
 	}
+	void ResultStage::CreateRemainingTime() {
+		auto timeSprite = AddGameObject<Sprite>(L"RemainingTimeText_TX", Vec2(410, 205));
+		timeSprite->SetPosition(Vec2((App::GetApp()->GetGameWidth() / 10.0f) * 2.0f, (App::GetApp()->GetGameHeight() / 10.0f)* 4));
+	};
+	void ResultStage::CreateMaximumChain() {
+		auto maxChainText = AddGameObject<Sprite>(L"MaxChainText_TX", Vec2(461, 230));
+		maxChainText->SetPosition(Vec2((App::GetApp()->GetGameWidth() / 10.0f) * 2.0f, (App::GetApp()->GetGameHeight() / 10.0f) * 6));
+		auto maxChainNum = AddGameObject<NumberSprite>(2, 22);	
+		maxChainNum->GetComponent<Transform>()->
+			//SetPosition((App::GetApp()->GetGameWidth() / 10.0f) * 5.0f, (App::GetApp()->GetGameHeight() / 10.0f) * 6.0f,0);
+			SetPosition(850,-450, 0);
+	};
+	void ResultStage::CreateScore() {
+		auto timeSprite = AddGameObject<Sprite>(L"ScoreText_TX", Vec2(410, 205));
+		timeSprite->SetPosition(Vec2((App::GetApp()->GetGameWidth() / 10.0f) * 2.0f, (App::GetApp()->GetGameHeight() / 10.0f) * 8));
+	};
+
 }
