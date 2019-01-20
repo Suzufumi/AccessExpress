@@ -71,6 +71,7 @@ namespace basecross {
 
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		drawComp->SetMeshResource(L"ENEMY_MODEL");
+		drawComp->SetTextureResource(L"ENEMY_TX");
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		GetStage()->AddGameObject<ViewDeadChain>(GetThis<Drone>(), m_deadChain);
 

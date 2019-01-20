@@ -71,7 +71,9 @@ namespace basecross{
 			{ L"RayRange.png",L"RayRange_TX"},
 			{ L"RemainingTimeText.png",L"RemainingTimeText_TX"},
 			{ L"MaxChainText.png",L"MaxChainText_TX"},
-			{ L"ScoreText.png",L"ScoreText_TX"}
+			{ L"ScoreText.png",L"ScoreText_TX"},
+			{ L"Time.png", L"TIME_TX"},
+			{ L"score.png", L"SCORE_TX"}
 		};
 
 		for (auto texture : textures)
@@ -114,8 +116,13 @@ namespace basecross{
 		modelTex = modelDir + L"RadioTower.tga";
 		App::GetApp()->RegisterTexture(L"TOWER_TX", modelTex);
 
-		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"Drone.bmf");
+		staticModel = MeshResource::CreateStaticModelMesh(modelDir + L"Enemy\\", L"Drone.bmf");
 		App::GetApp()->RegisterResource(L"ENEMY_MODEL", staticModel);
+		modelTex = modelDir + L"Enemy\\" + L"ufo.png";
+		App::GetApp()->RegisterTexture(L"ENEMY_TX", modelTex);
+
+		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"CheckPoint.bmf");
+		App::GetApp()->RegisterResource(L"CHECKPOINT_MODEL", staticModel);
 	}
 	//----------------------------------------------------------------------------------------
 	//âπÇìoò^Ç∑ÇÈ
@@ -138,7 +145,8 @@ namespace basecross{
 			{L"tw014b.wav",L"tw014b_mus"},
 			//SE
 			{L"bomb.wav",L"bomb_se"},
-			{L"jumpAnime.wav", L"Jump_SE"}
+			{L"jumpAnime.wav", L"Jump_SE"},
+			{L"decision02.wav", L"Decision_SE"}
 		};
 		//ÉvÉçÉWÉFÉNÉgÇ…ìoò^
 		for (auto music : musics){

@@ -21,6 +21,8 @@ namespace basecross {
 	void TitleStage::OnUpdate() {
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		if (CntlVec[0].wPressedButtons) {
+			auto scenePtr = App::GetApp()->GetScene<Scene>();
+			scenePtr->MusicOnceStart(L"Decision_SE", 1.0f);
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}
 		float delta = App::GetApp()->GetElapsedTime();
