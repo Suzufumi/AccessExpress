@@ -19,7 +19,6 @@
 #include "GameStage.h"
 #include "TitleStage.h"
 #include "StageSelect.h"
-#include "Result.h"
 #include "GameOver.h"
 #include "ProjectCamera.h"
 #include "FixedGameObject.h"
@@ -33,3 +32,4 @@
 #include "Player.h"
 #include "MainUi.h"
 #include "Timer.h"
+#include "Result.h"
