@@ -20,8 +20,6 @@ namespace basecross {
 		Vec3 m_position;
 		int m_deadChain;
 		bool m_isDead = false;
-		//妨害電波の範囲
-		float m_JammerRang = 5.0f;
 	public:
 		enum DroneMotion {
 			ClockWise = 0,			//時計回り
@@ -37,8 +35,6 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		int GetDeadChain() { return m_deadChain; };
 		void Die() { m_isDead = true; };
-		//妨害電波の処理
-		void Jammer();
 		//時計回りの動きのベジエ曲線の制御点を作る
 		void SetBezierClock();
 		//上下運動のベジエ曲線の制御点を作る

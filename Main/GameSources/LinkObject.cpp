@@ -15,7 +15,7 @@ namespace basecross
 		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 
 		m_position = pos;
-		m_position += Vec3(2.8f, 3.7f, -9.5f);
+		//m_position += Vec3(2.8f, 3.7f, -9.5f);
 		m_quat = quat;
 		m_scale = scale;
 
@@ -30,12 +30,12 @@ namespace basecross
 		ptrTrans->SetScale(m_scale);
 
 		auto col = AddComponent<CollisionObb>();
-		col->SetDrawActive(true);
+		col->SetDrawActive(false);
 		col->SetAfterCollision(AfterCollision::None);
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(0.8f, 0.8f, 0.8f),
+			Vec3(0.9f, 0.9f, 0.9f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, -0.5f, 0.0f)
@@ -53,6 +53,7 @@ namespace basecross
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
 		SetAlphaActive(true);
+		SetDrawLayer(-2);
 		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
 
 	}

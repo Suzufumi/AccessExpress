@@ -64,7 +64,16 @@ namespace basecross{
 			{ L"SlowTimeGage.png", L"SlowTimeGage_TX"},
 			{ L"SlowText.png", L"SlowText_TX"},
 			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"},
-			{ L"num.png", L"Number2_TX"} 
+			{ L"num.png", L"Number2_TX"},
+			{ L"Plane.png", L"SkyBox_Plane_TX"}, 
+			{ L"Sky.png", L"SkyBox_TX"},
+			{ L"BackGr.png", L"SkyBox_Back_TX"},
+			{ L"RayRange.png",L"RayRange_TX"},
+			{ L"RemainingTimeText.png",L"RemainingTimeText_TX"},
+			{ L"MaxChainText.png",L"MaxChainText_TX"},
+			{ L"ScoreText.png",L"ScoreText_TX"},
+			{ L"Time.png", L"TIME_TX"},
+			{ L"score.png", L"SCORE_TX"}
 		};
 
 		for (auto texture : textures)
@@ -106,6 +115,14 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"TOWER_MODEL", staticModel);
 		modelTex = modelDir + L"RadioTower.tga";
 		App::GetApp()->RegisterTexture(L"TOWER_TX", modelTex);
+
+		staticModel = MeshResource::CreateStaticModelMesh(modelDir + L"Enemy\\", L"Drone.bmf");
+		App::GetApp()->RegisterResource(L"ENEMY_MODEL", staticModel);
+		modelTex = modelDir + L"Enemy\\" + L"ufo.png";
+		App::GetApp()->RegisterTexture(L"ENEMY_TX", modelTex);
+
+		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"CheckPoint.bmf");
+		App::GetApp()->RegisterResource(L"CHECKPOINT_MODEL", staticModel);
 	}
 	//----------------------------------------------------------------------------------------
 	//âπÇìoò^Ç∑ÇÈ
@@ -128,7 +145,8 @@ namespace basecross{
 			{L"tw014b.wav",L"tw014b_mus"},
 			//SE
 			{L"bomb.wav",L"bomb_se"},
-			{L"jumpAnime.wav", L"Jump_SE"}
+			{L"jumpAnime.wav", L"Jump_SE"},
+			{L"decision02.wav", L"Decision_SE"}
 		};
 		//ÉvÉçÉWÉFÉNÉgÇ…ìoò^
 		for (auto music : musics){

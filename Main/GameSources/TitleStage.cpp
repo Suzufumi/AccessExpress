@@ -9,7 +9,8 @@ namespace basecross {
 
 		CreateViewLight();
 		CreatePlayer();
-		AddGameObject<SkySprite>(Vec3(0.0f), Vec3(0.0f));
+		auto titleBack = AddGameObject<Sprite>(L"SKY_TX", Vec2(1280, 1080));
+		titleBack->SetPosition(Vec2(640, 480));
 		auto titleSprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(600, 200));
 		titleSprite->SetPosition(Vec2(640, 140));
 		auto buttonSprite = AddGameObject<Sprite>(L"Title_BUTTON_TX", Vec2(1000, 100));
@@ -20,6 +21,8 @@ namespace basecross {
 	void TitleStage::OnUpdate() {
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		if (CntlVec[0].wPressedButtons) {
+			auto scenePtr = App::GetApp()->GetScene<Scene>();
+			scenePtr->MusicOnceStart(L"Decision_SE", 1.0f);
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}
 		float delta = App::GetApp()->GetElapsedTime();

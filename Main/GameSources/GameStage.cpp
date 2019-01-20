@@ -23,6 +23,8 @@ namespace basecross {
 		//ビューのカメラの設定
 		auto ptrCamera = ObjectFactory::Create<TpsCamera>();
 		ptrView->SetCamera(ptrCamera);
+		//カメラが判定を持てないので、個別に判定を作成
+		AddGameObject<TpsCameraJudgment>();
 		//ptrCamera->SetEye(Vec3(0.0f, 10.0f, -5.0f));
 		//ptrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 		//マルチライトの作成
@@ -69,11 +71,12 @@ namespace basecross {
 		// XmlファイルからL"Player"を探す
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Player");
 
-		//プレイヤー
+		//プレイヤー関連
 		AddGameObject<ViewChainLetter>();
 		auto chainNum = AddGameObject<ViewChainNum>();
 		chainNum->GetComponent<Transform>()->SetPosition(Vec3(780, -480, 0));
 		AddGameObject<SlowTimeUI>();
+		AddGameObject<RayRangeViewObj>();
 	}
 
 	void GameStage::CreateBill()
@@ -100,7 +103,7 @@ namespace basecross {
 	void GameStage::CreateGoal()
 	{
 		GameObjecttXMLBuilder builder;
-		builder.Register<Goal>(L"Goal");
+		builder.Register<CheckPoint>(L"Goal");
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Goal");
 	}
 
@@ -117,8 +120,10 @@ namespace basecross {
 			GameManager::GetInstance().SetOnSlow(false);
 			//スコアを初期化する
 			GameManager::GetInstance().ResetNowScore();
+			GameManager::GetInstance().ResetCheckPointNum();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
+			CreateSharedObjectGroup(L"CheckPoints");
 			//物理計算有効
 			SetPhysicsActive(true);
 			//ビューとライトの作成
@@ -141,8 +146,12 @@ namespace basecross {
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 3, 0, 0);
 
 			CreateGoal();
-			AddGameObject<SkySphere>();
+			AddGameObject<SkyBox>();
 			AddGameObject<EnergyGaugeUI>();
+			auto scoreSprite = AddGameObject<Sprite>(L"SCORE_TX", Vec2(100, 40));
+			scoreSprite->SetPosition(Vec2(1120, 30));
+			auto timeSprite = AddGameObject<Sprite>(L"TIME_TX", Vec2(100, 35));
+			timeSprite->SetPosition(Vec2(640, 27));
 		}
 		catch (...) {
 			throw;

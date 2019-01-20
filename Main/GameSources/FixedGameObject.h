@@ -14,19 +14,24 @@ namespace basecross {
 		Wall(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		virtual ~Wall() {};
 		virtual void OnCreate();
+		virtual void OnUpdate();
 	};
 	//--------------------------------------------------------------------------------------------------------------
 	//ゴール
 	//--------------------------------------------------------------------------------------------------------------
-	class Goal : public GameObject {
+	class CheckPoint : public GameObject {
 		Vec3 m_position;
 		Vec3 m_scale;
+		// CheckPointについたかどうか
+		bool m_isArrive = false;
 	public:
-		Goal(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
-		virtual ~Goal() {};
+		CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
+		virtual ~CheckPoint() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
-		void ArriveGoal();
+		void ArriveCheckPoint();
+		bool GetIsArrive() { return m_isArrive; }
+		void SetIsArrive(bool isArrive) { m_isArrive = isArrive; }
 	};
 	//-------------------------------------------------------------------------------------------------------------
 	//電波を発するオブジェクト、近づくとplayerのスピードが変わる
@@ -72,18 +77,17 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
 	//--------------------------------------------------------------------------------------------------------------
-	class SkySprite : public GameObject
+	class SkyBox : public GameObject
 	{
 	private:
-		Vec2 m_scale;
-		Vec3 m_rotation;
-		Vec3 m_position;
+		vector <shared_ptr<GameObject>> m_planes;
 	public:
-		SkySprite(const shared_ptr<Stage>& ptrStage, const Vec3 &rot, const Vec3 &pos);
-		virtual ~SkySprite() {};
+		SkyBox(const shared_ptr<Stage>& ptrStage);
+		virtual ~SkyBox() {};
 
 		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
+		virtual void OnUpdate2() override;
+		virtual void OnDraw() override;
 	};
 }
 //end basecross

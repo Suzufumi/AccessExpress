@@ -4,22 +4,16 @@
 
 namespace basecross {
 	//------------------------------------------------------------------------------------------------------------
-	//playerにくっつける電波塔との衝突判定を行う当たり判定オブジェクト
+	//playerにくっつけるRayの届く範囲を見せるオブジェクト
 	//------------------------------------------------------------------------------------------------------------
-	class RadioTowerHitJudgment : public GameObject {
-		float m_Acceleration;
-		float m_length;
-		weak_ptr<GameObject> m_player;
+	class RayRangeViewObj : public GameObject {
+		float m_range;
 	public:
-		RadioTowerHitJudgment(const shared_ptr<Stage>& StagePtr, weak_ptr<GameObject> player);
-		virtual ~RadioTowerHitJudgment() {};
+		RayRangeViewObj(const shared_ptr<Stage>& StagePtr);
+		virtual ~RayRangeViewObj() {};
 		virtual void OnCreate() override;
-		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
-		void Rset() {
-			m_length = 5.0f;
-			m_Acceleration = 6.0f;
-		}
-		float GetAcceleration() { return m_Acceleration; }
+		virtual void OnUpdate() override;
+		void GetRange(float range) { m_range = range; };
 	};
 
 	//--------------------------------------------------------------------------------------
@@ -42,14 +36,14 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class AddlessCertificate : public OBBObject {
 		//このオブジェクトが取得されたときにゴールを開錠するためにゴールを持つ
-		weak_ptr<Goal> m_goal;
+		weak_ptr<CheckPoint> m_goal;
 		bool m_isUnlockGoal = false;
 	public:
 		AddlessCertificate(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
 		virtual ~AddlessCertificate() {};
 		virtual void OnCreate() override;
 		//ゴールの情報を与える
-		void SetGoal(weak_ptr<Goal> goal) { m_goal = goal; }
+		void SetGoal(weak_ptr<CheckPoint> goal) { m_goal = goal; }
 		bool GetUnlockGoal() { return m_isUnlockGoal; }
 		void FindGoal();
 	};

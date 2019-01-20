@@ -48,10 +48,26 @@ namespace basecross {
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		//Col4 Color(0.4f, 0.4f, 0.4f, 1.0f);
 		//drawComp->SetDiffuse(Color);
-		SetDrawLayer(-1);
+		SetDrawLayer(-2);
 	}
+	///-----------------------------------------------------------------------------------
+	// 更新処理
+	///-----------------------------------------------------------------------------------
+	void Wall::OnUpdate() {
+		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		if (80.0f >= (pos - player->GetComponent<Transform>()->GetWorldPosition()).length()) {
+			SetDrawActive(true);
+		}
+		else {
+			SetDrawActive(false);
+		}
+	}
+	///-----------------------------------------------------------------------------------
+	// CheckPoint
+	///-----------------------------------------------------------------------------------
 
-	Goal::Goal(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
+	CheckPoint::CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
 		: GameObject(stagePtr)
 	{
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
@@ -65,27 +81,49 @@ namespace basecross {
 
 	}
 
-	void Goal::OnCreate() {
+	void CheckPoint::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
+		//auto col = AddComponent<CollisionObb>();
+		//col->SetAfterCollision(AfterCollision::None);
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
 		ptrTrans->SetWorldPosition(m_position);
 		ptrTrans->SetQuaternion(Qt);
 		ptrTrans->SetScale(m_scale);
+
+		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
+		spanMat.affineTransformation(
+			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, -0.7f, 0.0f)
+		);
+
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
-		drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
-		drawComp->SetDiffuse(Color);
+		SetDrawLayer(-1);
+		drawComp->SetMeshResource(L"CHECKPOINT_MODEL");
+		drawComp->SetMeshToTransformMatrix(spanMat);
+		//Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
+		//drawComp->SetDiffuse(Color);
+
+		GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
-	void Goal::OnUpdate() {
+	void CheckPoint::OnUpdate() {
 
 	}
-	void Goal::ArriveGoal() {
-		PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+	void CheckPoint::ArriveCheckPoint() {
+		auto& gm = GameManager::GetInstance();
+		gm.SetCheckPointNum((gm.GetCheckPointNum() - 1));
+		m_isArrive = true;
+		Col4 col(1.0f, 0.0f, 0.0f, 1.0f);
+		auto drawComp = GetComponent<PNTStaticDraw>();
+		drawComp->SetDiffuse(col);
+		if(gm.GetCheckPointNum() == 0)
+		{
+			PostEvent(2.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+		}
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -200,40 +238,112 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
 	//--------------------------------------------------------------------------------------------------------------
-	SkySprite::SkySprite(const shared_ptr<Stage>& ptrStage, const Vec3 &rot, const Vec3 &pos)
-		: GameObject(ptrStage), m_rotation(rot), m_position(pos)
+	SkyBox::SkyBox(const shared_ptr<Stage>& ptrStage)
+		: GameObject(ptrStage)
 	{
-		m_scale = Vec2(30, 25);
 	}
 
-	void SkySprite::OnCreate()
+	void SkyBox::OnCreate()
 	{
-		float helfSize = 0.5f;
-		//頂点配列(縦横5個ずつ表示)
-		vector<VertexPositionColorTexture> vertices = {
-			{ VertexPositionColorTexture(Vec3(-helfSize, helfSize, 0),Col4(1.0f,1.0f,1.0f,1.0f), Vec2(0.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(helfSize, helfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(5.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(-helfSize, -helfSize, 0), Col4(1.0f, 0.0f, 1.0f, 1.0f), Vec2(0.0f, 5.0f)) },
-			{ VertexPositionColorTexture(Vec3(helfSize, -helfSize, 0), Col4(1.0f,1.0f, 1.0f, 1.0f), Vec2(5.0f, 5.0f)) },
+		auto& app = App::GetApp();
+
+		// スカイボックス用のテクスチャが入っているフォルダを指定する
+		auto texturePath = app->GetDataDirWString() + L"textures/SkyBox/";
+		vector <wstring> textureKeys;
+		textureKeys.push_back(L"SkyBox_Back_TX");
+		textureKeys.push_back(L"SkyBox_Back_TX");
+		textureKeys.push_back(L"SkyBox_Back_TX");
+		textureKeys.push_back(L"SkyBox_Back_TX");
+		textureKeys.push_back(L"SkyBox_TX");
+		textureKeys.push_back(L"SkyBox_Plane_TX");
+
+		// 頂点カラーはすべて白
+		const Col4 white(1.0f, 1.0f, 1.0f, 1.0f);
+
+		// ボックスの「角」にあたる頂点の座標だけをまとめておく
+		const vector<Vec3> positions{
+			{ -0.5f, +0.5f, +0.5f },	// 0
+			{ +0.5f, +0.5f, +0.5f },	// 1
+			{ -0.5f, -0.5f, +0.5f },	// 2
+			{ +0.5f, -0.5f, +0.5f },	// 3
+
+			{ -0.5f, +0.5f, -0.5f },	// 4
+			{ +0.5f, +0.5f, -0.5f },	// 5
+			{ -0.5f, -0.5f, -0.5f },	// 6
+			{ +0.5f, -0.5f, -0.5f }		// 7
 		};
-		//インデックス配列
-		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
-		SetAlphaActive(true);
-		auto transComp = GetComponent<Transform>();
-		transComp->SetScale(Vec3(m_scale.x, m_scale.y, 1.0f));
-		transComp->SetRotation(m_rotation);
-		transComp->SetPosition(m_position);
-		//頂点とインデックスを指定してスプライト作成
-		auto drawComp = AddComponent<PNTStaticDraw>();
-		//auto drawComp = AddComponent<PCTSpriteDraw>(vertices, indices);
-		drawComp->SetMeshResource(L"DEFAULT_SQUARE");
-		drawComp->SetSamplerState(SamplerState::LinearWrap);
-		drawComp->SetTextureResource(L"SKY_TX");
+
+		// 頂点の座標を並べて「面」を作る
+		vector<vector<Vec3>> positionsArray = {
+			{ positions[0], positions[1], positions[2], positions[3] },	// 正面
+			{ positions[1], positions[5], positions[3], positions[7] },	// 右手
+			{ positions[5], positions[4], positions[7], positions[6] },	// 手前
+			{ positions[4], positions[0], positions[6], positions[2] },	// 左手
+			{ positions[4], positions[5], positions[0], positions[1] },	// 上
+			{ positions[2], positions[3], positions[6], positions[7] }	// 下
+		};
+
+		vector<uint16_t> indices = {
+			0, 1, 2,
+			2, 1, 3
+		};
+
+		// 面の数(6面)だけループ
+		int textureIndex = 0;
+		for (auto vpos : positionsArray) {
+			// 面を形成する頂点データを作成
+			vector<VertexPositionColorTexture> vertices = {
+				{ vpos[0], white,{ 0.0f, 0.0f } },
+				{ vpos[1], white,{ 1.0f, 0.0f } },
+				{ vpos[2], white,{ 0.0f, 1.0f } },
+				{ vpos[3], white,{ 1.0f, 1.0f } }
+			};
+
+			// 面をオブジェクトとして生成する
+			auto plane = ObjectFactory::Create<GameObject>(GetStage());
+
+			// 面にはドローコンポーネントをつけて、ポリゴンとテクスチャを適用する
+			auto drawComp = plane->AddComponent<PCTStaticDraw>();
+			drawComp->CreateOriginalMesh<VertexPositionColorTexture>(vertices, indices);
+			drawComp->SetOriginalMeshUse(true);
+			drawComp->SetTextureResource(textureKeys[textureIndex++]); // フォルダから読み込んだテクスチャを順番に適用
+
+			// スカイボックスは可能な限り大きくする
+			auto transComp = plane->GetComponent<Transform>();
+			const float scale = 200.0f;
+			transComp->SetScale(scale, scale, scale);
+
+			m_planes.push_back(plane);
+
+		}
+
 		SetDrawLayer(-2);
 	}
 
-	void SkySprite::OnUpdate()
+	void SkyBox::OnUpdate2()
 	{
+		// スカイボックスの中心はカメラの座標と同じにしておかないと歪んで見えてしまう
+
+		// カメラの座標を取得する
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		auto eye = camera->GetEye();
+
+		// 全ての面にカメラの座標を適用する
+		for (auto plane : m_planes) {
+			auto transComp = plane->GetComponent<Transform>();
+			// スカイボックスが下すぎたので位置を調整
+			eye.y = 90.0f;
+			transComp->SetPosition(eye);
+		}
+
+	}
+
+	void SkyBox::OnDraw()
+	{
+		// 全ての面を描画する
+		for (auto plane : m_planes) {
+			plane->OnDraw();
+		}
 
 	}
 }

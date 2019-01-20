@@ -18,6 +18,7 @@ namespace basecross {
 		 CONTROLER_STATE m_pad;		//パッドの全情報
 		 int m_nowScore = 0;		//現在のスコアの値
 		 float m_slowPassage;		//スローになってからの経過(1.0fが最大として扱う)
+		 int m_checkPointNum = 5;	// チェックポイントの数
 	public:
 		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
@@ -95,6 +96,18 @@ namespace basecross {
 		void ResetSloawPassage() {
 			m_slowPassage = 0;
 		}
+		//----------------------------------------------------------------------------------
+		///現在チェックポイントが何個あるか取得
+		//----------------------------------------------------------------------------------
+		int GetCheckPointNum() const
+		{ return m_checkPointNum; }
+		//----------------------------------------------------------------------------------
+		///
+		void SetCheckPointNum(int checkPointNum)
+		{ m_checkPointNum = checkPointNum; }
+		
+		void ResetCheckPointNum()
+		{ m_checkPointNum = 5; }
 	};
 
 }

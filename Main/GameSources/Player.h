@@ -36,8 +36,6 @@ namespace basecross {
 		int m_comboChainLimit = 0; // コンボが進んでいくにつれて更新する制限時間
 		Vec3 m_response;				//落ちた時に復帰する場所
 		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
-		float m_JummerSpeed = 1.0f;		//スピードにかけられる妨害
-		bool m_isJummer;				//妨害を受けているかどうか
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
 		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
@@ -50,12 +48,13 @@ namespace basecross {
 		Quat m_quaternion;
 		Vec3 m_scale;
 
-		weak_ptr<RadioTowerHitJudgment> m_RadioTowerHitJudgment;
+		weak_ptr<RayRangeViewObj> m_RayRangeViewObj;
 		weak_ptr<File> m_File;
 		weak_ptr<SightingDevice> m_SightingDevice;	//照準
 		weak_ptr<Drone> m_Drone;
 		int m_DroneNo = NULL;
-		weak_ptr<LinkObject> m_LockOnObj;		//ロックオンしているオブジェクト
+		int m_checkPointNum = NULL;
+		weak_ptr<GameObject> m_LockOnObj;		//ロックオンしているオブジェクト
 		weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
@@ -75,7 +74,8 @@ namespace basecross {
 		};
 		enum Target {
 			LINK = 0,
-			DRONE = 1
+			DRONE = 1,
+			CHECKPOINT
 		};
 		enum FaceState
 		{
@@ -126,12 +126,6 @@ namespace basecross {
 
 		//ステートに応じて平行移動のスピードを変える
 		void ChangeWalkSpeed(State state);
-		//妨害電波による速度低下値をセットする
-		void SetJummerSpeed(float speed) { m_JummerSpeed = speed; };
-		//子オブジェクトしてもっている電波塔との当たり判定をプレイヤーのほうでも認知する
-		void SetRadioTowerHitJudgment(weak_ptr<RadioTowerHitJudgment> hit) {
-			m_RadioTowerHitJudgment = hit;
-		}
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
@@ -143,6 +137,8 @@ namespace basecross {
 		void LinkGo();
 		//ベジエ曲線でリンクへ飛ぶ処理
 		void DroneGo();
+		// ベジェ曲線でチェックポイントへ飛ぶ処理
+		void CheckPointGo();
 		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
 		//Rayを飛ばす
@@ -150,18 +146,23 @@ namespace basecross {
 		//Rayを可視化する
 		void RayView(Vec3 origin,Vec3 originDir);
 		//レイが修正範囲内に入っていてLボタンを押していたら修正する
-		void Rock(Vec3 origin, Vec3 originDir);
+		void Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
+		// ロックオンするオブジェクトを設定
+		void RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
 		//Rayとドローンが当たっているかを見る処理
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
+		//Rayと届け先が当たっているかを見る
+		void CheckPointsRayCheck(Vec3 origin, Vec3 originDir);
 		//Aボタンが押された
 		bool CheckAButton();
 		// Yボタンが押された
 		bool CheckYButton();
 		// 表情の切り替え
 		void FaceChanger(FaceState beforeFace, FaceState afterFace);
-
+		// チェックポイントについたときに更新する
+		void CheckPointArrived();
 		//エネルギーが減るようにする
 		void ChengeEnergyMai() { m_changeEnergy = -5.0f; }
 		//エネルギーが増えるようにする
@@ -192,10 +193,7 @@ namespace basecross {
 		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
 		//落下した際にリスポーン位置へワープする
 		void Response();
-		//妨害を受けているかどうかを返す
-		bool GetJummer() { return m_isJummer; };
-		//妨害を受けている状況を設定する
-		void SetJummer(bool f) { m_isJummer = f; };
+		float GetRayRange() { return m_rayRange; };
 
 		void DrawStrings();
 	};
