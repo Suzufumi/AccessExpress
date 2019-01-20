@@ -91,4 +91,22 @@ namespace basecross {
 			m_TotalTime = 0.0f;
 		}
 	};
+	///---------------------------------------------------------------------------------
+	//数字を表示するスプライト
+	///---------------------------------------------------------------------------------
+	class NumberSprite : public GameObject {
+	protected:
+		int m_places;	// 表示桁
+		int m_num;
+		vector <Rect2D<float>> m_numRects;
+		vector<shared_ptr<Sprite>>m_numbers;
+		vector<vector<VertexPositionTexture>> m_vertices;
+	public:
+		NumberSprite(const shared_ptr<Stage>& stagePtr,int places,int num);
+		virtual ~NumberSprite() {};
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		virtual void OnDraw() override;
+	};
+
 }
