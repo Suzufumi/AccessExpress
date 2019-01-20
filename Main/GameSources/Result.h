@@ -8,7 +8,17 @@ namespace basecross {
 		void CreateRemainingTime();
 		void CreateMaximumChain();
 		void CreateScore();
-		bool m_productionStart = 1.0f;
+		void AddScore();
+		float m_leap = 0.0f;
+		weak_ptr<GameObject> mchackNum;
+		weak_ptr<GameObject> m_maxChainNum;
+		Vec3 m_chackP1,m_maxChainP1,m_scoreP2;
+		enum progress {
+			START,
+			ADD_SCORE,
+			END
+		};
+		progress m_progress = progress::START;
 	public:
 		virtual ~ResultStage() {};
 		virtual void OnCreate()override;
