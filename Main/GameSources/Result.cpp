@@ -62,7 +62,7 @@ namespace basecross {
 		m_chackText = AddGameObject<Sprite>(L"RemainingTimeText_TX", Vec2(410, 205));
 		m_chackText.lock()->SetPosition(Vec2(320.0f, 250.0f));
 		//数字
-		m_chackNum = AddGameObject<NumberSprite>(1, 5);
+		m_chackNum = AddGameObject<NumberSprite>(1, (5 - GameManager::GetInstance().GetCheckPointNum()));
 		m_chackNum.lock()->GetComponent<Transform>()->SetPosition(820, -150, 0);
 		m_chackP1 = m_chackNum.lock()->GetComponent<Transform>()->GetPosition();
 		//分数の母数側
@@ -77,7 +77,7 @@ namespace basecross {
 		m_maxChainText = AddGameObject<Sprite>(L"MaxChainText_TX", Vec2(461, 230));
 		m_maxChainText.lock()->SetPosition(Vec2(320.0f, 400.0f));
 		//数字
-		m_maxChainNum = AddGameObject<NumberSprite>(2, 22);
+		m_maxChainNum = AddGameObject<NumberSprite>(2, GameManager::GetInstance().GetMaxChain());
 		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(880, -300, 0);
 		m_maxChainP1 = m_maxChainNum.lock()->GetComponent<Transform>()->GetPosition();
 	};
@@ -99,8 +99,9 @@ namespace basecross {
 	void ResultStage::AddScore() {
 		m_leap += App::GetApp()->GetElapsedTime();
 		if (m_leap >= 1.0f) {
+			auto& gm = GameManager::GetInstance();
 			m_leap = 1.0f;
-			GameManager::GetInstance().AddScore((6 * 20)*10);
+			GameManager::GetInstance().AddScore(((5 - gm.GetCheckPointNum()) * gm.GetMaxChain()) * 10);
 			//チェックポイントパーフェクトボーナスも入れる
 
 			m_progress = progress::SCORE_COUNTUP;
