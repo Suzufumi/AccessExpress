@@ -64,7 +64,7 @@ namespace basecross {
 		m_chackText = AddGameObject<Sprite>(L"CollectedMail_TX", Vec2(516, 256));
 		m_chackText.lock()->SetPosition(Vec2(320.0f, 250.0f));
 		//”š
-		m_chackNum = AddGameObject<NumberSprite>(1, (5 - GameManager::GetInstance().GetCheckPointNum()));
+		m_chackNum = AddGameObject<NumberSprite>(1, (5 - GameManager::GetInstance().GetMail()));
 		m_chackNum.lock()->GetComponent<Transform>()->SetPosition(820, -150, 0);
 		m_chackP1 = m_chackNum.lock()->GetComponent<Transform>()->GetPosition();
 		//•ª”‚Ì•ê”‘¤
