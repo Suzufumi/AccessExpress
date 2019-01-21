@@ -39,11 +39,13 @@ namespace basecross {
 				CreatePlayer();
 				m_progress = progress::END;
 			}
+			break;
 		case progress::END :
 			if (CntlVec[0].wPressedButtons) {
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 			}
-			//m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(App::GetApp()->GetElapsedTime());
+			m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(App::GetApp()->GetElapsedTime());
+			break;
 		default:
 			break;
 		}
@@ -91,6 +93,7 @@ namespace basecross {
 		//数字
 		m_scoreNum = AddGameObject<ScoreUI>();
 		m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(750, -450, 0);
+		m_scoreNum.lock()->CountSkip();//表示スコアを内部スコアまで上げておく
 		m_scoreP2 = m_scoreNum.lock()->GetComponent<Transform>()->GetPosition() + Vec3(50.0f,0,0);
 	};
 	///-----------------------------------------------------------------------------
@@ -127,14 +130,14 @@ namespace basecross {
 		drawComp->SetTextureResource(L"PLAYER_TX");
 		drawComp->SetLightingEnabled(false);
 		// アニメーションを追加する
-		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
+		drawComp->AddAnimation(L"Clear", 400, 100, true, 30.0f);
 		// アニメーションの設定
-		drawComp->ChangeCurrentAnimation(L"Default");
+		drawComp->ChangeCurrentAnimation(L"Clear");
 		drawComp->SetMultiMeshIsDraw(0, false); // 一番上の線
 		drawComp->SetMultiMeshIsDraw(1, false);	// 真ん中の線
 		drawComp->SetMultiMeshIsDraw(2, false);	// 一番下の線
-		drawComp->SetMultiMeshIsDraw(3, true);	// 通常顔
-		drawComp->SetMultiMeshIsDraw(4, false);	// うれしい
+		drawComp->SetMultiMeshIsDraw(3, false);	// 通常顔
+		drawComp->SetMultiMeshIsDraw(4, true);	// うれしい
 		drawComp->SetMultiMeshIsDraw(5, true); // 体
 		drawComp->SetMultiMeshIsDraw(6, false);	// 寝てる顔
 		drawComp->SetMultiMeshIsDraw(7, false);	// 悲しい顔

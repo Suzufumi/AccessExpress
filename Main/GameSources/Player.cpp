@@ -510,7 +510,7 @@ namespace basecross{
 				gameManager.ResetSloawPassage();
 				//スローにする
 				gameManager.SetOnSlow(true);
-				App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"bomb_se", 1.0f);
+				App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"bomb_se", 2.0f);
 			}
 			else {
 				//倒せなかったのでコンボリセットする
@@ -959,7 +959,7 @@ namespace basecross{
 		Obj->FaceChanger(Obj->m_faceNum, Player::FaceState::Smile);
 		auto scenePtr = App::GetApp()->GetScene<Scene>();
 		// 効果音を鳴らす
-		scenePtr->MusicOnceStart(L"Jump_SE", 0.3f);
+		scenePtr->MusicOnceStart(L"Jump_SE", 1.0f);
 		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
 		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();

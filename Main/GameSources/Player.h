@@ -179,7 +179,7 @@ namespace basecross {
 		// ƒRƒ“ƒ{‚ð‰ÁŽZ‚·‚é
 		void AddCombo() { 
 			m_chain++; 
-			if (GameManager::GetInstance().GetMaxChain() > m_chain) {
+			if (GameManager::GetInstance().GetMaxChain() < m_chain) {
 				GameManager::GetInstance().SetMaxChain(m_chain);
 			}
 		}
