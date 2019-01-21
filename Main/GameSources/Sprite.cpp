@@ -124,7 +124,6 @@ namespace basecross{
 		SetAlphaActive(m_Trace);
 		auto PtrTransform = GetComponent<Transform>();
 		PtrTransform->SetScale(m_StartScale.x, m_StartScale.y, 1.0f);
-		PtrTransform->SetRotation(0, 0, 0);
 		PtrTransform->SetPosition(m_StartPos.x, m_StartPos.y, 0.0f);
 		//頂点とインデックスを指定してスプライト作成
 		auto PtrDraw = AddComponent<PCTSpriteDraw>(vertex, indices);
@@ -133,22 +132,15 @@ namespace basecross{
 	}
 
 	void AnimSprite::OnUpdate() {
-		if (m_Selected) {
-			float ElapsedTime = App::GetApp()->GetElapsedTime();
-			m_TotalTime += ElapsedTime * 5.0f;
-			if (m_TotalTime >= XM_2PI) {
-				m_TotalTime = 0;
-			}
-			auto PtrDraw = GetComponent<PCTSpriteDraw>();
-			Col4 col(1.0, 1.0, 1.0, 1.0);
-			col.w = sin(m_TotalTime) * 0.5f + 0.5f;
-			PtrDraw->SetDiffuse(col);
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		m_TotalTime += ElapsedTime * 5.0f;
+		if (m_TotalTime >= XM_2PI) {
+			m_TotalTime = 0;
 		}
-		else {
-			auto PtrDraw = GetComponent<PCTSpriteDraw>();
-			Col4 col(1.0, 1.0, 1.0, 1.0);
-			PtrDraw->SetDiffuse(col);
-		}
+		auto PtrDraw = GetComponent<PCTSpriteDraw>();
+		Col4 col(1.0, 1.0, 1.0, 1.0);
+		col.w = sin(m_TotalTime) * 0.7f + 0.6f;
+		PtrDraw->SetDiffuse(col);
 	}
 	///------------------------------------------------------------------------------------
 	//数字のスプライト
