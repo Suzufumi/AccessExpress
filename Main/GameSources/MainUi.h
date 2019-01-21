@@ -37,5 +37,9 @@ namespace basecross
 				return false;
 			}
 		}
+		//内部スコアと表示スコアを同じにする
+		void CountSkip() {
+			m_displayScore = GameManager::GetInstance().GetScore();
+		}
 	};
 }

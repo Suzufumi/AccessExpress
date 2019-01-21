@@ -91,6 +91,7 @@ namespace basecross {
 		//数字
 		m_scoreNum = AddGameObject<ScoreUI>();
 		m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(750, -450, 0);
+		m_scoreNum.lock()->CountSkip();//表示スコアを内部スコアまで上げておく
 		m_scoreP2 = m_scoreNum.lock()->GetComponent<Transform>()->GetPosition() + Vec3(50.0f,0,0);
 	};
 	///-----------------------------------------------------------------------------
