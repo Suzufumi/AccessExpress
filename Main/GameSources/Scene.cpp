@@ -74,7 +74,9 @@ namespace basecross{
 			{ L"Time.png", L"TIME_TX"},
 			{ L"score.png", L"SCORE_TX"},
 			{ L"chain_gauge.png",L"chain_gauge_TX"},
-			{L"CollectedMail.png",L"CollectedMail_TX"}
+			{ L"chainbar.png",L"chainbar_TX"},
+			{ L"CollectedMail.png",L"CollectedMail_TX"},
+			{ L"mail.png",L"mail_TX"}
 		};
 
 		for (auto texture : textures)

@@ -157,22 +157,32 @@ namespace basecross {
 	//チェインの文字を見せるオブジェクト
 	//-------------------------------------------------------------------------------------------------
 	ViewChainLetter::ViewChainLetter(const shared_ptr<Stage>& stagePtr)
-		: Sprite(stagePtr, L"chain_TX", Vec2(124, 32))
+		: Sprite(stagePtr, L"chain_gauge_TX", Vec2(155, 155))
 	{
 
 	}
 
 	void ViewChainLetter::OnCreate() {
 		Sprite::OnCreate();
-		SetPosition(Vec2(740, 640));
+		SetPosition(Vec2(790, 640));
 		SetDrawLayer(1);
+		//ゲージバー
+		m_gage = GetStage()->AddGameObject<Sprite>(L"chainbar_TX", Vec2(155,155));
+		m_gage.lock()->SetPosition(Vec2(790, 640));
+		m_gage.lock()->SetDrawLayer(1);
 	}
 	void ViewChainLetter::OnUpdate() {
+		auto& manager = GameManager::GetInstance();
+		float remainingGage = 1.0f - manager.GetSlowPassage();
+		m_gage.lock()->GetComponent<Transform>()->SetScale(remainingGage,1.0f , 1.0f);
+		m_gage.lock()->SetPosition(Vec2(718.0f + (74*remainingGage), 640));
 		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
 			SetDrawActive(true);
+			m_gage.lock()->SetDrawActive(true);
 		}
 		else {
 			SetDrawActive(false);
+			m_gage.lock()->SetDrawActive(false);
 		}
 	}
 	//-------------------------------------------------------------------------------------------------
@@ -212,11 +222,12 @@ namespace basecross {
 
 		for (int i = 0; i < m_places; i++) {
 			auto number = ObjectFactory::Create<Sprite>(
-				GetStage(), L"Number2_TX", Vec2(640,128), m_numRects[0]);
+				GetStage(), L"Number2_TX", Vec2(128,128), m_numRects[0]);
 			auto transComp = number->GetComponent<Transform>();
 			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
 			transComp->SetParent(GetThis<ViewChainNum>());	// 基準点が画面の左上からScoreUIの場所になった
 			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 128));
+			transComp->SetScale(1.2f, 0.9f, 0.9f);
 			m_numbers.push_back(number);
 		}
 
@@ -337,6 +348,8 @@ namespace basecross {
 			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
 			transComp->SetParent(GetThis<FlyingChain>());	// 基準点が画面の左上からScoreUIの場所になった
 			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 128));
+			transComp->SetScale(1.2f, 0.9f, 0.9f);
+
 			m_numbers.push_back(number);
 		}
 		GetStage()->SetSharedGameObject(L"FlyingChain", GetThis<FlyingChain>());

@@ -64,6 +64,7 @@ namespace basecross {
 	//ƒ`ƒFƒCƒ“‚Ì•¶Žš
 	//--------------------------------------------------------------------------------------
 	class ViewChainLetter : public Sprite {
+		weak_ptr<Sprite> m_gage;
 		public:
 			ViewChainLetter(const shared_ptr<Stage>& stagePtr);
 			virtual ~ViewChainLetter() {};
