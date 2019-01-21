@@ -37,7 +37,6 @@ namespace basecross {
 		}
 
 		auto chainStr = XmlDocReader::GetAttribute(pNode, L"Chain");
-		m_deadChain = MyUtil::wstrToInt(chainStr);
 
 	}
 	void Drone::OnCreate() {
@@ -73,7 +72,6 @@ namespace basecross {
 		drawComp->SetMeshResource(L"ENEMY_MODEL");
 		drawComp->SetTextureResource(L"ENEMY_TX");
 		drawComp->SetMeshToTransformMatrix(spanMat);
-		GetStage()->AddGameObject<ViewDeadChain>(GetThis<Drone>(), m_deadChain);
 
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());
 		SetDrawLayer(-1);
@@ -105,10 +103,6 @@ namespace basecross {
 		}
 		GetComponent<Transform>()->SetWorldPosition(pos);
 
-		if (m_isDead) {
-			SetUpdateActive(false);
-			//GetStage()->RemoveGameObject<Drone>(GetThis<Drone>());
-		}
 	}
 	void Drone::SetBezierClock() {
 		m_joinNumMax = 4;
@@ -176,88 +170,4 @@ namespace basecross {
 		}
 	}
 
-	//-------------------------------------------------------------------------------------------------
-	//死亡するチェイン数を見せるオブジェクト
-	//-------------------------------------------------------------------------------------------------
-	ViewDeadChain::ViewDeadChain(const shared_ptr<Stage>& StagePtr,
-		const shared_ptr<Drone>& DroneObjectPtr, size_t Number) :
-		GameObject(StagePtr),
-		m_DroneObject(DroneObjectPtr),
-		m_Number(Number)
-	{}
-
-	//初期化
-	void ViewDeadChain::OnCreate() {
-
-		auto ptrTransform = GetComponent<Transform>();
-		if (!m_DroneObject.expired()) {
-			auto dronePtr = m_DroneObject.lock();
-			auto droneTrans = dronePtr->GetComponent<Transform>();
-			auto pos = droneTrans->GetPosition();
-			pos.y += 2.0f;
-			ptrTransform->SetPosition(pos);
-			ptrTransform->SetScale(1.0f, 1.0f, 1.0f);
-			ptrTransform->SetQuaternion(droneTrans->GetQuaternion());
-			//変更できるスクエアリソースを作成
-
-			//頂点配列
-			vector<VertexPositionNormalTexture> vertices;
-			//インデックスを作成するための配列
-			vector<uint16_t> indices;
-			//Squareの作成(ヘルパー関数を利用)
-			MeshUtill::CreateSquare(1.0f, vertices, indices);
-			//UV値の変更
-			float from = ((float)m_Number) / 10.0f;
-			float to = from + (1.0f / 10.0f);
-			//左上頂点
-			vertices[0].textureCoordinate = Vec2(from, 0);
-			//右上頂点
-			vertices[1].textureCoordinate = Vec2(to, 0);
-			//左下頂点
-			vertices[2].textureCoordinate = Vec2(from, 1.0f);
-			//右下頂点
-			vertices[3].textureCoordinate = Vec2(to, 1.0f);
-			//頂点の型を変えた新しい頂点を作成
-			vector<VertexPositionColorTexture> new_vertices;
-			for (auto& v : vertices) {
-				VertexPositionColorTexture nv;
-				nv.position = v.position;
-				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
-				nv.textureCoordinate = v.textureCoordinate;
-				new_vertices.push_back(nv);
-			}
-			//新しい頂点を使ってメッシュリソースの作成
-			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, indices, true);
-
-			auto drawComp = AddComponent<PCTStaticDraw>();
-			drawComp->SetMeshResource(m_SquareMeshResource);
-			drawComp->SetTextureResource(L"Number2_TX");
-			SetAlphaActive(true);
-			SetDrawLayer(1);
-		}
-	}
-	//変化
-	void ViewDeadChain::OnUpdate() {
-
-		if (!m_DroneObject.expired()) {
-			auto dronePtr = m_DroneObject.lock();
-			auto droneTrans = dronePtr->GetComponent<Transform>();
-
-			auto ptrTransform = GetComponent<Transform>();
-			auto pos = droneTrans->GetPosition();
-			pos.y += 2.0f;
-			ptrTransform->SetPosition(pos);
-			ptrTransform->SetScale(1.0f, 1.0f, 1.0f);
-
-			auto PtrCamera = GetStage()->GetView()->GetTargetCamera();
-
-			Quat qt;
-			//向きをビルボードにする
-			qt = Billboard(PtrCamera->GetAt() - PtrCamera->GetEye());
-
-			ptrTransform->SetQuaternion(qt);
-
-		}
-
-	}
 }
