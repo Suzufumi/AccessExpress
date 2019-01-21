@@ -476,59 +476,26 @@ namespace basecross{
 		//計算のための時間加算
 		//移動の経過にチェイン数による加速をいれた
 		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / m_BezierSpeedLeap;
-		//スロー状態かどうかで処理
-		if (gameManager.GetOnSlow()) {
-			//マネージャーにスローの経過を伝える
-			gameManager.AddSlowPassage((addLerp / gameManager.GetSlowSpeed()) * 10.0f);
-			if (gameManager.GetSlowPassage() >= 1.0f) {
-				//スローを終わる
-				gameManager.SetOnSlow(false);
-				//向かっているドローンの初期化
-				m_DroneNo = NULL;
-				//次の目標へ飛べなかったのでコンボリセット
-				ResetCombo();
-				//スロー時間が終了したためステートをデータ体にする
-				m_StateMachine->ChangeState(DataState::Instance());
-			}
-		}
-		else {
-			//経過に加算
-			m_Lerp += addLerp;
-			//動いているので終点の位置を更新する
-			p2 = drone->GetComponent<Transform>()->GetWorldPosition();
-		}
+		//経過に加算
+		m_Lerp += addLerp;
+		//動いているので終点の位置を更新する
+		p2 = drone->GetComponent<Transform>()->GetWorldPosition();
 		//飛ぶ処理が終わったあとで、スロー状態でなければ
-		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && m_DroneNo != NULL) {
+		if (m_Lerp >= 1.0f && m_DroneNo != NULL) {
 			m_Lerp = 1.0f;
-			//現在チェインがドローンの死にチェイン数を超えていた場合
-			if (drone->GetDeadChain() <= GetChain()) {
-				//演出でチェイン数を飛ばすために値を与える
-				GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
-				//動かなくする
-				drone->Die();
-				//スローの経過時間をリセット
-				gameManager.ResetSloawPassage();
-				//スローにする
-				gameManager.SetOnSlow(true);
-				App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"bomb_se", 2.0f);
-			}
-			else {
-				//倒せなかったのでコンボリセットする
-				ResetCombo();
-				//向かっているドローンの初期化
-				m_DroneNo = NULL;
-				//飛び終わったらステートをデータ体にする
-				m_StateMachine->ChangeState(DataState::Instance());
-			}
+			//倒せなかったのでコンボリセットする
+			ResetCombo();
+			//向かっているドローンの初期化
+			m_DroneNo = NULL;
+			//飛び終わったらステートをデータ体にする
+			m_StateMachine->ChangeState(DataState::Instance());
 		}
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
-		if (!gameManager.GetOnSlow()) {
-			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
-			auto camera = GetStage()->GetView()->GetTargetCamera();
-			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
-		}
+		//カメラを追尾させる
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 	}
 
 	void Player::CheckPointGo()
