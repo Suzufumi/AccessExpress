@@ -41,7 +41,7 @@ namespace basecross {
 	private:
 		Vec2 m_startPos;
 		Vec2 m_startScale;
-		const float m_fadeSpeed = 0.005f;
+		const float m_fadeSpeed = 0.01f;
 		float m_alpha;
 		bool m_isFadeIn;
 		bool m_isFadeOut = false;

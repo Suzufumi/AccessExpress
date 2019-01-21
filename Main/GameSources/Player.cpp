@@ -88,7 +88,7 @@ namespace basecross{
 		//drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);
 		// ƒŒƒCƒ„[‚Ì’²®
-		SetDrawLayer(1);
+		SetDrawLayer(-10);
 
 		GetStage()->SetSharedGameObject(L"Player", GetThis<Player>());
 		auto dev = GetStage()->AddGameObject<SightingDevice>();
