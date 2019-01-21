@@ -88,7 +88,7 @@ namespace basecross {
 	///-----------------------------------------------------------------------------
 	void ResultStage::CreateScore() {
 		//ï∂éö
-		m_scoreText = AddGameObject<Sprite>(L"SCORE_TX", Vec2(282, 68));
+		m_scoreText = AddGameObject<Sprite>(L"ScoreText_TX", Vec2(410, 205));
 		m_scoreText.lock()->SetPosition(Vec2(320.0f, 540.0f));
 		//êîéö
 		m_scoreNum = AddGameObject<ScoreUI>();
