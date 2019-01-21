@@ -124,6 +124,8 @@ namespace basecross{
 
 		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"CheckPoint.bmf");
 		App::GetApp()->RegisterResource(L"CHECKPOINT_MODEL", staticModel);
+		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"mail.bmf");
+		App::GetApp()->RegisterResource(L"MAIL_MODEL", staticModel);
 	}
 	//----------------------------------------------------------------------------------------
 	//‰¹‚ð“o˜^‚·‚é
