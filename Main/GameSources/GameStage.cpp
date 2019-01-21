@@ -121,6 +121,8 @@ namespace basecross {
 			//スコアを初期化する
 			GameManager::GetInstance().ResetNowScore();
 			GameManager::GetInstance().ResetCheckPointNum();
+			//マックスチェイン初期化
+			GameManager::GetInstance().ResetMaxChain();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			CreateSharedObjectGroup(L"CheckPoints");

@@ -28,5 +28,14 @@ namespace basecross
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
+		//カウントアップが終わっているか返す
+		bool GetFinishCountUp() {
+			if (GameManager::GetInstance().GetScore() == m_displayScore) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
 	};
 }

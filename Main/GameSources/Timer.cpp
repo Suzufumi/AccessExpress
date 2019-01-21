@@ -89,7 +89,7 @@ namespace basecross {
 		}
 		if (m_timer < 0.0f) {
 			m_timer = 0.0f;
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameOverStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 		int timer = (int)m_timer;
 

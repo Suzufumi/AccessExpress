@@ -177,7 +177,12 @@ namespace basecross {
 
 		void ComboBonus(int nowChains);
 		// コンボを加算する
-		void AddCombo() { m_chain++; }
+		void AddCombo() { 
+			m_chain++; 
+			if (GameManager::GetInstance().GetMaxChain() > m_chain) {
+				GameManager::GetInstance().SetMaxChain(m_chain);
+			}
+		}
 		// コンボをリセットする
 		void ResetCombo() { m_chain = 0; }
 		// 現在のコンボ数を返す
