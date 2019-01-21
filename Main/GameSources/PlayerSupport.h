@@ -61,7 +61,7 @@ namespace basecross {
 		void ResetCaptureLink() { m_captureLink = false; }
 	};
 	//--------------------------------------------------------------------------------------
-	//チェインの文字
+	//チェインの文字とバー
 	//--------------------------------------------------------------------------------------
 	class ViewChainLetter : public Sprite {
 		weak_ptr<Sprite> m_gage;
@@ -86,18 +86,6 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
-	};
-	//--------------------------------------------------------------------------------------
-	//スローの残り時間を見せるオブジェクト
-	//--------------------------------------------------------------------------------------
-	class SlowTimeUI : public Sprite {
-		weak_ptr<Sprite> m_text;
-		weak_ptr<Sprite> m_gageBase;
-	public:
-		SlowTimeUI(const shared_ptr<Stage>& stagePtr);
-		virtual ~SlowTimeUI() {};
-		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
 	};
 	//--------------------------------------------------------------------------------------
 	//スコアに飛んでいくチェインの数字
