@@ -46,7 +46,7 @@ namespace basecross{
 	/// fadeクラス
 	//------------------------------------------------------------------------------------
 	FadeInOut::FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos, const Vec2& scale)
-		: Sprite(stagePtr, L"FADE_TX", Vec2(scale)), m_startPos(pos), m_alpha(1.0f)
+		: Sprite(stagePtr, L"FADE_TX", Vec2(scale)), m_startPos(pos), m_alpha(0.0f)
 	{
 	}
 
@@ -77,7 +77,6 @@ namespace basecross{
 
 	void FadeInOut::StartFadeIn()
 	{
-		m_alpha -= m_fadeSpeed;
 
 		auto drawComp = GetComponent<PTSpriteDraw>();
 		drawComp->SetDrawActive(true);
@@ -85,18 +84,29 @@ namespace basecross{
 		if (m_alpha <= 0.0f)
 		{
 			m_isFadeIn = false;
-			drawComp->SetDrawActive(false);
+			GameManager::GetInstance().SetIsFade(false);
 		}
+		m_alpha -= m_fadeSpeed;
 	}
 
 	void FadeInOut::StartFadeOut()
 	{
 
+		auto drawComp = GetComponent<PTSpriteDraw>();
+		drawComp->SetDrawActive(true);
+		drawComp->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, m_alpha));
+		if (m_alpha > 1.0f)
+		{
+			m_isFadeOut = false;
+			GameManager::GetInstance().SetIsFade(false);
+		}
+		m_alpha += m_fadeSpeed;
+
 	}
 
 	//--------------------------------------------------------------------------------------
-///	アニメスプライト
-//--------------------------------------------------------------------------------------
+	///	アニメスプライト
+	//--------------------------------------------------------------------------------------
 	AnimSprite::AnimSprite(const shared_ptr<Stage>& StagePtr, const wstring& TextureKey, bool Trace,
 		const Vec2& StartScale, const Vec2& StartPos) :
 		GameObject(StagePtr),

@@ -11,20 +11,25 @@ namespace basecross {
 		CreatePlayer();
 		auto titleBack = AddGameObject<Sprite>(L"SKY_TX", Vec2(1280, 1080));
 		titleBack->SetPosition(Vec2(640, 480));
-		auto titleSprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(900, 256));
+		auto titleSprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(800, 256));
 		titleSprite->SetPosition(Vec2(640, 140));
 		auto buttonSprite = AddGameObject<AnimSprite>(L"Title_BUTTON_TX", true,  Vec2(1000, 100), Vec2(0, -300));
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"Title_TX");
 	}
 	void TitleStage::OnUpdate() {
+		auto& gm = GameManager::GetInstance();
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		if (CntlVec[0].wPressedButtons) {
 			auto scenePtr = App::GetApp()->GetScene<Scene>();
 			scenePtr->MusicOnceStart(L"Decision_SE", 1.0f);
-			PostEvent(1.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 			auto fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
-			//fade->SetIsFadeIn(true);
+			fade->SetIsFadeOut(true);
+		}
+		// フェード中かどうか
+		if (!gm.GetIsFade())
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}
 		float delta = App::GetApp()->GetElapsedTime();
 		m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(delta);

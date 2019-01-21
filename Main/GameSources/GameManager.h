@@ -20,6 +20,7 @@ namespace basecross {
 		 float m_slowPassage;		//スローになってからの経過(1.0fが最大として扱う)
 		 int m_checkPointNum = 5;	// チェックポイントの数
 		 int m_maxChain = 0;
+		 bool m_isFade = true;		// フェード中かどうか
 	public:
 		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
@@ -121,6 +122,11 @@ namespace basecross {
 		//マックスチェイン数初期化
 		//----------------------------------------------------------------------------------
 		void ResetMaxChain() { m_maxChain = 0; }
+
+		bool GetIsFade()
+		{ return m_isFade; }
+		void SetIsFade(bool isFade)
+		{ m_isFade = isFade; }
 	};
 
 }
