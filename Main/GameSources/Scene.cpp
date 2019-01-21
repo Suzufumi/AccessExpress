@@ -44,7 +44,7 @@ namespace basecross{
 		const int TEXTURE_NUM = 9;
 		InitializedParam textures[] = {
 			//{ L"Building1.png", L"Building1_TX" },
-			{ L"Title.png", L"TITLE_TX"},
+			{ L"Logo.png", L"TITLE_TX"},
 			{ L"StageSelect.png", L"StageSelect_TX"},
 			{ L"DeliverClear.png", L"ResultStage_TX"},
 			{ L"cursor.png", L"cursor_TX"},
@@ -60,7 +60,6 @@ namespace basecross{
 			{ L"UI_Red.png", L"RED_GAUGE_TX"},
 			{ L"fade.png", L"FADE_TX"},	
 			{ L"chain.png",L"chain_TX"},
-			{ L"fade.png", L"FADE_TX"},
 			{ L"SlowTimeGage.png", L"SlowTimeGage_TX"},
 			{ L"SlowText.png", L"SlowText_TX"},
 			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"},

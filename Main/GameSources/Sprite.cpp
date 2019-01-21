@@ -45,8 +45,8 @@ namespace basecross{
 	//------------------------------------------------------------------------------------
 	/// fadeƒNƒ‰ƒX
 	//------------------------------------------------------------------------------------
-	FadeInOut::FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos)
-		: Sprite(stagePtr, L"FADE_TX", Vec2(1280, 800), Rect2D<float>(1.0f, 1.0f, 1.0f, 1.0f)), m_startPos(pos)
+	FadeInOut::FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos, const Vec2& scale)
+		: Sprite(stagePtr, L"FADE_TX", Vec2(scale)), m_startPos(pos), m_alpha(1.0f)
 	{
 	}
 
@@ -57,27 +57,41 @@ namespace basecross{
 	{
 		Sprite::OnCreate();
 		this->SetPosition(m_startPos);
-		//GetComponent<PTSpriteDraw>()->SetDrawActive(false);
-		auto ptrAction = AddComponent<Action>();
-		auto width = App::GetApp()->GetGameWidth();
-		auto height = App::GetApp()->GetGameHeight();
-		ptrAction->AddMoveTo(1.0f, Vec3((float)width, 0.0f, 0.0f));
-		ptrAction->Run();
-		ptrAction->SetLooped(true);
 		SetDrawLayer(100);
+		auto drawComp = AddComponent<PTSpriteDraw>();
+		// Å‰‚Í•`‰æ‚µ‚È‚¢‚Å‚¨‚­
+		drawComp->SetDrawActive(false);
 	}
 
 	void FadeInOut::OnUpdate()
 	{
-		auto ptrAction = AddComponent<Action>();
-		if (m_isAction)
+		if (m_isFadeIn)
 		{
-			ptrAction->Run();
+			StartFadeIn();
 		}
-		else
+		if (m_isFadeOut)
 		{
-			ptrAction->Stop();
+			StartFadeOut();
 		}
+	}
+
+	void FadeInOut::StartFadeIn()
+	{
+		m_alpha -= m_fadeSpeed;
+
+		auto drawComp = GetComponent<PTSpriteDraw>();
+		drawComp->SetDrawActive(true);
+		drawComp->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, m_alpha));
+		if (m_alpha <= 0.0f)
+		{
+			m_isFadeIn = false;
+			drawComp->SetDrawActive(false);
+		}
+	}
+
+	void FadeInOut::StartFadeOut()
+	{
+
 	}
 
 	//--------------------------------------------------------------------------------------

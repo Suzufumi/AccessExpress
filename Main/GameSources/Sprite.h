@@ -41,16 +41,29 @@ namespace basecross {
 	private:
 		Vec2 m_startPos;
 		Vec2 m_startScale;
-		bool m_isAction = false;
+		const float m_fadeSpeed = 0.005f;
+		float m_alpha;
+		bool m_isFadeIn;
+		bool m_isFadeOut = false;
 	public:
-		FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos);
+		FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos, const Vec2& scale);
 		virtual ~FadeInOut();
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		bool GetIsAction() const
-		{ return m_isAction; }
-		void SetIsAction(bool isAction)
-		{ m_isAction = isAction;}
+		void StartFadeIn();
+		void StartFadeOut();
+		bool GetIsFadeIn() const
+		{ return m_isFadeIn; }
+		void SetIsFadeIn(bool isFadeIn)
+		{ m_isFadeIn = isFadeIn;}
+		bool GetIsFadeOut() const
+		{
+			return m_isFadeOut;
+		}
+		void SetIsFadeOut(bool isFadeIn)
+		{
+			m_isFadeOut = isFadeIn;
+		}
 	};
 
 	class AnimSprite : public GameObject
