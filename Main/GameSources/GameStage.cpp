@@ -106,6 +106,13 @@ namespace basecross {
 		builder.Register<CheckPoint>(L"Goal");
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Goal");
 	}
+	void GameStage::CreateMail()
+	{
+		GameObjecttXMLBuilder builder;
+		builder.Register<MailObject>(L"Mail");
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Mail");
+	}
+
 
 	void GameStage::OnCreate() {
 		try {
@@ -123,9 +130,12 @@ namespace basecross {
 			GameManager::GetInstance().ResetCheckPointNum();
 			//マックスチェイン初期化
 			GameManager::GetInstance().ResetMaxChain();
+			//メール数リセット
+			GameManager::GetInstance().ResetMail();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			CreateSharedObjectGroup(L"CheckPoints");
+			CreateSharedObjectGroup(L"Mails");
 			//物理計算有効
 			SetPhysicsActive(true);
 			//ビューとライトの作成
@@ -139,7 +149,7 @@ namespace basecross {
 			CreateLinkObject();
 
 			CreateDrone();
-			
+			CreateMail();
 			//制限時間を作成（中央上）
 			auto timer = AddGameObject<RemainingTimerSprite>(60);
 			timer->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
