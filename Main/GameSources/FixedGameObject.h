@@ -89,5 +89,23 @@ namespace basecross {
 		virtual void OnUpdate2() override;
 		virtual void OnDraw() override;
 	};
+	//--------------------------------------------------------------------------------------------------------------
+	// メールオブジェクト
+	//--------------------------------------------------------------------------------------------------------------
+	class MailObject : public GameObject {
+		Vec3 m_position;
+		Vec3 m_scale;
+		// 取得されたらtrue
+		bool m_isArrive = false;
+		float m_passageTime = 0.0f;
+	public:
+		MailObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
+		virtual ~MailObject() {};
+		virtual void OnCreate();
+		virtual void OnUpdate();
+		void ArriveCheckPoint();
+		bool GetIsArrive() { return m_isArrive; }
+		void SetIsArrive(bool isArrive) { m_isArrive = isArrive; }
+	};
 }
 //end basecross

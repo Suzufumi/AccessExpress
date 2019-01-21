@@ -346,4 +346,66 @@ namespace basecross {
 		}
 
 	}
+	///-----------------------------------------------------------------------------------
+	// CheckPoint
+	///-----------------------------------------------------------------------------------
+
+	MailObject::MailObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
+		: GameObject(stagePtr)
+	{
+		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+
+		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
+
+		m_position = pos;
+		m_scale = scale;
+
+	}
+
+	void MailObject::OnCreate() {
+		auto ptrTrans = GetComponent<Transform>();
+		//auto col = AddComponent<CollisionObb>();
+		//col->SetAfterCollision(AfterCollision::None);
+		Quat Qt;
+		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
+		ptrTrans->SetWorldPosition(m_position);
+		ptrTrans->SetQuaternion(Qt);
+		ptrTrans->SetScale(m_scale);
+
+		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
+		spanMat.affineTransformation(
+			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, 0.0f, 0.0f),
+			Vec3(0.0f, -0.7f, 0.0f)
+		);
+
+		//描画コンポーネントの追加
+		auto drawComp = AddComponent<PNTStaticDraw>();
+		//描画コンポーネントに形状（メッシュ）を設定
+		SetDrawLayer(-1);
+		drawComp->SetMeshResource(L"MAIL_MODEL");
+		drawComp->SetMeshToTransformMatrix(spanMat);
+		//Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
+		//drawComp->SetDiffuse(Color);
+
+		GetStage()->GetSharedObjectGroup(L"Mails")->IntoGroup(GetThis<GameObject>());
+	}
+	void MailObject::OnUpdate() {
+		if (m_isArrive) {
+			m_passageTime += App::GetApp()->GetElapsedTime();
+			if (m_passageTime >= 10.0f) {
+				m_isArrive = false;
+			}
+		}
+	}
+	void MailObject::ArriveCheckPoint() {
+		auto& gm = GameManager::GetInstance();
+		gm.AddMail();
+		m_isArrive = true;
+		SetDrawActive(false);
+	}
+
 }
