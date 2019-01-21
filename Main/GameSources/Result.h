@@ -5,7 +5,7 @@ namespace basecross {
 	class ResultStage : public Stage {
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
-		void CreateRemainingTime();
+		void CreateCollectedMail();
 		void CreateMaximumChain();
 		void CreateScore();
 		void AddScore();

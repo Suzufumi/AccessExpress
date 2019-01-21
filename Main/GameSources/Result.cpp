@@ -4,7 +4,7 @@
 namespace basecross {
 	void ResultStage::OnCreate() {
 		CreateViewLight();
-		CreateRemainingTime();
+		CreateCollectedMail();
 		CreateMaximumChain();
 		CreateScore();
 		auto clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(800.0f, 120.0f));
@@ -58,10 +58,10 @@ namespace basecross {
 		ptrMultiLight->SetDefaultLighting();
 	}
 	///-----------------------------------------------------------------------------
-	//ゴール数の表示作成
+	//メール数の表示作成
 	///-----------------------------------------------------------------------------
-	void ResultStage::CreateRemainingTime() {
-		m_chackText = AddGameObject<Sprite>(L"RemainingTimeText_TX", Vec2(410, 205));
+	void ResultStage::CreateCollectedMail() {
+		m_chackText = AddGameObject<Sprite>(L"CollectedMail_TX", Vec2(516, 256));
 		m_chackText.lock()->SetPosition(Vec2(320.0f, 250.0f));
 		//数字
 		m_chackNum = AddGameObject<NumberSprite>(1, (5 - GameManager::GetInstance().GetCheckPointNum()));
@@ -77,7 +77,7 @@ namespace basecross {
 	void ResultStage::CreateMaximumChain() {
 		//文字
 		m_maxChainText = AddGameObject<Sprite>(L"MaxChainText_TX", Vec2(461, 230));
-		m_maxChainText.lock()->SetPosition(Vec2(320.0f, 400.0f));
+		m_maxChainText.lock()->SetPosition(Vec2(345.0f, 400.0f));
 		//数字
 		m_maxChainNum = AddGameObject<NumberSprite>(2, GameManager::GetInstance().GetMaxChain());
 		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(880, -300, 0);
@@ -89,7 +89,7 @@ namespace basecross {
 	void ResultStage::CreateScore() {
 		//文字
 		m_scoreText = AddGameObject<Sprite>(L"ScoreText_TX", Vec2(410, 205));
-		m_scoreText.lock()->SetPosition(Vec2(320.0f, 540.0f));
+		m_scoreText.lock()->SetPosition(Vec2(370.0f, 540.0f));
 		//数字
 		m_scoreNum = AddGameObject<ScoreUI>();
 		m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(750, -450, 0);
