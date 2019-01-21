@@ -167,8 +167,8 @@ namespace basecross {
 		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_START
 			&& App::GetApp()->GetScene<Scene>()->GetGameStart()) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
-			auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
-			fade->SetIsAction(true);
+			//auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
+			//fade->SetIsAction(true);
 		}
 	}
 }
