@@ -46,7 +46,7 @@ namespace basecross{
 	/// fadeクラス
 	//------------------------------------------------------------------------------------
 	FadeInOut::FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos, const Vec2& scale)
-		: Sprite(stagePtr, L"FADE_TX", Vec2(scale)), m_startPos(pos), m_alpha(1.0f)
+		: Sprite(stagePtr, L"FADE_TX", Vec2(scale)), m_startPos(pos), m_alpha(0.0f)
 	{
 	}
 
@@ -77,7 +77,6 @@ namespace basecross{
 
 	void FadeInOut::StartFadeIn()
 	{
-		m_alpha -= m_fadeSpeed;
 
 		auto drawComp = GetComponent<PTSpriteDraw>();
 		drawComp->SetDrawActive(true);
@@ -85,18 +84,29 @@ namespace basecross{
 		if (m_alpha <= 0.0f)
 		{
 			m_isFadeIn = false;
-			drawComp->SetDrawActive(false);
+			GameManager::GetInstance().SetIsFade(false);
 		}
+		m_alpha -= m_fadeSpeed;
 	}
 
 	void FadeInOut::StartFadeOut()
 	{
 
+		auto drawComp = GetComponent<PTSpriteDraw>();
+		drawComp->SetDrawActive(true);
+		drawComp->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, m_alpha));
+		if (m_alpha > 1.0f)
+		{
+			m_isFadeOut = false;
+			GameManager::GetInstance().SetIsFade(false);
+		}
+		m_alpha += m_fadeSpeed;
+
 	}
 
 	//--------------------------------------------------------------------------------------
-///	アニメスプライト
-//--------------------------------------------------------------------------------------
+	///	アニメスプライト
+	//--------------------------------------------------------------------------------------
 	AnimSprite::AnimSprite(const shared_ptr<Stage>& StagePtr, const wstring& TextureKey, bool Trace,
 		const Vec2& StartScale, const Vec2& StartPos) :
 		GameObject(StagePtr),
@@ -124,7 +134,6 @@ namespace basecross{
 		SetAlphaActive(m_Trace);
 		auto PtrTransform = GetComponent<Transform>();
 		PtrTransform->SetScale(m_StartScale.x, m_StartScale.y, 1.0f);
-		PtrTransform->SetRotation(0, 0, 0);
 		PtrTransform->SetPosition(m_StartPos.x, m_StartPos.y, 0.0f);
 		//頂点とインデックスを指定してスプライト作成
 		auto PtrDraw = AddComponent<PCTSpriteDraw>(vertex, indices);
@@ -133,22 +142,15 @@ namespace basecross{
 	}
 
 	void AnimSprite::OnUpdate() {
-		if (m_Selected) {
-			float ElapsedTime = App::GetApp()->GetElapsedTime();
-			m_TotalTime += ElapsedTime * 5.0f;
-			if (m_TotalTime >= XM_2PI) {
-				m_TotalTime = 0;
-			}
-			auto PtrDraw = GetComponent<PCTSpriteDraw>();
-			Col4 col(1.0, 1.0, 1.0, 1.0);
-			col.w = sin(m_TotalTime) * 0.5f + 0.5f;
-			PtrDraw->SetDiffuse(col);
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		m_TotalTime += ElapsedTime * 5.0f;
+		if (m_TotalTime >= XM_2PI) {
+			m_TotalTime = 0;
 		}
-		else {
-			auto PtrDraw = GetComponent<PCTSpriteDraw>();
-			Col4 col(1.0, 1.0, 1.0, 1.0);
-			PtrDraw->SetDiffuse(col);
-		}
+		auto PtrDraw = GetComponent<PCTSpriteDraw>();
+		Col4 col(1.0, 1.0, 1.0, 1.0);
+		col.w = sin(m_TotalTime) * 0.7f + 0.6f;
+		PtrDraw->SetDiffuse(col);
 	}
 	///------------------------------------------------------------------------------------
 	//数字のスプライト
