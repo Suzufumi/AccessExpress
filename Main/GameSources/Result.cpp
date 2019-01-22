@@ -8,6 +8,9 @@ namespace basecross {
 		CreateCollectedMail();
 		CreateMaximumChain();
 		CreateScore();
+		auto resultBack = AddGameObject<Sprite>(L"ClearBack_TX", Vec2(1441, 811));
+		resultBack->SetPosition(Vec2(640, 400));
+		resultBack->SetDrawLayer(-3);
 		auto clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(800.0f, 120.0f));
 		clearSprite->SetPosition(Vec2(640.0f, 100.0f));
 		m_push = AddGameObject<Sprite>(L"Title_BUTTON_TX", Vec2(1000, 100));
