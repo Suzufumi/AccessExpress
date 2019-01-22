@@ -129,6 +129,8 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"CHECKPOINT_MODEL", staticModel);
 		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"mail.bmf");
 		App::GetApp()->RegisterResource(L"MAIL_MODEL", staticModel);
+		modelTex = modelDir + L"Mail.png";
+		App::GetApp()->RegisterTexture(L"MAIL_TX", modelTex);
 	}
 	//----------------------------------------------------------------------------------------
 	//‰¹‚ð“o˜^‚·‚é

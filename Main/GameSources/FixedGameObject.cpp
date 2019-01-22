@@ -376,18 +376,20 @@ namespace basecross {
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
+			Vec3(2.0f, 2.0f, 2.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, -0.7f, 0.0f)
 		);
 
 		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticDraw>();
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		SetDrawLayer(-1);
 		drawComp->SetMeshResource(L"MAIL_MODEL");
+		drawComp->SetTextureResource(L"MAIL_TX");
 		drawComp->SetMeshToTransformMatrix(spanMat);
+		drawComp->SetLightingEnabled(false);
 		//Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
 		//drawComp->SetDiffuse(Color);
 
