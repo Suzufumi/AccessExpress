@@ -93,10 +93,11 @@ namespace basecross {
 	class FlyingChain : public GameObject {
 	protected:
 		int m_places;	// 表示桁
-		int m_chain;	// 表示するチェイン数
+		int m_score;	// 表示するスコア
+		float m_wait;
 		float m_leap;
-		Vec3 p0 = Vec3(780, -480, 0);
-		Vec3 p1 = Vec3(1000,-500,0);
+		Vec3 p0 = Vec3(880, -380, 0);
+		Vec3 p1 = Vec3(1000,-400,0);
 		Vec3 p2 = Vec3(1152, 0, 0);
 
 		bool m_isFly;	//飛んでいるときtrue
