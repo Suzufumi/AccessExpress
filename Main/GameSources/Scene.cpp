@@ -74,7 +74,9 @@ namespace basecross{
 			{ L"Time.png", L"TIME_TX"},
 			{ L"score.png", L"SCORE_TX"},
 			{ L"chain_gauge.png",L"chain_gauge_TX"},
-			{L"CollectedMail.png",L"CollectedMail_TX"}
+			{ L"chainbar.png",L"chainbar_TX"},
+			{ L"CollectedMail.png",L"CollectedMail_TX"},
+			{ L"mail.png",L"mail_TX"}
 		};
 
 		for (auto texture : textures)
@@ -124,6 +126,8 @@ namespace basecross{
 
 		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"CheckPoint.bmf");
 		App::GetApp()->RegisterResource(L"CHECKPOINT_MODEL", staticModel);
+		staticModel = MeshResource::CreateStaticModelMesh(modelDir, L"mail.bmf");
+		App::GetApp()->RegisterResource(L"MAIL_MODEL", staticModel);
 	}
 	//----------------------------------------------------------------------------------------
 	//‰¹‚ð“o˜^‚·‚é
