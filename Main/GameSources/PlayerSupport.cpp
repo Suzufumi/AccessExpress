@@ -268,14 +268,14 @@ namespace basecross {
 	}
 
 	//--------------------------------------------------------------------------------------
-	//チェインの数字
+	//スコアへ飛んでいく数字数字
 	//--------------------------------------------------------------------------------------
 	FlyingChain::FlyingChain(const shared_ptr<Stage>& stagePtr)
 		: GameObject(stagePtr) {
-		m_places = 2;
+		m_places = 3;
 	}
 	//------------------------------------------------------------------------------------
-	//構築
+	//スコアへ飛んでいく数字
 	//------------------------------------------------------------------------------------
 	void FlyingChain::OnCreate() {
 		// 数字ごとの範囲を設定する
@@ -317,7 +317,7 @@ namespace basecross {
 	}
 
 	void FlyingChain::OnUpdate() {
-		int chain = m_chain;
+		int chain = m_score;
 
 		//数字を並べる
 		for (int i = 0; i < m_places; i++) {
@@ -339,14 +339,18 @@ namespace basecross {
 		}
 		//飛んでいる状態での処理
 		if (m_isFly) {
-			m_leap += App::GetApp()->GetElapsedTime() * 2.0f;
+			m_wait += App::GetApp()->GetElapsedTime();
+			if (m_wait >= 0.5f) {
+				m_leap += App::GetApp()->GetElapsedTime() * 2.0f;
+			}
 			auto pos = (1 - m_leap)*(1 - m_leap)*p0 + 2 * (1 - m_leap)*m_leap*p1 + m_leap * m_leap*p2;
 			GetComponent<Transform>()->SetPosition(pos);
 			if (m_leap >= 1.0f) {
 				//スコアについたのでスコアの値を増加させる
-				GameManager::GetInstance().AddScore(m_chain * 30 + m_chain * 10);
+				GameManager::GetInstance().AddScore(m_score);
 				m_leap = 0;
 				m_isFly = false;
+				m_wait = 0;
 			}
 		}
 
@@ -361,7 +365,7 @@ namespace basecross {
 		}
 	}
 	void FlyingChain::FlySet(int chain) {
-		m_chain = chain;
+		m_score = (chain * 30) + (chain * 10);
 		m_isFly = true;
 	}
 	//--------------------------------------------------------------------------------------

@@ -497,7 +497,9 @@ namespace basecross{
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 	}
-
+	//---------------------------------------------------------------------------------------------
+	//チェックポイントへ飛ぶ処理
+	//---------------------------------------------------------------------------------------------
 	void Player::CheckPointGo()
 	{
 		auto& gameManager = GameManager::GetInstance();
@@ -547,6 +549,58 @@ namespace basecross{
 				//スロー時間が終了したためステートをデータ体にする
 				m_StateMachine->ChangeState(DataState::Instance());
 			}
+		}
+		//ベジエ曲線の計算
+		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
+		GetComponent<Transform>()->SetWorldPosition(pos);
+		if (!gameManager.GetOnSlow()) {
+			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
+		}
+
+	}
+	//---------------------------------------------------------------------------------------------
+	//メールへ飛ぶ処理
+	//---------------------------------------------------------------------------------------------
+	void Player::MailGo(){
+		auto& gameManager = GameManager::GetInstance();
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
+		auto mail = dynamic_pointer_cast<MailObject>(mailGroup->at(m_MailNum));
+		//計算のための時間加算
+		//移動の経過にチェイン数による加速をいれた
+		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
+		//スロー状態かどうかで処理
+		if (gameManager.GetOnSlow()) {
+			//マネージャーにスローの経過を伝える
+			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
+			if (gameManager.GetSlowPassage() >= 1.0f) {
+				//スローを終わる
+				gameManager.SetOnSlow(false);
+				//次の目標へ飛べなかったのでコンボリセット
+				ResetCombo();
+				//軌跡を消す
+				m_ActionLine.lock()->SetDrawActive(false);
+				//スロー時間が終了したためステートをデータ体にする
+				m_StateMachine->ChangeState(DataState::Instance());
+			}
+		}
+		else {
+			//経過に加算
+			m_Lerp += addLerp;
+		}
+		//飛ぶ処理が終わったあとで、スロー状態でなければ
+		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && mail->GetIsArrive() != true) {
+			m_Lerp = 1.0f;
+			//メールを取得状態にする
+			mail->ArriveMail();
+			//演出でチェイン数を飛ばすために値を与える
+			GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
+			//スローの経過時間をリセット
+			gameManager.ResetSloawPassage();
+			//スローにする
+			gameManager.SetOnSlow(true);
 		}
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
@@ -627,12 +681,14 @@ namespace basecross{
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
 		Rock(sightPos, dir, L"Link", 3.0f);
 		Rock(sightPos, dir, L"CheckPoints", 2.0f);
-		//リンクオブジェクトとの判定
-		LinkRayCheck(sightPos, dir);
 		//ドローンとの判定
 		DroneRayCheck(sightPos, dir);
+		//リンクオブジェクトとの判定
+		LinkRayCheck(sightPos, dir);
 		// チェックポイントとの判定
 		CheckPointsRayCheck(sightPos, dir);
+		//メールとの判定
+		MailRayCheck(sightPos, dir);
 	}
 	//---------------------------------------------------------------------------------------------
 	//Rayを可視化する	
@@ -729,14 +785,14 @@ namespace basecross{
 			count++;
 		}
 	}
-
-	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir)
-	{
+	//---------------------------------------------------------------------------------------------
+	//RayとCheckPointオブジェクトが当たっているかを調べる
+	//---------------------------------------------------------------------------------------------
+	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir){
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
 		int count = 0;
-		for (auto& checkPoint : checkPointsGroup->GetGroupVector())
-		{
+		for (auto& checkPoint : checkPointsGroup->GetGroupVector()){
 			auto pointObj = checkPoint.lock();
 			auto pointTrans = pointObj->GetComponent<Transform>();
 			OBB obb(pointTrans->GetScale() * 2.0f, pointTrans->GetWorldMatrix());
@@ -765,6 +821,46 @@ namespace basecross{
 			count++;
 		}
 	}
+	//---------------------------------------------------------------------------------------------
+	//RayとMailオブジェクトが当たっているかを調べる
+	//---------------------------------------------------------------------------------------------
+	void Player::MailRayCheck(Vec3 origin, Vec3 originDir) {
+		auto sightingDevice = m_SightingDevice.lock();
+		auto& mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
+		int count = 0;
+		for (auto& mail : mailGroup->GetGroupVector()) {
+			auto mailObj = mail.lock();
+			if (dynamic_pointer_cast<MailObject>(mailObj)->GetIsArrive() != true) {
+				auto mailTrans = mailObj->GetComponent<Transform>();
+				OBB obb(mailTrans->GetScale() * 2.0f, mailTrans->GetWorldMatrix());
+				//プレイヤーからでるRayとOBBで判定
+				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+				//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
+				if (hit && p2 + Vec3(0, -1, 0) != mailTrans->GetWorldPosition()) {
+					//照準に当たっていることを教える
+					sightingDevice->SetCaptureLink(true);
+					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailTrans->GetWorldPosition();
+						dir.y = 0;
+						//オブジェクトに被らないように方向を加味してずらした値を渡す
+						SetBezierPoint(mailTrans->GetWorldPosition() + dir.normalize());
+						//軌跡
+						RayView(origin, mailTrans->GetWorldPosition() + dir.normalize());
+						//何番のメールにアクセスしているか保存
+						m_MailNum = count;
+						m_Lerp = 0;
+						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+						m_DroneNo = NULL;
+						m_StateMachine->ChangeState(LinkState::Instance());
+						m_target = Target::MAIL;
+						break;
+					}
+				}
+			}
+			count++;
+		}
+	}
+
 	//---------------------------------------------------------------------------------------------
 	//押し出しの判定
 	//---------------------------------------------------------------------------------------------
@@ -957,10 +1053,12 @@ namespace basecross{
 		if (Obj->GetTarget() == Obj->DRONE) {
 			Obj->DroneGo();
 		}
-		if (Obj->GetTarget() == Obj->CHECKPOINT)
-		{
+		if (Obj->GetTarget() == Obj->CHECKPOINT){
 			Obj->CheckPointGo();
 			//Obj->CheckPointArrived();
+		}
+		if (Obj->GetTarget() == Obj->MAIL) {
+			Obj->MailGo();
 		}
 		Obj->SightingDeviceChangePosition();
 		if (Obj->GetEnergy() <= 0.0f) {

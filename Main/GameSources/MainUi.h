@@ -13,6 +13,17 @@ namespace basecross
 		virtual void OnUpdate() override;
 	};
 	//------------------------------------------------------------------------
+	//メール数を表示するUI
+	//------------------------------------------------------------------------
+	class MailNumUI : public Sprite {
+		weak_ptr<NumberSprite> m_mailNum;
+	public:
+		MailNumUI(const shared_ptr<Stage>& stagePtr);
+		virtual ~MailNumUI() {};
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+	};
+	//------------------------------------------------------------------------
 	//スコアを表示するUI
 	//------------------------------------------------------------------------
 	class ScoreUI : public GameObject {
