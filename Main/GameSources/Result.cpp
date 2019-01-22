@@ -24,7 +24,6 @@ namespace basecross {
 			if (CntlVec[0].wPressedButtons) {
 				m_progress = progress::ADD_SCORE;
 				m_push.lock()->SetDrawActive(false);
-				m_chackNumParameter.lock()->SetDrawActive(false);
 			}
 			break;
 		case progress::ADD_SCORE :
@@ -33,8 +32,8 @@ namespace basecross {
 		case progress::SCORE_COUNTUP :
 			if (m_scoreNum.lock()->GetFinishCountUp()) {
 				m_push.lock()->SetDrawActive(true);
-				m_chackText.lock()->SetDrawActive(false);
-				m_chackNum.lock()->SetDrawActive(false);
+				m_mailText.lock()->SetDrawActive(false);
+				m_mailNum.lock()->SetDrawActive(false);
 				m_maxChainText.lock()->SetDrawActive(false);
 				m_maxChainNum.lock()->SetDrawActive(false);
 				m_scoreText.lock()->SetPosition(Vec2(720.0f, 340.0f));
@@ -77,15 +76,12 @@ namespace basecross {
 	//メール数の表示作成
 	///-----------------------------------------------------------------------------
 	void ResultStage::CreateCollectedMail() {
-		m_chackText = AddGameObject<Sprite>(L"CollectedMail_TX", Vec2(516, 256));
-		m_chackText.lock()->SetPosition(Vec2(320.0f, 250.0f));
+		m_mailText = AddGameObject<Sprite>(L"CollectedMail_TX", Vec2(516, 256));
+		m_mailText.lock()->SetPosition(Vec2(320.0f, 250.0f));
 		//数字
-		m_chackNum = AddGameObject<NumberSprite>(1, (5 - GameManager::GetInstance().GetMail()));
-		m_chackNum.lock()->GetComponent<Transform>()->SetPosition(820, -150, 0);
-		m_chackP1 = m_chackNum.lock()->GetComponent<Transform>()->GetPosition();
-		//分数の母数側
-		m_chackNumParameter = AddGameObject<NumberSprite>(1, 5);
-		m_chackNumParameter.lock()->GetComponent<Transform>()->SetPosition(940, -150, 0);
+		m_mailNum = AddGameObject<NumberSprite>(2, (GameManager::GetInstance().GetMail()));
+		m_mailNum.lock()->GetComponent<Transform>()->SetPosition(880, -160, 0);
+		m_mailP1 = m_mailNum.lock()->GetComponent<Transform>()->GetPosition();
 	};
 	///-----------------------------------------------------------------------------
 	//マックスチェインの表示作成
@@ -96,7 +92,7 @@ namespace basecross {
 		m_maxChainText.lock()->SetPosition(Vec2(345.0f, 400.0f));
 		//数字
 		m_maxChainNum = AddGameObject<NumberSprite>(2, GameManager::GetInstance().GetMaxChain());
-		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(880, -300, 0);
+		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(880, -320, 0);
 		m_maxChainP1 = m_maxChainNum.lock()->GetComponent<Transform>()->GetPosition();
 	};
 	///-----------------------------------------------------------------------------
@@ -121,14 +117,12 @@ namespace basecross {
 			auto& gm = GameManager::GetInstance();
 			m_leap = 1.0f;
 			GameManager::GetInstance().AddScore(((5 - gm.GetCheckPointNum()) * gm.GetMaxChain()) * 10);
-			//チェックポイントパーフェクトボーナスも入れる
-
 			m_progress = progress::SCORE_COUNTUP;
-			m_chackNum.lock()->SetDrawActive(false);
+			m_mailNum.lock()->SetDrawActive(false);
 			m_maxChainNum.lock()->SetDrawActive(false);
 		}
-		Vec3 chackPos = (1 - m_leap) * m_chackP1 + m_leap * m_scoreP2;
-		m_chackNum.lock()->GetComponent<Transform>()->SetPosition(chackPos);
+		Vec3 chackPos = (1 - m_leap) * m_mailP1 + m_leap * m_scoreP2;
+		m_mailNum.lock()->GetComponent<Transform>()->SetPosition(chackPos);
 		Vec3 chainPos = (1 - m_leap) * m_maxChainP1 + m_leap * m_scoreP2;
 		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(chainPos);
 	}
