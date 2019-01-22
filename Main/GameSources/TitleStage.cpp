@@ -29,6 +29,7 @@ namespace basecross {
 		// フェード中かどうか
 		if (!gm.GetIsFade())
 		{
+			gm.SetIsFade(true);
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
 		}
 		float delta = App::GetApp()->GetElapsedTime();
