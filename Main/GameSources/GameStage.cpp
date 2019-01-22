@@ -109,7 +109,7 @@ namespace basecross {
 	{
 		GameObjecttXMLBuilder builder;
 		builder.Register<MailObject>(L"Mail");
-		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Mail");
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Mails");
 	}
 
 
