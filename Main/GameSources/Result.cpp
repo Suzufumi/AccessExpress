@@ -83,7 +83,7 @@ namespace basecross {
 		m_mailText.lock()->SetPosition(Vec2(320.0f, 250.0f));
 		//”š
 		m_mailNum = AddGameObject<NumberSprite>(2, (GameManager::GetInstance().GetMail()));
-		m_mailNum.lock()->GetComponent<Transform>()->SetPosition(880, -160, 0);
+		m_mailNum.lock()->GetComponent<Transform>()->SetPosition(940, -160, 0);
 		m_mailP1 = m_mailNum.lock()->GetComponent<Transform>()->GetPosition();
 	};
 	///-----------------------------------------------------------------------------
@@ -95,7 +95,7 @@ namespace basecross {
 		m_maxChainText.lock()->SetPosition(Vec2(345.0f, 400.0f));
 		//”š
 		m_maxChainNum = AddGameObject<NumberSprite>(2, GameManager::GetInstance().GetMaxChain());
-		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(880, -320, 0);
+		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(940, -320, 0);
 		m_maxChainP1 = m_maxChainNum.lock()->GetComponent<Transform>()->GetPosition();
 	};
 	///-----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ namespace basecross {
 		if (m_leap >= 1.0f) {
 			auto& gm = GameManager::GetInstance();
 			m_leap = 1.0f;
-			GameManager::GetInstance().AddScore(((5 - gm.GetCheckPointNum()) * gm.GetMaxChain()) * 10);
+			GameManager::GetInstance().AddScore((gm.GetMail() * gm.GetMaxChain()) * 10);
 			m_progress = progress::SCORE_COUNTUP;
 			m_mailNum.lock()->SetDrawActive(false);
 			m_maxChainNum.lock()->SetDrawActive(false);

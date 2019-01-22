@@ -156,7 +156,7 @@ namespace basecross {
 			timer->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);
 			//ƒXƒRƒAUI‚ğì¬
 			auto score = AddGameObject<ScoreUI>();
-			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 3, 0, 0);
+			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 4, 0, 0);
 
 			CreateGoal();
 			AddGameObject<SkyBox>();
