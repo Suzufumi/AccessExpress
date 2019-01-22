@@ -75,7 +75,8 @@ namespace basecross {
 		enum Target {
 			LINK = 0,
 			DRONE = 1,
-			CHECKPOINT
+			CHECKPOINT = 2,
+			MAIL = 3
 		};
 		enum FaceState
 		{
@@ -139,6 +140,8 @@ namespace basecross {
 		void DroneGo();
 		// ベジェ曲線でチェックポイントへ飛ぶ処理
 		void CheckPointGo();
+		// ベジェ曲線でメールに飛ぶ
+		void MailGo();
 		//ベジエ曲線の初期ポジション設定
 		void SetBezierPoint(Vec3 point);
 		//Rayを飛ばす
@@ -149,12 +152,16 @@ namespace basecross {
 		void Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		// ロックオンするオブジェクトを設定
 		void RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
+
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
 		//Rayとドローンが当たっているかを見る処理
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
 		//Rayと届け先が当たっているかを見る
 		void CheckPointsRayCheck(Vec3 origin, Vec3 originDir);
+		//Rayとメールが当たっているか
+		void MailRayCheck(Vec3 origin, Vec3 originDir);
+
 		//Aボタンが押された
 		bool CheckAButton();
 		// Yボタンが押された
