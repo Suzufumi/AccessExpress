@@ -3,6 +3,7 @@
 
 namespace basecross {
 	void ResultStage::OnCreate() {
+		GameManager::GetInstance().SetIsFade(true);
 		CreateViewLight();
 		CreateCollectedMail();
 		CreateMaximumChain();
@@ -14,8 +15,10 @@ namespace basecross {
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
 	}
+
 	void ResultStage::OnUpdate() {
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		auto& gm = GameManager::GetInstance();
 		switch (m_progress){
 		case progress::START:
 			if (CntlVec[0].wPressedButtons) {
@@ -42,10 +45,23 @@ namespace basecross {
 			break;
 		case progress::END :
 			if (CntlVec[0].wPressedButtons) {
+				auto scenePtr = App::GetApp()->GetScene<Scene>();
+				scenePtr->MusicOnceStart(L"Decision_SE", 1.0f);
+				auto fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
+				fade->SetIsFadeOut(true);
+				//m_progress = progress::FADE;
+			}
+			//フェード中かどうか
+			if (!gm.GetIsFade())
+			{
+				gm.SetIsFade(true);
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 			}
 			m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(App::GetApp()->GetElapsedTime());
 			break;
+		//case progress::FADE:
+		//	FadeProcess();
+		//	break;
 		default:
 			break;
 		}
@@ -141,5 +157,18 @@ namespace basecross {
 		drawComp->SetMultiMeshIsDraw(5, true); // 体
 		drawComp->SetMultiMeshIsDraw(6, false);	// 寝てる顔
 		drawComp->SetMultiMeshIsDraw(7, false);	// 悲しい顔
+	}
+
+	void ResultStage::FadeProcess()
+	{
+		auto fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
+		fade->SetIsFadeOut(true);
+		auto& gm = GameManager::GetInstance();
+		//フェード中かどうか
+		if (!gm.GetIsFade())
+		{
+			gm.SetIsFade(true);
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+		}
 	}
 }
