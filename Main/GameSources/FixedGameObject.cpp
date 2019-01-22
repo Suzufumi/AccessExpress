@@ -400,10 +400,12 @@ namespace basecross {
 			m_passageTime += App::GetApp()->GetElapsedTime();
 			if (m_passageTime >= 10.0f) {
 				m_isArrive = false;
+				SetDrawActive(true);
+				m_passageTime = 0;
 			}
 		}
 	}
-	void MailObject::ArriveCheckPoint() {
+	void MailObject::ArriveMail() {
 		auto& gm = GameManager::GetInstance();
 		gm.AddMail();
 		m_isArrive = true;

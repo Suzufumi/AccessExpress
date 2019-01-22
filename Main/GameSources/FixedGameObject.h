@@ -103,7 +103,7 @@ namespace basecross {
 		virtual ~MailObject() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
-		void ArriveCheckPoint();
+		void ArriveMail();
 		bool GetIsArrive() { return m_isArrive; }
 		void SetIsArrive(bool isArrive) { m_isArrive = isArrive; }
 	};

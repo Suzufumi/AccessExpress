@@ -567,7 +567,7 @@ namespace basecross{
 		auto& gameManager = GameManager::GetInstance();
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
-		auto mail = dynamic_pointer_cast<MailObject>(mailGroup->at(m_checkPointNum));
+		auto mail = dynamic_pointer_cast<MailObject>(mailGroup->at(m_MailNum));
 		//計算のための時間加算
 		//移動の経過にチェイン数による加速をいれた
 		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
@@ -580,6 +580,8 @@ namespace basecross{
 				gameManager.SetOnSlow(false);
 				//次の目標へ飛べなかったのでコンボリセット
 				ResetCombo();
+				//軌跡を消す
+				m_ActionLine.lock()->SetDrawActive(false);
 				//スロー時間が終了したためステートをデータ体にする
 				m_StateMachine->ChangeState(DataState::Instance());
 			}
@@ -592,9 +594,7 @@ namespace basecross{
 		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && mail->GetIsArrive() != true) {
 			m_Lerp = 1.0f;
 			//メールを取得状態にする
-			mail->SetIsArrive(true);
-			//取得メール数を増やす
-			gameManager.AddMail();
+			mail->ArriveMail();
 			//演出でチェイン数を飛ばすために値を与える
 			GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
 			//スローの経過時間をリセット
@@ -830,28 +830,31 @@ namespace basecross{
 		int count = 0;
 		for (auto& mail : mailGroup->GetGroupVector()) {
 			auto mailObj = mail.lock();
-			auto mailTrans = mailObj->GetComponent<Transform>();
-			OBB obb(mailTrans->GetScale() * 2.0f, mailTrans->GetWorldMatrix());
-			//プレイヤーからでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
-			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
-			if (hit && p2 + Vec3(0, -1, 0) != mailTrans->GetWorldPosition()) {
-				//照準に当たっていることを教える
-				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailTrans->GetWorldPosition();
-					dir.y = 0;
-					//オブジェクトに被らないように方向を加味してずらした値を渡す
-					SetBezierPoint(mailTrans->GetWorldPosition() + dir.normalize());
-					m_checkPointNum = count;
-					//軌跡
-					RayView(origin, mailTrans->GetWorldPosition() + dir.normalize());
-					m_Lerp = 0;
-					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-					m_DroneNo = NULL;
-					m_StateMachine->ChangeState(LinkState::Instance());
-					m_target = Target::MAIL;
-					break;
+			if (dynamic_pointer_cast<MailObject>(mailObj)->GetIsArrive() != true) {
+				auto mailTrans = mailObj->GetComponent<Transform>();
+				OBB obb(mailTrans->GetScale() * 2.0f, mailTrans->GetWorldMatrix());
+				//プレイヤーからでるRayとOBBで判定
+				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+				//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
+				if (hit && p2 + Vec3(0, -1, 0) != mailTrans->GetWorldPosition()) {
+					//照準に当たっていることを教える
+					sightingDevice->SetCaptureLink(true);
+					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailTrans->GetWorldPosition();
+						dir.y = 0;
+						//オブジェクトに被らないように方向を加味してずらした値を渡す
+						SetBezierPoint(mailTrans->GetWorldPosition() + dir.normalize());
+						//軌跡
+						RayView(origin, mailTrans->GetWorldPosition() + dir.normalize());
+						//何番のメールにアクセスしているか保存
+						m_MailNum = count;
+						m_Lerp = 0;
+						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+						m_DroneNo = NULL;
+						m_StateMachine->ChangeState(LinkState::Instance());
+						m_target = Target::MAIL;
+						break;
+					}
 				}
 			}
 			count++;

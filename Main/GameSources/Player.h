@@ -54,6 +54,7 @@ namespace basecross {
 		weak_ptr<Drone> m_Drone;
 		int m_DroneNo = NULL;
 		int m_checkPointNum = NULL;
+		int m_MailNum = NULL;
 		weak_ptr<GameObject> m_LockOnObj;		//ロックオンしているオブジェクト
 		weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
 
