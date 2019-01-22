@@ -26,11 +26,13 @@ namespace basecross {
 			ADD_SCORE,
 			SCORE_COUNTUP,
 			END
+			//FADE
 		};
 		progress m_progress = progress::START;
 	public:
 		virtual ~ResultStage() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		void FadeProcess();
 	};
 }
