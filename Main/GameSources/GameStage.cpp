@@ -149,6 +149,8 @@ namespace basecross {
 
 			CreateDrone();
 			CreateMail();
+			//メール数を表示するUI
+			AddGameObject<MailNumUI>();
 			//制限時間を作成（中央上）
 			auto timer = AddGameObject<RemainingTimerSprite>(60);
 			timer->GetComponent<Transform>()->SetPosition(1280 - 64 * 10, 0, 0);

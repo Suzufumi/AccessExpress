@@ -73,6 +73,23 @@ namespace basecross{
 		}
 	}
 	//------------------------------------------------------------------------------------
+	//メール数を表示するUI
+	//------------------------------------------------------------------------------------
+	MailNumUI::MailNumUI(const shared_ptr<Stage>& stagePtr)
+		:Sprite(stagePtr, L"mail_TX", Vec2(128, 128))
+	{}
+	void MailNumUI::OnCreate() {
+		Sprite::OnCreate();
+		SetPosition(Vec2(86, 66));
+		auto kakeru = GetStage()->AddGameObject<Sprite>(L"kakeru_TX", Vec2(50, 50));
+		kakeru->SetPosition(Vec2(186, 66));
+		m_mailNum = GetStage()->AddGameObject<NumberSprite>(2, 0);
+		m_mailNum.lock()->GetComponent<Transform>()->SetPosition(300, 20, 0);
+	}
+	void MailNumUI::OnUpdate() {
+		m_mailNum.lock()->ChangeNum(GameManager::GetInstance().GetMail());
+	}
+	//------------------------------------------------------------------------------------
 	//コンストラクタ
 	//------------------------------------------------------------------------------------
 	ScoreUI::ScoreUI(const shared_ptr<Stage>& stagePtr)

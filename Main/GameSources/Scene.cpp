@@ -76,7 +76,8 @@ namespace basecross{
 			{ L"chain_gauge.png",L"chain_gauge_TX"},
 			{ L"chainbar.png",L"chainbar_TX"},
 			{ L"CollectedMail.png",L"CollectedMail_TX"},
-			{ L"mail.png",L"mail_TX"}
+			{ L"mail.png",L"mail_TX"},
+			{ L"kakeru.png",L"kakeru_TX"}
 		};
 
 		for (auto texture : textures)

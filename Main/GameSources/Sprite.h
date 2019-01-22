@@ -120,6 +120,7 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
+		void ChangeNum(int num) { m_num = num; };
 	};
 
 }
