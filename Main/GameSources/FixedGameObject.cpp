@@ -320,7 +320,6 @@ namespace basecross {
 		GetStage()->GetSharedObjectGroup(L"Mails")->IntoGroup(GetThis<GameObject>());
 	}
 	void MailObject::OnUpdate() {
-		m_rot+= m_rotateSpeed;
 		if (m_isArrive) {
 			m_passageTime += App::GetApp()->GetElapsedTime();
 			if (m_passageTime >= 10.0f) {
@@ -340,10 +339,16 @@ namespace basecross {
 
 	void MailObject::RotateMail()
 	{
+		m_rot += m_rotateSpeed;
+		if (m_rot >= 360.0f)
+		{
+			m_rot = 0.0f;
+		}
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, Deg2Rad(m_rot), 0));
 		auto transComp = GetComponent<Transform>();
 		transComp->SetQuaternion(Qt);
+
 	}
 
 }
