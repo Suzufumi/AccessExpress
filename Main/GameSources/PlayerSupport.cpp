@@ -222,7 +222,7 @@ namespace basecross {
 
 		for (int i = 0; i < m_places; i++) {
 			auto number = ObjectFactory::Create<Sprite>(
-				GetStage(), L"Number2_TX", Vec2(128,128), m_numRects[0]);
+				GetStage(), L"Number_TX", Vec2(128,128), m_numRects[0]);
 			auto transComp = number->GetComponent<Transform>();
 			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
 			transComp->SetParent(GetThis<ViewChainNum>());	// 基準点が画面の左上からScoreUIの場所になった
@@ -304,7 +304,7 @@ namespace basecross {
 
 		for (int i = 0; i < m_places; i++) {
 			auto number = ObjectFactory::Create<Sprite>(
-				GetStage(), L"Number2_TX", Vec2(640, 128), m_numRects[0]);
+				GetStage(), L"Number_TX", Vec2(640, 128), m_numRects[0]);
 			auto transComp = number->GetComponent<Transform>();
 			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
 			transComp->SetParent(GetThis<FlyingChain>());	// 基準点が画面の左上からScoreUIの場所になった
