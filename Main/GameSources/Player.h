@@ -207,6 +207,8 @@ namespace basecross {
 		//落下した際にリスポーン位置へワープする
 		void Response();
 		float GetRayRange() { return m_rayRange; }
+		//飛ぶことが確定していたらtrue
+		bool m_isGo;
 
 		void DrawStrings();
 	};

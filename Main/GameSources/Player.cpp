@@ -476,6 +476,9 @@ namespace basecross{
 	//ドローンへ飛ぶ処理
 	//---------------------------------------------------------------------------------------------
 	void Player::DroneGo() {
+		if (m_isGo) {
+			return;
+		}
 		auto& gameManager = GameManager::GetInstance();
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
@@ -500,9 +503,9 @@ namespace basecross{
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
-		//カメラを追尾させる
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-		dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
+		////カメラを追尾させる
+		//auto camera = GetStage()->GetView()->GetTargetCamera();
+		//dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 	}
 	//---------------------------------------------------------------------------------------------
 	//チェックポイントへ飛ぶ処理
