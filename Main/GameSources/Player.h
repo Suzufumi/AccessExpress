@@ -49,7 +49,6 @@ namespace basecross {
 		Vec3 m_scale;
 
 		weak_ptr<RayRangeViewObj> m_RayRangeViewObj;
-		weak_ptr<File> m_File;
 		weak_ptr<SightingDevice> m_SightingDevice;	//è∆èÄ
 		weak_ptr<Drone> m_Drone;
 		int m_DroneNo = NULL;

@@ -41,7 +41,6 @@ namespace basecross{
 			wstring m_texName;
 			wstring m_texKey;
 		};
-		const int TEXTURE_NUM = 9;
 		InitializedParam textures[] = {
 			//{ L"Building1.png", L"Building1_TX" },
 			{ L"Logo.png", L"TITLE_TX"},
@@ -49,7 +48,6 @@ namespace basecross{
 			{ L"DeliverClear.png", L"ResultStage_TX"},
 			{ L"cursor.png", L"cursor_TX"},
 			{ L"Back.png", L"SKY_TX"},
-			{ L"Number.png", L"Number_TX"},
 			{ L"GameOver.png", L"GameOver_TX"},
 			{ L"BackLight.png", L"BACK_L_TX"},
 			{ L"BackDark.png", L"BACK_D_TX"},
@@ -59,16 +57,11 @@ namespace basecross{
 			{ L"UI_Yellow.png", L"YELLOW_GAUGE_TX"},
 			{ L"UI_Red.png", L"RED_GAUGE_TX"},
 			{ L"fade.png", L"FADE_TX"},	
-			{ L"chain.png",L"chain_TX"},
-			{ L"SlowTimeGage.png", L"SlowTimeGage_TX"},
-			{ L"SlowText.png", L"SlowText_TX"},
-			{ L"SlowTimeGageBase.png", L"SlowTimeGageBase_TX"},
-			{ L"num.png", L"Number2_TX"},
+			{ L"num.png", L"Number_TX"},
 			{ L"Plane.png", L"SkyBox_Plane_TX"}, 
 			{ L"Sky.png", L"SkyBox_TX"},
 			{ L"BackGr.png", L"SkyBox_Back_TX"},
 			{ L"RayRange.png",L"RayRange_TX"},
-			{ L"RemainingTimeText.png",L"RemainingTimeText_TX"},
 			{ L"MaxChainText.png",L"MaxChainText_TX"},
 			{ L"scoreResult.png",L"ScoreText_TX"},
 			{ L"Time.png", L"TIME_TX"},
@@ -89,20 +82,6 @@ namespace basecross{
 		}
 
 		auto modelDir = dataDir + L"Model\\";
-
-		//struct ModelParam
-		//{
-		//	wstring m_modelName;
-		//	wstring m_modelKey;
-		//	wstring m_texName;
-		//	wstring m_texKey;
-		//};
-
-		//const int MODEL_SIZE = 3;
-		//ModelParam models[3] = {
-		//	{ L"PlayerChara.bmf", L"PLAYER_MODEL", L"UV_Player.png", L"PLAYER_TX"},
-		//	{ }
-		//}
 
 		auto playerModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		//auto playerModelMesh = MeshResource::CreateStaticModelMesh(modelDir + L"Player\\", L"PlayerChara.bmf");

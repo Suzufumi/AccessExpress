@@ -48,33 +48,6 @@ namespace basecross {
 		float GetAcceleration();
 	};
 	//--------------------------------------------------------------------------------------------------------------
-	//ドライブ
-	//--------------------------------------------------------------------------------------------------------------
-	class Drive : public GameObject {
-		Vec3 m_position;
-		Vec3 m_scale;
-	public:
-		Drive(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
-		virtual ~Drive() {};
-		virtual void OnCreate() override;
-	};
-
-	//--------------------------------------------------------------------------------------------------------------
-	// 背景用の球を作成
-	//--------------------------------------------------------------------------------------------------------------
-	class SkySphere : public GameObject
-	{
-	public:
-		SkySphere(const shared_ptr<Stage>& ptrStage) :
-			GameObject(ptrStage) {}
-		virtual ~SkySphere() {};
-
-		virtual void OnCreate()override;
-		virtual void OnUpdate()override;
-
-	};
-
-	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
 	//--------------------------------------------------------------------------------------------------------------
 	class SkyBox : public GameObject
@@ -98,12 +71,15 @@ namespace basecross {
 		// 取得されたらtrue
 		bool m_isArrive = false;
 		float m_passageTime = 0.0f;
+		float m_rot = 0.0f;
+		float m_rotateSpeed = 2.0f;	// メールの回転速度
 	public:
 		MailObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		virtual ~MailObject() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
 		void ArriveMail();
+		void RotateMail();
 		bool GetIsArrive() { return m_isArrive; }
 		void SetIsArrive(bool isArrive) { m_isArrive = isArrive; }
 	};
