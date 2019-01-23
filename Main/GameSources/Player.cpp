@@ -476,9 +476,6 @@ namespace basecross{
 	//ドローンへ飛ぶ処理
 	//---------------------------------------------------------------------------------------------
 	void Player::DroneGo() {
-		if (m_isGo) {
-			return;
-		}
 		auto& gameManager = GameManager::GetInstance();
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
@@ -490,11 +487,13 @@ namespace basecross{
 		m_Lerp += addLerp;
 		//動いているので終点の位置を更新する
 		p2 = drone->GetComponent<Transform>()->GetWorldPosition();
-		//飛ぶ処理が終わったあとで、スロー状態でなければ
+		//飛ぶ処理が終わった
 		if (m_Lerp >= 1.0f && m_DroneNo != NULL) {
 			m_Lerp = 1.0f;
-			//倒せなかったのでコンボリセットする
+			//コンボリセットする
 			ResetCombo();
+			//飛ぶ対象がいる状態のオフ
+			ResetGoLink();
 			//向かっているドローンの初期化
 			m_DroneNo = NULL;
 			//飛び終わったらステートをデータ体にする
@@ -692,7 +691,7 @@ namespace basecross{
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
 		Rock(sightPos, dir, L"Link", 3.0f);
 		Rock(sightPos, dir, L"CheckPoints", 2.0f);
-		Rock(sightPos, dir, L"Mails", 4.0f);
+		Rock(sightPos, dir, L"Mails", 3.0f);
 		//ドローンとの判定
 		DroneRayCheck(sightPos, dir);
 		//リンクオブジェクトとの判定
@@ -724,9 +723,9 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::LinkRayCheck(Vec3 origin,Vec3 originDir) {
 		//すでに他のものに飛んでいたら
-		//if (m_target != Target::NOTHING) {			
-		//	return;
-		//}
+		if (m_isGoLink) {
+			return;
+		}
 		auto sightingDevice = m_SightingDevice.lock();
 		//リンクオブジェクトの入っているグループを持ってくる
 		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
@@ -751,6 +750,8 @@ namespace basecross{
 					RayView(origin, linkTrans->GetWorldPosition() + dir.normalize());
 					//経過をリセット
 					m_Lerp = 0;
+					//飛ぶの確定
+					m_isGoLink = true;
 					//スローの経過時間をリセット
 					GameManager::GetInstance().ResetSloawPassage();
 					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
@@ -767,9 +768,9 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::DroneRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
-		//if (m_target != Target::NOTHING) {
-		//	return;
-		//}
+		if (m_isGoLink) {
+			return;
+		}
 		auto sightingDevice = m_SightingDevice.lock();
 		//ドローンオブジェクトの入っているグループを持ってくる
 		auto& droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
@@ -795,6 +796,8 @@ namespace basecross{
 					}
 					//経過をリセット
 					m_Lerp = 0;
+					//飛ぶの確定
+					m_isGoLink = true;
 					//スローの経過時間をリセット
 					GameManager::GetInstance().ResetSloawPassage();
 					m_StateMachine->ChangeState(LinkState::Instance());
@@ -850,9 +853,9 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::MailRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
-		//if (m_target != Target::NOTHING) {
-		//	return;
-		//}
+		if (m_isGoLink) {
+			return;
+		}
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
 		int count = 0;
@@ -860,7 +863,7 @@ namespace basecross{
 			auto mailObj = mail.lock();
 			if (dynamic_pointer_cast<MailObject>(mailObj)->GetIsArrive() != true) {
 				auto mailTrans = mailObj->GetComponent<Transform>();
-				OBB obb(mailTrans->GetScale() * 2.0f, mailTrans->GetWorldMatrix());
+				OBB obb(mailTrans->GetScale() * 3.0f, mailTrans->GetWorldMatrix());
 				//プレイヤーからでるRayとOBBで判定
 				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 				//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
@@ -877,6 +880,8 @@ namespace basecross{
 						//何番のメールにアクセスしているか保存
 						m_MailNum = count;
 						m_Lerp = 0;
+						//飛ぶの確定
+						m_isGoLink = true;
 						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
 						m_DroneNo = NULL;
 						m_StateMachine->ChangeState(LinkState::Instance());
@@ -967,14 +972,6 @@ namespace basecross{
 	}
 
 	//---------------------------------------------------------------------------------------------
-	//コンボ数に応じてボーナスを与える
-	//---------------------------------------------------------------------------------------------
-	void Player::ComboBonus(int nowChains)
-	{
-		m_energy += nowChains * 2.0f;
-	}
-
-	//---------------------------------------------------------------------------------------------
 	//情報の表示
 	//---------------------------------------------------------------------------------------------
 	void Player::DrawStrings(){
@@ -1035,7 +1032,7 @@ namespace basecross{
 	void WalkState::Exit(const shared_ptr<Player>& Obj) {
 	}
 	//--------------------------------------------------------------------------------------
-	//	class WalkState : public ObjState<Player>;
+	//	class LinkState : public ObjState<Player>;
 	//	用途: リンク上を飛んでいる状態
 	//--------------------------------------------------------------------------------------
 	//ステートのインスタンス取得
@@ -1059,10 +1056,8 @@ namespace basecross{
 		
 		// コンボを加算する
 		Obj->AddCombo();
-		Obj->ComboBonus(Obj->GetChain());
-		auto& gameManager = GameManager::GetInstance();
-		//スコアを増やす
-		gameManager.AddScore(20);
+
+		Obj->ResetGoLink();
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
@@ -1072,6 +1067,7 @@ namespace basecross{
 		//スロー状態なら、カメラとレイを開放する
 		if (GameManager::GetInstance().GetOnSlow()) {
 			Obj->RayShot();
+			Obj->ResetGoLink();
 		}
 		else {
 			Obj->PlayerRoll();

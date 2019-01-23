@@ -182,7 +182,6 @@ namespace basecross {
 			devi->SetDrawActive(f);
 		}
 
-		void ComboBonus(int nowChains);
 		// ƒRƒ“ƒ{‚ð‰ÁŽZ‚·‚é
 		void AddCombo() { 
 			m_chain++; 
@@ -207,7 +206,9 @@ namespace basecross {
 		void Response();
 		float GetRayRange() { return m_rayRange; }
 		//”ò‚Ô‚±‚Æ‚ªŠm’è‚µ‚Ä‚¢‚½‚çtrue
-		bool m_isGo;
+		bool m_isGoLink;
+		void ResetGoLink() { m_isGoLink = false; }
+
 
 		void DrawStrings();
 	};
