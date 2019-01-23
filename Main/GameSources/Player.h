@@ -74,10 +74,11 @@ namespace basecross {
 			DATA = 1
 		};
 		enum Target {
-			LINK = 0,
-			DRONE = 1,
-			CHECKPOINT = 2,
-			MAIL = 3
+			NOTHING,
+			LINK,
+			DRONE,
+			CHECKPOINT,
+			MAIL
 		};
 		enum FaceState
 		{

@@ -720,6 +720,10 @@ namespace basecross{
 	//RayとLinkオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::LinkRayCheck(Vec3 origin,Vec3 originDir) {
+		//すでに他のものに飛んでいたら
+		if (m_target != Target::NOTHING) {			
+			return;
+		}
 		auto sightingDevice = m_SightingDevice.lock();
 		//リンクオブジェクトの入っているグループを持ってくる
 		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
@@ -759,6 +763,10 @@ namespace basecross{
 	//RayとDroneオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::DroneRayCheck(Vec3 origin, Vec3 originDir) {
+		//すでに他のものに飛んでいたら
+		if (m_target != Target::NOTHING) {
+			return;
+		}
 		auto sightingDevice = m_SightingDevice.lock();
 		//ドローンオブジェクトの入っているグループを持ってくる
 		auto& droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
@@ -798,6 +806,10 @@ namespace basecross{
 	//RayとCheckPointオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir){
+		//すでに他のものに飛んでいたら
+		if (m_target != Target::NOTHING) {
+			return;
+		}
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
 		int count = 0;
@@ -834,6 +846,10 @@ namespace basecross{
 	//RayとMailオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::MailRayCheck(Vec3 origin, Vec3 originDir) {
+		//すでに他のものに飛んでいたら
+		if (m_target != Target::NOTHING) {
+			return;
+		}
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
 		int count = 0;
