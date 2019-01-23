@@ -393,7 +393,7 @@ namespace basecross{
 	///---------------------------------------------------------------------------------------------
 	void Player::RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction)
 	{
-		//リンクオブジェクトの入っているグループを持ってくる
+		//オブジェクトの入っているグループを持ってくる
 		auto& objectsGroup = GetStage()->GetSharedObjectGroup(groupName);
 		//一つずつ取り出す
 		for (auto& object : objectsGroup->GetGroupVector()) {
@@ -402,7 +402,7 @@ namespace basecross{
 			//メールとの判定をしていて、メールが取得状態だったらスルーする
 			if (mail) {
 				if (mail->GetIsArrive()) {
-					break;
+					continue;
 				}
 			}
 			auto objTrans = lockonObj->GetComponent<Transform>();
@@ -411,11 +411,17 @@ namespace basecross{
 			//照準からでるRayとOBBで判定
 			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 			if (hit) {
-				Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - objTrans->GetWorldPosition();
-				//近いときはロックオンしない
+				GameManager::GetInstance().AddScore(20);
+
+				Vec3 delta = origin - objTrans->GetWorldPosition();
 				float deltaLength = delta.length();
+				//近いときはロックオンしない
 				if (deltaLength <= 4.0f) {
-					break;
+					continue;
+				}
+				//Rayの範囲よりも遠い時は、判定上は当たっていても無視する
+				if (deltaLength >= m_rayRange) {
+					continue;
 				}
 				m_LockOnObj = lockonObj;
 				m_islockon = true;
@@ -689,9 +695,9 @@ namespace basecross{
 		auto dir = sightPos - m_cameraPos;
 		dir = dir.normalize();
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
-		Rock(sightPos, dir, L"Link", 3.0f);
+		Rock(sightPos, dir, L"Link", 4.0f);
 		Rock(sightPos, dir, L"CheckPoints", 2.0f);
-		Rock(sightPos, dir, L"Mails", 3.0f);
+		Rock(sightPos, dir, L"Mails", 4.0f);
 		//ドローンとの判定
 		DroneRayCheck(sightPos, dir);
 		//リンクオブジェクトとの判定
@@ -734,31 +740,34 @@ namespace basecross{
 			auto linkObj = link.lock();
 			auto linkTrans = linkObj->GetComponent<Transform>();
 			//リンクオブジェクトのOBBを作る
-			OBB obb(linkTrans->GetScale() * 3, linkTrans->GetWorldMatrix());
+			OBB obb(linkTrans->GetScale() * 3.0f, linkTrans->GetWorldMatrix());
 			//プレイヤーからでるRayとOBBで判定
 			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
-				//照準に当たっていることを教える
-				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
-					dir.y = 0;
-					//オブジェクトに被らないように方向を加味してずらした値を渡す
-					SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
-					//軌跡
-					RayView(origin, linkTrans->GetWorldPosition() + dir.normalize());
-					//経過をリセット
-					m_Lerp = 0;
-					//飛ぶの確定
-					m_isGoLink = true;
-					//スローの経過時間をリセット
-					GameManager::GetInstance().ResetSloawPassage();
-					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-					m_DroneNo = NULL;
-					m_StateMachine->ChangeState(LinkState::Instance());
-					m_target = Target::LINK;
-					break;
+				//Rayの範囲内にあるオブジェクトかを見る
+				if ((origin - linkTrans->GetWorldPosition()).length() <= m_rayRange) {
+					//照準に当たっていることを教える
+					sightingDevice->SetCaptureLink(true);
+					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
+						dir.y = 0;
+						//オブジェクトに被らないように方向を加味してずらした値を渡す
+						SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
+						//軌跡
+						RayView(origin, linkTrans->GetWorldPosition() + dir.normalize());
+						//経過をリセット
+						m_Lerp = 0;
+						//飛ぶの確定
+						m_isGoLink = true;
+						//スローの経過時間をリセット
+						GameManager::GetInstance().ResetSloawPassage();
+						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+						m_DroneNo = NULL;
+						m_StateMachine->ChangeState(LinkState::Instance());
+						m_target = Target::LINK;
+						break;
+					}
 				}
 			}
 		}
@@ -786,23 +795,26 @@ namespace basecross{
 			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
 			//最後にベジエ曲線で飛んだオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != droneTrans->GetWorldPosition()) {
-				//照準に当たっていることを教える
-				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-					SetBezierPoint(droneTrans->GetWorldPosition());
-					m_DroneNo = count;
-					if (m_ActionLine.lock()) {
-						m_ActionLine.lock()->SetDrawActive(false);
+				//Rayの範囲内にあるオブジェクトかを見る
+				if ((origin - droneTrans->GetWorldPosition()).length() <= m_rayRange) {
+					//照準に当たっていることを教える
+					sightingDevice->SetCaptureLink(true);
+					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+						SetBezierPoint(droneTrans->GetWorldPosition());
+						m_DroneNo = count;
+						if (m_ActionLine.lock()) {
+							m_ActionLine.lock()->SetDrawActive(false);
+						}
+						//経過をリセット
+						m_Lerp = 0;
+						//飛ぶの確定
+						m_isGoLink = true;
+						//スローの経過時間をリセット
+						GameManager::GetInstance().ResetSloawPassage();
+						m_StateMachine->ChangeState(LinkState::Instance());
+						m_target = Target::DRONE;
+						break;
 					}
-					//経過をリセット
-					m_Lerp = 0;
-					//飛ぶの確定
-					m_isGoLink = true;
-					//スローの経過時間をリセット
-					GameManager::GetInstance().ResetSloawPassage();
-					m_StateMachine->ChangeState(LinkState::Instance());
-					m_target = Target::DRONE;
-					break;
 				}
 			}
 			count++;
@@ -867,26 +879,29 @@ namespace basecross{
 				//プレイヤーからでるRayとOBBで判定
 				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 				//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
-				if (hit && p2 + Vec3(0, -1, 0) != mailTrans->GetWorldPosition()) {
-					//照準に当たっていることを教える
-					sightingDevice->SetCaptureLink(true);
-					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailTrans->GetWorldPosition();
-						dir.y = 0;
-						//オブジェクトに被らないように方向を加味してずらした値を渡す
-						SetBezierPoint(mailTrans->GetWorldPosition() + dir.normalize());
-						//軌跡
-						RayView(origin, mailTrans->GetWorldPosition() + dir.normalize());
-						//何番のメールにアクセスしているか保存
-						m_MailNum = count;
-						m_Lerp = 0;
-						//飛ぶの確定
-						m_isGoLink = true;
-						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-						m_DroneNo = NULL;
-						m_StateMachine->ChangeState(LinkState::Instance());
-						m_target = Target::MAIL;
-						break;
+				if (hit && (p2 + Vec3(0, -1, 0)) != mailTrans->GetWorldPosition()) {
+					//Rayの範囲内にあるオブジェクトかを見る
+					if ((origin - mailTrans->GetWorldPosition()).length() <= m_rayRange) {
+						//照準に当たっていることを教える
+						sightingDevice->SetCaptureLink(true);
+						if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+							Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailTrans->GetWorldPosition();
+							dir.y = 0;
+							//オブジェクトに被らないように方向を加味してずらした値を渡す
+							SetBezierPoint(mailTrans->GetWorldPosition() + dir.normalize());
+							//軌跡
+							RayView(origin, mailTrans->GetWorldPosition() + dir.normalize());
+							//何番のメールにアクセスしているか保存
+							m_MailNum = count;
+							m_Lerp = 0;
+							//飛ぶの確定
+							m_isGoLink = true;
+							//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+							m_DroneNo = NULL;
+							m_StateMachine->ChangeState(LinkState::Instance());
+							m_target = Target::MAIL;
+							break;
+						}
 					}
 				}
 			}
@@ -929,15 +944,6 @@ namespace basecross{
 			m_nesting = diff[min];
 			m_nestingMin = min;
 		}
-	}
-	//---------------------------------------------------------------------------------------------
-	//Aボタンが押されたかどうかを返す
-	//---------------------------------------------------------------------------------------------
-	bool Player::CheckAButton() {
-		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-			return true;
-		}
-		return false;
 	}
 
 	// Yボタンが押されたかどうかを返す
@@ -1000,37 +1006,6 @@ namespace basecross{
 		ptrString->SetText(str);
 	}
 
-	//--------------------------------------------------------------------------------------
-	//	class WalkState : public ObjState<Player>;
-	//	用途: 歩き状態
-	//--------------------------------------------------------------------------------------
-	//ステートのインスタンス取得
-	shared_ptr<WalkState> WalkState::Instance() {
-		static shared_ptr<WalkState> instance(new WalkState);
-		return instance;
-	}
-	//ステートに入ったときに呼ばれる関数
-	void WalkState::Enter(const shared_ptr<Player>& Obj) {
-		Obj->ChengeEnergyPur();
-		Obj->ChangeWalkSpeed(Player::State::HUMAN);
-	}
-	//ステート実行中に毎ターン呼ばれる関数
-	void WalkState::Execute(const shared_ptr<Player>& Obj) {
-		Obj->Walk();
-		Obj->Fall();
-		Obj->Response();
-		Obj->SightingDeviceChangePosition();
-		Obj->CameraControll();
-		//右スティックの値でカメラの回転処理を行う
-		Obj->CameraRoll();
-		if (Obj->CheckAButton()) {
-			Obj->GetStateMachine()->ChangeState(DataState::Instance());
-			Obj->SightingDeviceDrawActive(true);
-		}
-	}
-	//ステートにから抜けるときに呼ばれる関数
-	void WalkState::Exit(const shared_ptr<Player>& Obj) {
-	}
 	//--------------------------------------------------------------------------------------
 	//	class LinkState : public ObjState<Player>;
 	//	用途: リンク上を飛んでいる状態
