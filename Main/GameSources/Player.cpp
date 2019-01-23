@@ -689,7 +689,7 @@ namespace basecross{
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
 		Rock(sightPos, dir, L"Link", 3.0f);
 		Rock(sightPos, dir, L"CheckPoints", 2.0f);
-		Rock(sightPos, dir, L"Mails", 2.0f);
+		Rock(sightPos, dir, L"Mails", 4.0f);
 		//ドローンとの判定
 		DroneRayCheck(sightPos, dir);
 		//リンクオブジェクトとの判定
