@@ -74,7 +74,6 @@ namespace basecross {
 			DATA = 1
 		};
 		enum Target {
-			NOTHING,
 			LINK,
 			DRONE,
 			CHECKPOINT,
@@ -207,7 +206,7 @@ namespace basecross {
 		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
 		//落下した際にリスポーン位置へワープする
 		void Response();
-		float GetRayRange() { return m_rayRange; };
+		float GetRayRange() { return m_rayRange; }
 
 		void DrawStrings();
 	};

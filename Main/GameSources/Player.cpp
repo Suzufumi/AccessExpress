@@ -467,9 +467,9 @@ namespace basecross{
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		if (!gameManager.GetOnSlow()) {
-			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
-			auto camera = GetStage()->GetView()->GetTargetCamera();
-			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
+			////プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
+			//auto camera = GetStage()->GetView()->GetTargetCamera();
+			//dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 		}
 	}
 	//---------------------------------------------------------------------------------------------
@@ -612,11 +612,11 @@ namespace basecross{
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
-		if (!gameManager.GetOnSlow()) {
-			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
-			auto camera = GetStage()->GetView()->GetTargetCamera();
-			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
-		}
+		//if (!gameManager.GetOnSlow()) {
+		//	//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
+		//	auto camera = GetStage()->GetView()->GetTargetCamera();
+		//	dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
+		//}
 
 	}
 	//---------------------------------------------------------------------------------------------
@@ -721,9 +721,9 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::LinkRayCheck(Vec3 origin,Vec3 originDir) {
 		//すでに他のものに飛んでいたら
-		if (m_target != Target::NOTHING) {			
-			return;
-		}
+		//if (m_target != Target::NOTHING) {			
+		//	return;
+		//}
 		auto sightingDevice = m_SightingDevice.lock();
 		//リンクオブジェクトの入っているグループを持ってくる
 		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
@@ -764,9 +764,9 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::DroneRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
-		if (m_target != Target::NOTHING) {
-			return;
-		}
+		//if (m_target != Target::NOTHING) {
+		//	return;
+		//}
 		auto sightingDevice = m_SightingDevice.lock();
 		//ドローンオブジェクトの入っているグループを持ってくる
 		auto& droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
@@ -807,9 +807,9 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir){
 		//すでに他のものに飛んでいたら
-		if (m_target != Target::NOTHING) {
-			return;
-		}
+		//if (m_target != Target::NOTHING) {
+		//	return;
+		//}
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
 		int count = 0;
@@ -847,9 +847,9 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	void Player::MailRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
-		if (m_target != Target::NOTHING) {
-			return;
-		}
+		//if (m_target != Target::NOTHING) {
+		//	return;
+		//}
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
 		int count = 0;
@@ -1063,15 +1063,17 @@ namespace basecross{
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
+		Obj->CameraControll();
+		Obj->CameraRoll();
+
 		//スロー状態なら、カメラとレイを開放する
 		if (GameManager::GetInstance().GetOnSlow()) {
 			Obj->RayShot();
-			Obj->CameraControll();
-			Obj->CameraRoll();
 		}
 		else {
 			Obj->PlayerRoll();
 		}
+		//どれに飛んでいるかで処理を変える
 		if (Obj->GetTarget() == Obj->LINK){
 			Obj->LinkGo();
 		}
@@ -1086,10 +1088,6 @@ namespace basecross{
 			Obj->MailGo();
 		}
 		Obj->SightingDeviceChangePosition();
-		if (Obj->GetEnergy() <= 0.0f) {
-			Obj->GetStateMachine()->ChangeState(WalkState::Instance());
-			Obj->SightingDeviceDrawActive(false);
-		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
