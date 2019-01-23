@@ -162,8 +162,6 @@ namespace basecross {
 		//Rayとメールが当たっているか
 		void MailRayCheck(Vec3 origin, Vec3 originDir);
 
-		//Aボタンが押された
-		bool CheckAButton();
 		// Yボタンが押された
 		bool CheckYButton();
 		// 表情の切り替え
@@ -211,23 +209,6 @@ namespace basecross {
 
 
 		void DrawStrings();
-	};
-
-	//--------------------------------------------------------------------------------------
-	//class WalkState : public ObjState<Player>;
-	//用途: 歩いている状態
-	//--------------------------------------------------------------------------------------
-	class WalkState : public ObjState<Player> {
-		WalkState() {}
-	public:
-		//ステートのインスタンス取得
-		static shared_ptr<WalkState> Instance();
-		//ステートに入ったときに呼ばれる関数
-		virtual void Enter(const shared_ptr<Player>& Obj)override;
-		//ステート実行中に毎ターン呼ばれる関数
-		virtual void Execute(const shared_ptr<Player>& Obj)override;
-		//ステートにから抜けるときに呼ばれる関数
-		virtual void Exit(const shared_ptr<Player>& Obj)override;
 	};
 
 
