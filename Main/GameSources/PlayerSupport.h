@@ -17,37 +17,6 @@ namespace basecross {
 	};
 
 	//--------------------------------------------------------------------------------------
-	//ファイル
-	//--------------------------------------------------------------------------------------
-	class File : public GameObject {
-		Vec3 m_position;
-		Vec3 m_scale;
-	public:
-		File(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
-		virtual ~File() {};
-		virtual void OnCreate() override;
-		void SetOnPlayer(weak_ptr<GameObject> obj);
-		void LookFile();
-		void UnLookFile();
-	};
-
-	//--------------------------------------------------------------------------------------
-	//宛先のアドレスを持っているオブジェクト
-	//--------------------------------------------------------------------------------------
-	class AddlessCertificate : public OBBObject {
-		//このオブジェクトが取得されたときにゴールを開錠するためにゴールを持つ
-		weak_ptr<CheckPoint> m_goal;
-		bool m_isUnlockGoal = false;
-	public:
-		AddlessCertificate(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
-		virtual ~AddlessCertificate() {};
-		virtual void OnCreate() override;
-		//ゴールの情報を与える
-		void SetGoal(weak_ptr<CheckPoint> goal) { m_goal = goal; }
-		bool GetUnlockGoal() { return m_isUnlockGoal; }
-		void FindGoal();
-	};
-	//--------------------------------------------------------------------------------------
 	//リンクオブジェクトを捉えるための照準
 	//--------------------------------------------------------------------------------------
 	class SightingDevice : public GameObject {

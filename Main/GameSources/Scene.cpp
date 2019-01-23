@@ -41,7 +41,6 @@ namespace basecross{
 			wstring m_texName;
 			wstring m_texKey;
 		};
-		const int TEXTURE_NUM = 9;
 		InitializedParam textures[] = {
 			//{ L"Building1.png", L"Building1_TX" },
 			{ L"Logo.png", L"TITLE_TX"},
@@ -83,20 +82,6 @@ namespace basecross{
 		}
 
 		auto modelDir = dataDir + L"Model\\";
-
-		//struct ModelParam
-		//{
-		//	wstring m_modelName;
-		//	wstring m_modelKey;
-		//	wstring m_texName;
-		//	wstring m_texKey;
-		//};
-
-		//const int MODEL_SIZE = 3;
-		//ModelParam models[3] = {
-		//	{ L"PlayerChara.bmf", L"PLAYER_MODEL", L"UV_Player.png", L"PLAYER_TX"},
-		//	{ }
-		//}
 
 		auto playerModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		//auto playerModelMesh = MeshResource::CreateStaticModelMesh(modelDir + L"Player\\", L"PlayerChara.bmf");

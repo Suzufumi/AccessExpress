@@ -41,15 +41,15 @@ namespace basecross {
 	}
 	void Drone::OnCreate() {
 
-		if (m_roopDir >= 0 && m_roopDir <= 1) {
+		if (m_roopDir >= ClockWise && m_roopDir <= CounterClockwise) {
 			//ŽžŒv‰ñ‚è,‹tŽžŒv‰ñ‚è
 			SetBezierClock();
 		}
-		else if (m_roopDir == 2) {
+		else if (m_roopDir == VerticalMotion) {
 			//ã‰º‰^“®
 			SetVerticalMotion();
 		}
-		else if (m_roopDir == 3) {
+		else if (m_roopDir == Wave) {
 			//”g‚Ì‰^“®
 			SetWaveMotion();
 		}

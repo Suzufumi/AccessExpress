@@ -45,72 +45,7 @@ namespace basecross {
 		}
 	}
 
-	//-------------------------------------------------------------------------------------
-	//ファイル
-	//-------------------------------------------------------------------------------------
-	File::File(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale)
-		:GameObject(stagePtr), m_position(pos), m_scale(scale)
-	{
-	}
-	//-------------------------------------------------------------------------------------
-	//初期化
-	//-------------------------------------------------------------------------------------
-	void File::OnCreate() {
-		auto ptrTrans = GetComponent<Transform>();
-		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
-		Quat Qt;
-		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
-		ptrTrans->SetWorldPosition(m_position);
-		ptrTrans->SetQuaternion(Qt);
-		ptrTrans->SetScale(m_scale);
-		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticDraw>();
-		//描画コンポーネントに形状（メッシュ）を設定
-		drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		//drawComp->SetFogEnabled(true);
-		//自分に影が映りこむようにする
-		drawComp->SetOwnShadowActive(true);
-		Col4 Color(0.4f, 1.0f, 0.7f, 0.7f);
-		drawComp->SetDiffuse(Color);
-		//drawComp->SetColorAndAlpha(Color);
-		//タグ付け
-		AddTag(L"File");
-	}
-	void File::SetOnPlayer(weak_ptr<GameObject> obj) {
-		auto trans = GetComponent<Transform>();
-		//オブジェクトにアクセス
-		auto player = obj.lock();
-		//オブジェクトを親にする
-		trans->SetParent(player);
-		//親の上に乗る
-		trans->SetPosition(Vec3(0, player->GetComponent<Transform>()->GetScale().y / 2 + m_scale.y / 2, 0));
-	}
-	void File::LookFile() {
-		auto drawComp = GetComponent<DrawComponent>();
-		drawComp->SetDrawActive(true);
-	}
-	void File::UnLookFile() {
-		auto drawComp = GetComponent<DrawComponent>();
-		drawComp->SetDrawActive(false);
-	}
 
-	AddlessCertificate::AddlessCertificate(const shared_ptr<Stage>& stage, Vec3 pos, Vec3 scale)
-		:OBBObject(stage, pos, scale)
-	{
-	}
-	void AddlessCertificate::OnCreate() {
-		//親オブジェクトのコンストラクタを呼ぶ、ここで形の形成をす
-		OBBObject::OnCreate();
-		Col4 Color(1.0f, 0.3f, 0.7f, 0.7f);
-		GetComponent<PNTStaticDraw>()->SetDiffuse(Color);
-		GetComponent<CollisionObb>()->SetDrawActive(true);
-	}
-	void AddlessCertificate::FindGoal() {
-		auto goal = m_goal.lock();
-		//goal->OpenGoal();
-		m_isUnlockGoal = true;
-	}
 	//--------------------------------------------------------------------------------
 	//照準
 	//--------------------------------------------------------------------------------
