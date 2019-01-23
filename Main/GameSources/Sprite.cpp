@@ -189,7 +189,7 @@ namespace basecross{
 
 		for (int i = 0; i < m_places; i++) {
 			auto number = ObjectFactory::Create<Sprite>(
-				GetStage(), L"Number2_TX", Vec2(640, 128), m_numRects[0]);
+				GetStage(), L"Number_TX", Vec2(640, 128), m_numRects[0]);
 			auto transComp = number->GetComponent<Transform>();
 			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
 			transComp->SetParent(GetThis<NumberSprite>());	// 基準点が画面の左上からNumberSpriteの場所になった

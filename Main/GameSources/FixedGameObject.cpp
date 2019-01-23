@@ -159,82 +159,6 @@ namespace basecross {
 		return m_acceleration;
 	}
 
-	//-------------------------------------------------------------------------------------------
-	//ドライブ
-	//-------------------------------------------------------------------------------------------
-	Drive::Drive(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale)
-		:GameObject(stagePtr), m_position(pos), m_scale(scale)
-	{
-	}
-	void Drive::OnCreate() {
-		auto ptrTrans = GetComponent<Transform>();
-		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
-		Quat Qt;
-		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
-		ptrTrans->SetWorldPosition(m_position);
-		ptrTrans->SetQuaternion(Qt);
-		ptrTrans->SetScale(m_scale);
-		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticDraw>();
-		//描画コンポーネントに形状（メッシュ）を設定
-		drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		//drawComp->SetFogEnabled(true);
-		//自分に影が映りこむようにする
-		drawComp->SetOwnShadowActive(true);
-		Col4 Color(1.0f, 1.0f, 0.4f, 0.7f);
-		drawComp->SetDiffuse(Color);
-		//drawComp->SetColorAndAlpha(Color);
-	}
-
-	//--------------------------------------------------------------------------------------------------------------
-	// 背景用の球
-	//--------------------------------------------------------------------------------------------------------------
-	void SkySphere::OnCreate()
-	{
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-
-		auto transComp = GetComponent<Transform>();
-		transComp->SetScale(Vec3(500, 500, 500));
-		transComp->SetPosition(camera->GetEye());
-
-		vector<VertexPositionNormalTexture> vertices;
-		//頂点定義を変える
-		vector<VertexPositionColorTexture> new_vertices;
-		
-		vector<uint16_t> indices;
-		//球体の作成
-		MeshUtill::CreateSphere(1.0f, 18, vertices, indices);
-		for (size_t i = 0; i < vertices.size(); i++)
-		{
-			VertexPositionColorTexture temp;
-			temp.position = vertices[i].position;
-			temp.textureCoordinate = vertices[i].textureCoordinate;
-			temp.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
-			new_vertices.push_back(temp);
-		}
-
-		auto drawComp = AddComponent<PCTStaticDraw>();
-		drawComp->CreateOriginalMesh(new_vertices, indices);
-		drawComp->SetOriginalMeshUse(true);
-		//drawComp->SetTextureResource(L"SKY_TX");
-		//drawComp->SetTextureResource(L"BACK_L_TX");
-		drawComp->SetTextureResource(L"BACK_D_TX");
-		drawComp->SetSamplerState(SamplerState::LinearClamp);
-		drawComp->SetDepthStencilState(DepthStencilState::Default);
-		SetAlphaActive(true);
-		SetDrawLayer(-2);
-
-	}
-
-	void SkySphere::OnUpdate()
-	{
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-		auto transComp = GetComponent<Transform>();
-		transComp->SetPosition(camera->GetEye());
-	}
-
-
 	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
 	//--------------------------------------------------------------------------------------------------------------
@@ -396,6 +320,7 @@ namespace basecross {
 		GetStage()->GetSharedObjectGroup(L"Mails")->IntoGroup(GetThis<GameObject>());
 	}
 	void MailObject::OnUpdate() {
+		m_rot+= m_rotateSpeed;
 		if (m_isArrive) {
 			m_passageTime += App::GetApp()->GetElapsedTime();
 			if (m_passageTime >= 10.0f) {
@@ -404,12 +329,21 @@ namespace basecross {
 				m_passageTime = 0;
 			}
 		}
+		RotateMail();
 	}
 	void MailObject::ArriveMail() {
 		auto& gm = GameManager::GetInstance();
 		gm.AddMail();
 		m_isArrive = true;
 		SetDrawActive(false);
+	}
+
+	void MailObject::RotateMail()
+	{
+		Quat Qt;
+		Qt.rotationRollPitchYawFromVector(Vec3(0, Deg2Rad(m_rot), 0));
+		auto transComp = GetComponent<Transform>();
+		transComp->SetQuaternion(Qt);
 	}
 
 }
