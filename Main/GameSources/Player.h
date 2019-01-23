@@ -73,10 +73,10 @@ namespace basecross {
 			DATA = 1
 		};
 		enum Target {
-			LINK = 0,
-			DRONE = 1,
-			CHECKPOINT = 2,
-			MAIL = 3
+			LINK,
+			DRONE,
+			CHECKPOINT,
+			MAIL
 		};
 		enum FaceState
 		{
@@ -182,7 +182,6 @@ namespace basecross {
 			devi->SetDrawActive(f);
 		}
 
-		void ComboBonus(int nowChains);
 		// コンボを加算する
 		void AddCombo() { 
 			m_chain++; 
@@ -205,7 +204,11 @@ namespace basecross {
 		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
 		//落下した際にリスポーン位置へワープする
 		void Response();
-		float GetRayRange() { return m_rayRange; };
+		float GetRayRange() { return m_rayRange; }
+		//飛ぶことが確定していたらtrue
+		bool m_isGoLink;
+		void ResetGoLink() { m_isGoLink = false; }
+
 
 		void DrawStrings();
 	};
