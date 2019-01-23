@@ -665,8 +665,9 @@ namespace basecross{
 		//player‚Ì“ª•Ó‚è‚ÉA”í‚ç‚È‚¢‚æ‚¤ƒJƒƒ‰‚©‚ç‚Ì•ûŒü‚ð‰Á–¡‚µ‚Ä’u‚­
 		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)));
 
+		float syahen = hypotf(dir.x, dir.z);
 		Quat rot;
-		rot.rotationRollPitchYawFromVector(Vec3(0.0f,atan2f(dir.x, dir.z), 0.0f));
+		rot.rotationRollPitchYawFromVector(Vec3(-atan2f(dir.y,syahen),atan2f(dir.x, dir.z), 0.0f));
 		
 		sightingDevice->GetComponent<Transform>()->SetQuaternion(rot);
 	}
