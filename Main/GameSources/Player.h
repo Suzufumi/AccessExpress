@@ -146,6 +146,8 @@ namespace basecross {
 		void Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		// ロックオンするオブジェクトを設定
 		void RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
+		//ロックオンしている対象がいる際のカメラ処理
+		void RockonCameraMove();
 
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);

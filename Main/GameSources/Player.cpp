@@ -252,7 +252,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------------
 	//カメラの回転処理
 	//--------------------------------------------------------------------------------------------
-	void Player::CameraRoll() {
+	void Player::CameraControll() {
 		float delta = App::GetApp()->GetElapsedTime();
 
 		//右スティックに値が入力されていたら
@@ -296,7 +296,7 @@ namespace basecross {
 	//---------------------------------------------------------------------------------------------
 	//カメラのプレイヤー追従処理
 	//---------------------------------------------------------------------------------------------
-	void Player::CameraControll() {
+	void Player::CameraRoll() {
 		auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		//照準を見る
@@ -306,7 +306,7 @@ namespace basecross {
 		camera->SetEye(eye);
 	}
 	//---------------------------------------------------------------------------------------------
-	//Lボタンを押しているときにリンクオブジェが照準の近くだったらそっちを向く
+	//Lボタンを押しているときに対象オブジェが照準の見ている先の近くだったらそっちを向く
 	//---------------------------------------------------------------------------------------------
 	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
 		//Lボタンを押し続けているとき
@@ -319,33 +319,38 @@ namespace basecross {
 		else {
 			m_islockon = false;
 		}
+		//ロックオンしているとき
 		if (m_islockon) {
+			//ロックオンオブジェを対象にカメラの処理
+			RockonCameraMove();
+			//ロックオン対象が近くにいる場合はロックオンを解除
 			Vec3 delta = GetComponent<Transform>()->GetWorldPosition() -
 				m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
 			if (delta.length() <= 4.0f) {
 				m_islockon = false;
 			}
 		}
-		//リンクオブジェクトを照準にとらえてロックオンしているとき
-		if (m_islockon) {
-			//カメラの制御をおこなう
-			auto sightingDevicePos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
-			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
-			float deltaX = sightingDevicePos.x - linkTrans->GetWorldPosition().x;
-			float deltaZ = sightingDevicePos.z - linkTrans->GetWorldPosition().z;
-			float deltaY = sightingDevicePos.y - linkTrans->GetWorldPosition().y;
-			//横のカメラ位置を制御する角度
-			m_angleY = atan2f(deltaZ, deltaX);
-			if (m_angleY < 0.0f) {
-				m_angleY += Deg2Rad(360.0f);
-			}
-			//縦のカメラ位置をだすための辺出す
-			float syahen = hypotf(deltaX, deltaZ);
-			//縦のカメラ位置を制御する角度
-			m_angleX = atan2f(deltaY, syahen);
-		}
 	}
-
+	///---------------------------------------------------------------------------------------------
+	//ロックオンしている対象がいる際のカメラ処理
+	///---------------------------------------------------------------------------------------------
+	void Player::RockonCameraMove() {
+		//カメラの制御をおこなう
+		auto sightingDevicePos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
+		auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
+		float deltaX = sightingDevicePos.x - linkTrans->GetWorldPosition().x;
+		float deltaZ = sightingDevicePos.z - linkTrans->GetWorldPosition().z;
+		float deltaY = sightingDevicePos.y - linkTrans->GetWorldPosition().y;
+		//横のカメラ位置を制御する角度
+		m_angleY = atan2f(deltaZ, deltaX);
+		if (m_angleY < 0.0f) {
+			m_angleY += Deg2Rad(360.0f);
+		}
+		//縦のカメラ位置をだすための辺出す
+		float syahen = hypotf(deltaX, deltaZ);
+		//縦のカメラ位置を制御する角度
+		m_angleX = atan2f(deltaY, syahen);
+	}
 	///---------------------------------------------------------------------------------------------
 	//ロックオンするオブジェクトを設定
 	///---------------------------------------------------------------------------------------------
@@ -1020,10 +1025,12 @@ namespace basecross {
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
-		Obj->CameraControll();
+		//カメラを動かす
 		Obj->CameraRoll();
-
 		if (!GameManager::GetInstance().GetTimeUp()) {
+			//カメラ制御のための値を変更する
+			Obj->CameraControll();
+
 			//スロー状態なら、レイを開放する
 			if (GameManager::GetInstance().GetOnSlow()) {
 				Obj->ResetGoLink();
@@ -1071,10 +1078,10 @@ namespace basecross {
 		Obj->Walk();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
+		//カメラを動かす
+		Obj->CameraRoll();
 		//カメラ制御のための値を変更する
 		Obj->CameraControll();
-		//右スティックの値でカメラの回転処理を行う
-		Obj->CameraRoll();
 		//プレイヤーの体の向きを変える
 		Obj->PlayerRoll();
 		//タイムアップしていたら、アニメーションを流す
