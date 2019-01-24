@@ -173,7 +173,7 @@ namespace basecross {
 			scoreSprite->SetPosition(Vec2(1120, 30));
 			auto timeSprite = AddGameObject<Sprite>(L"TIME_TX", Vec2(100, 35));
 			timeSprite->SetPosition(Vec2(640, 27));
-
+			CreateFire();
 		}
 		catch (...) {
 			throw;
