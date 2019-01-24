@@ -112,7 +112,7 @@ namespace basecross{
 
 		// ゲームコントローラー取得
 		auto device = app->GetInputDevice();
-		if (app->GetScene<Scene>()->GetGameStart()) {
+		if (GameManager::GetInstance().GetGameStart()) {
 			m_pad = GameManager::GetInstance().GetPad();
 		}
 		else {
