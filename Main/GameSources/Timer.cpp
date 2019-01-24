@@ -79,6 +79,7 @@ namespace basecross {
 
 	void RemainingTimerSprite::OnUpdate() {
 		auto& gameManager = GameManager::GetInstance();
+		//プレイヤーを操作できるようになったらタイマーが減り始める
 		if (gameManager.GetGameStart()) {
 			if (gameManager.GetOnSlow()) {
 				m_timer += -App::GetApp()->GetElapsedTime() / gameManager.GetSlowSpeed();
@@ -89,7 +90,9 @@ namespace basecross {
 		}
 		if (m_timer < 0.0f) {
 			m_timer = 0.0f;
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+			//マネージャーにタイムアップした旨を伝える
+			GameManager::GetInstance().SetTimeUp(true);
+			//PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 		int timer = (int)m_timer;
 
