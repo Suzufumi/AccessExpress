@@ -7,13 +7,13 @@
 #include "Project.h"
 
 
-namespace basecross{
+namespace basecross {
 	//------------------------------------------------------------------------------------------------
 	//playerのコンストラクタ
 	//------------------------------------------------------------------------------------------------
 	Player::Player(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
 		:GameObject(StagePtr)
-	{	
+	{
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
 		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
 		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
@@ -164,9 +164,6 @@ namespace basecross{
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
 
-
-		TimeUpAnimeFinishToResult();
-
 		// デバッグ文字の表示
 		DrawStrings();
 		CheckYButton();
@@ -184,7 +181,7 @@ namespace basecross{
 		}
 
 		auto checkPoint = dynamic_pointer_cast<CheckPoint>(Other);
-		if (checkPoint){
+		if (checkPoint) {
 			checkPoint->ArriveCheckPoint();
 		}
 		//最初のおりてくる演出、着地したらゲームを開始して操作できるようにする
@@ -222,7 +219,7 @@ namespace basecross{
 		}
 	}
 
-																	
+
 	//--------------------------------------------------------------------------------------------
 	//XZ平面の移動処理
 	//--------------------------------------------------------------------------------------------
@@ -242,8 +239,8 @@ namespace basecross{
 			}
 		}
 		// padが入力されてないかつ現在のアニムステートがMoveだったら
-		else if(m_padDir.x == 0.0f && m_padDir.z == 0.0f && 
-				GetAnimStateMachine()->GetCurrentState() == PlayerMoveAnim::Instance())
+		else if (m_padDir.x == 0.0f && m_padDir.z == 0.0f &&
+			GetAnimStateMachine()->GetCurrentState() == PlayerMoveAnim::Instance())
 		{
 			GetAnimStateMachine()->ChangeState(PlayerDefaultAnim::Instance());
 		}
@@ -286,10 +283,10 @@ namespace basecross{
 		//右スティックに値が入力されていたら
 		if (m_pad.fThumbRX > 0.7f || m_pad.fThumbRX < -0.7f ||
 			m_pad.fThumbRY > 0.7f || m_pad.fThumbRY < -0.7f) {
-			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed*2 * delta; // カメラを回転させる
-			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed*2 * delta; // カメラを昇降させる
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * 2 * delta; // カメラを回転させる
+			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * 2 * delta; // カメラを昇降させる
 		}
-		else if(m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
+		else if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
 			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
 			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
 			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
@@ -324,7 +321,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//カメラのプレイヤー追従処理
 	//---------------------------------------------------------------------------------------------
-	void Player::CameraControll(){
+	void Player::CameraControll() {
 		auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		//照準を見る
@@ -416,7 +413,7 @@ namespace basecross{
 		}
 
 	}
-	
+
 	//---------------------------------------------------------------------------------------------
 	//リンクへ飛ぶ処理
 	//---------------------------------------------------------------------------------------------
@@ -545,7 +542,7 @@ namespace basecross{
 				//スローにする
 				gameManager.SetOnSlow(true);
 			}
-			else 
+			else
 			{
 				//スロー時間が終了したためステートをデータ体にする
 				m_StateMachine->ChangeState(DataState::Instance());
@@ -564,7 +561,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//メールへ飛ぶ処理
 	//---------------------------------------------------------------------------------------------
-	void Player::MailGo(){
+	void Player::MailGo() {
 		auto& gameManager = GameManager::GetInstance();
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
@@ -619,17 +616,17 @@ namespace basecross{
 	void Player::SetBezierPoint(Vec3 point) {
 
 		p0 = GetComponent<Transform>()->GetWorldPosition();
-		p2 = point + Vec3(0,1.0f,0);
+		p2 = point + Vec3(0, 1.0f, 0);
 		//飛ぶ先までの距離に応じて飛ぶ際のスピードを変える
 		m_BezierSpeedLeap = Vec3(p2 - p0).length();
 		//飛ぶ先までの距離に応じて飛ぶ際の放物線の形を変える
 		if (m_BezierSpeedLeap >= 20.0f) {
 			p1 = point + Vec3(0, 6, 0);
 		}
-		else if(m_BezierSpeedLeap >= 10.0f){
+		else if (m_BezierSpeedLeap >= 10.0f) {
 			p1 = point + Vec3(0, 3, 0);
 		}
-		else if(m_BezierSpeedLeap < 10.0f){
+		else if (m_BezierSpeedLeap < 10.0f) {
 			p1 = point - ((point - p0) / 2);
 		}
 		//飛んだ際にリスポーン位置の更新も行う
@@ -661,8 +658,8 @@ namespace basecross{
 
 		float syahen = hypotf(dir.x, dir.z);
 		Quat rot;
-		rot.rotationRollPitchYawFromVector(Vec3(-atan2f(dir.y,syahen),atan2f(dir.x, dir.z), 0.0f));
-		
+		rot.rotationRollPitchYawFromVector(Vec3(-atan2f(dir.y, syahen), atan2f(dir.x, dir.z), 0.0f));
+
 		sightingDevice->GetComponent<Transform>()->SetQuaternion(rot);
 	}
 	//---------------------------------------------------------------------------------------------
@@ -699,7 +696,7 @@ namespace basecross{
 	void Player::RayView(Vec3 origin, Vec3 end) {
 		auto ptrActionLine = m_ActionLine.lock();
 		if (ptrActionLine) {
-			ptrActionLine->ResetObject(origin,end);
+			ptrActionLine->ResetObject(origin, end);
 			ptrActionLine->SetOnDraw(true);
 		}
 		else {
@@ -713,7 +710,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//RayとLinkオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
-	void Player::LinkRayCheck(Vec3 origin,Vec3 originDir) {
+	void Player::LinkRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
 		if (m_isGoLink) {
 			return;
@@ -809,7 +806,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//RayとCheckPointオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
-	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir){
+	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
 		//if (m_target != Target::NOTHING) {
 		//	return;
@@ -817,7 +814,7 @@ namespace basecross{
 		auto sightingDevice = m_SightingDevice.lock();
 		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
 		int count = 0;
-		for (auto& checkPoint : checkPointsGroup->GetGroupVector()){
+		for (auto& checkPoint : checkPointsGroup->GetGroupVector()) {
 			auto pointObj = checkPoint.lock();
 			auto pointTrans = pointObj->GetComponent<Transform>();
 			OBB obb(pointTrans->GetScale() * 2.0f, pointTrans->GetWorldMatrix());
@@ -951,15 +948,13 @@ namespace basecross{
 		m_faceNum = afterFace;
 	}
 	// タイムアップ時にアニメーションを見せる
-	void Player::ShowTimeUpAnime(){
-		if (GameManager::GetInstance().GetTimeUp() && !m_isTimeUpAnime) {
-			GetAnimStateMachine()->ChangeState(PlayerClearAnim::Instance());
-			m_isTimeUpAnime = true;
-		}
-	}		
+	void Player::ShowTimeUpAnime() {
+		GetAnimStateMachine()->ChangeState(PlayerClearAnim::Instance());
+		GetStateMachine()->ChangeState(ClearState::Instance());
+	}
 	//タイムアップアニメーションが終わったらリザルトにいく
 	void Player::TimeUpAnimeFinishToResult() {
-		if (GetComponent<PNTBoneModelDraw>()->IsTargetAnimeEnd() && m_isTimeUpAnime) {
+		if (GetComponent<PNTBoneModelDraw>()->IsTargetAnimeEnd()) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 	}
@@ -967,7 +962,7 @@ namespace basecross{
 	//---------------------------------------------------------------------------------------------
 	//情報の表示
 	//---------------------------------------------------------------------------------------------
-	void Player::DrawStrings(){
+	void Player::DrawStrings() {
 		// FPSの取得
 		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
 		wstring strFps(L"FPS: ");
@@ -1015,7 +1010,7 @@ namespace basecross{
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
 		camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
-		
+
 		// コンボを加算する
 		Obj->AddCombo();
 
@@ -1037,13 +1032,13 @@ namespace basecross{
 			}
 		}
 		//どれに飛んでいるかで処理を変える
-		if (Obj->GetTarget() == Obj->LINK){
+		if (Obj->GetTarget() == Obj->LINK) {
 			Obj->LinkGo();
 		}
 		if (Obj->GetTarget() == Obj->DRONE) {
 			Obj->DroneGo();
 		}
-		if (Obj->GetTarget() == Obj->CHECKPOINT){
+		if (Obj->GetTarget() == Obj->CHECKPOINT) {
 			Obj->CheckPointGo();
 			//Obj->CheckPointArrived();
 		}
@@ -1089,7 +1084,25 @@ namespace basecross{
 	void DataState::Exit(const shared_ptr<Player>& Obj) {
 		Obj->ResetTimeLim();
 	}
+	//--------------------------------------------------------------------------------------
+	//class ClearState : public ObjState<Player>;
+	//用途: クリアアニメーション状態
+	//--------------------------------------------------------------------------------------
+	shared_ptr<ClearState> ClearState::Instance() {
+		static shared_ptr<ClearState> instance(new ClearState);
+		return instance;
+	}
+	//ステートに入ったときに呼ばれる関数
+	void ClearState::Enter(const shared_ptr<Player>& Obj) {
 
+	}
+	//ステート実行中に毎ターン呼ばれる関数
+	void ClearState::Execute(const shared_ptr<Player>& Obj) {
+		Obj->TimeUpAnimeFinishToResult();
+	}
+	//ステートにから抜けるときに呼ばれる関数
+	void ClearState::Exit(const shared_ptr<Player>& Obj){
+	}
 }
 //end basecross
 

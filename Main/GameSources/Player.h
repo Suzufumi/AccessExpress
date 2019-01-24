@@ -23,7 +23,6 @@ namespace basecross {
 		float m_cameraLookUp;			//カメラが見上げる高さ
 		bool m_isFall = true;				//Y軸方向の力を加えるかどうか
 		bool m_isHit = false;				//オブジェクトに当たっているかどうか
-		bool m_isTimeUpAnime = false;		//タイムアップのアニメーションが流れていたらtrue
 		float m_Lerp = 0.0f;				//ベジエ曲線のための経過時間変数
 		Vec3 p0, p1,p2;						//ベジエ曲線のための位置情報
 		int m_chain = 0;		// コンボのための変数
@@ -227,6 +226,22 @@ namespace basecross {
 	public:
 		//ステートのインスタンス取得
 		static shared_ptr<DataState> Instance();
+		//ステートに入ったときに呼ばれる関数
+		virtual void Enter(const shared_ptr<Player>& Obj)override;
+		//ステート実行中に毎ターン呼ばれる関数
+		virtual void Execute(const shared_ptr<Player>& Obj)override;
+		//ステートにから抜けるときに呼ばれる関数
+		virtual void Exit(const shared_ptr<Player>& Obj)override;
+	};
+	//--------------------------------------------------------------------------------------
+	//class DateState : public ObjState<Player>;
+	//用途: データ体状態
+	//--------------------------------------------------------------------------------------
+	class ClearState : public ObjState<Player> {
+		ClearState() {}
+	public:
+		//ステートのインスタンス取得
+		static shared_ptr<ClearState> Instance();
 		//ステートに入ったときに呼ばれる関数
 		virtual void Enter(const shared_ptr<Player>& Obj)override;
 		//ステート実行中に毎ターン呼ばれる関数
