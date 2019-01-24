@@ -117,7 +117,8 @@ namespace basecross {
 		auto multiFirePtr = AddGameObject<FireEffect>();
 		//共有オブジェクトに炎を登録
 		SetSharedGameObject(L"FireEffect", multiFirePtr);
-
+		auto multiSparkPtr = AddGameObject<SparkEffect>();
+		SetSharedGameObject(L"SparkEffect", multiSparkPtr);
 	}
 
 
