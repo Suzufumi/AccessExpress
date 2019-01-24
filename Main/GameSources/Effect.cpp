@@ -81,6 +81,7 @@ namespace basecross
 	{
 		// 加算処理を設定
 		SetAddType(true);
+		SetDrawLayer(-2);
 
 	}
 
@@ -91,30 +92,32 @@ namespace basecross
 
 	void SparkEffect::InsertSpark(const Vec3& pos)
 	{
+		// 複数のパーティクルを設定(ここでは2)
 		auto ptrParticle = InsertParticle(2);
 		ptrParticle->SetEmitterPos(pos);
 		// エフェクト画像の読み込み
 		ptrParticle->SetTextureResource(L"SPARK_TX");
 		// 生存時間の設定
-		ptrParticle->SetMaxTime(0.3f);
+		ptrParticle->SetMaxTime(0.1f);
 		// 読み込んだエフェクトをスプライトにして設定
 		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
+			// Spawnさせる場所の設定
 			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne() * 0.5f;
-			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne() * 0.5f;
+			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne() * 1.0f;
 			rParticleSprite.m_LocalPos.z = Util::RandZeroToOne() * 0.5f;
 
 			if (rParticleSprite.m_LocalPos.y < 0) {
-				rParticleSprite.m_LocalScale = Vec2(-0.5f, -0.5f);
+				rParticleSprite.m_LocalScale = Vec2(-1.0f, -1.0f);
 			}
 			else {
-				rParticleSprite.m_LocalScale = Vec2(0.5f, 0.5f);
+				rParticleSprite.m_LocalScale = Vec2(1.0f, 1.0f);
 			}
 
 			//各パーティクルの移動速度を指定
 			rParticleSprite.m_Velocity = Vec3(
-				rParticleSprite.m_LocalPos.x * 2.0f,
+				rParticleSprite.m_LocalPos.x * 3.0f,
 				rParticleSprite.m_LocalPos.y * 1.0f,
-				rParticleSprite.m_LocalPos.z * 2.0f
+				rParticleSprite.m_LocalPos.z * 3.0f
 			);
 			//色の指定
 			rParticleSprite.m_Color = Col4(1.0f, 1.0f, 1.0f, 1.0f);

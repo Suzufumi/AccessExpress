@@ -103,6 +103,14 @@ namespace basecross {
 		}
 		GetComponent<Transform>()->SetWorldPosition(pos);
 
+
+		auto sparkPtr = GetStage()->GetSharedGameObject<SparkEffect>(L"SparkEffect", false);
+		if (sparkPtr)
+		{
+			sparkPtr->InsertSpark(GetComponent<Transform>()->GetWorldPosition());
+		}
+
+
 	}
 	void Drone::SetBezierClock() {
 		m_joinNumMax = 4;

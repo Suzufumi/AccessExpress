@@ -73,7 +73,7 @@ namespace basecross{
 			{ L"kakeru.png",L"kakeru_TX"},
 			{ L"ClearBack.png",L"ClearBack_TX"},
 			{ L"fire.png", L"FIRE_TX"},
-			{ L"spark1.png", L"SPARK_TX"}
+			{ L"spark3.png", L"SPARK_TX"}
 		};
 
 		for (auto texture : textures)
