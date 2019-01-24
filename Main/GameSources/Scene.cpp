@@ -71,7 +71,9 @@ namespace basecross{
 			{ L"CollectedMail.png",L"CollectedMail_TX"},
 			{ L"mail.png",L"mail_TX"},
 			{ L"kakeru.png",L"kakeru_TX"},
-			{ L"ClearBack.png",L"ClearBack_TX"}
+			{ L"ClearBack.png",L"ClearBack_TX"},
+			{ L"fire.png", L"FIRE_TX"},
+			{ L"spark3.png", L"SPARK_TX"}
 		};
 
 		for (auto texture : textures)

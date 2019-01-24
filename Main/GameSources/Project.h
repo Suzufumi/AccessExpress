@@ -33,3 +33,4 @@
 #include "MainUi.h"
 #include "Timer.h"
 #include "Result.h"
+#include "Effect.h"

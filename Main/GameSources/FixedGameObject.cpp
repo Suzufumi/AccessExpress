@@ -122,7 +122,7 @@ namespace basecross {
 		drawComp->SetDiffuse(col);
 		if(gm.GetCheckPointNum() == 0)
 		{
-			PostEvent(2.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+			PostEvent(1.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 	}
 
@@ -303,7 +303,7 @@ namespace basecross {
 			Vec3(2.0f, 2.0f, 2.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
 			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -0.7f, 0.0f)
+			Vec3(0.0f, 0.0f, 0.0f)
 		);
 
 		//描画コンポーネントの追加
@@ -320,7 +320,6 @@ namespace basecross {
 		GetStage()->GetSharedObjectGroup(L"Mails")->IntoGroup(GetThis<GameObject>());
 	}
 	void MailObject::OnUpdate() {
-		m_rot+= m_rotateSpeed;
 		if (m_isArrive) {
 			m_passageTime += App::GetApp()->GetElapsedTime();
 			if (m_passageTime >= 10.0f) {
@@ -336,14 +335,26 @@ namespace basecross {
 		gm.AddMail();
 		m_isArrive = true;
 		SetDrawActive(false);
+		//ファイアの放出
+		auto ptriFire = GetStage()->GetSharedGameObject<FireEffect>(L"FireEffect", false);
+		//MessageBox(NULL, L"", L"", MB_OK);
+		if (ptriFire) {
+			ptriFire->InsertFire(GetComponent<Transform>()->GetWorldPosition());
+		}
 	}
 
 	void MailObject::RotateMail()
 	{
+		m_rot += m_rotateSpeed;
+		if (m_rot >= 360.0f)
+		{
+			m_rot = 0.0f;
+		}
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, Deg2Rad(m_rot), 0));
 		auto transComp = GetComponent<Transform>();
 		transComp->SetQuaternion(Qt);
+
 	}
 
 }
