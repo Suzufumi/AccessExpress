@@ -37,7 +37,7 @@ namespace basecross {
 		//Ray‚ÌË’ö‚ğæ“¾‚µ‚Ä‹…‚Ì‘å‚«‚³•ÏX
 		float scale = player->GetRayRange()*2.1f;
 		GetComponent<Transform>()->SetScale(scale, scale, scale);
-		if (App::GetApp()->GetScene<Scene>()->GetGameStart() == true) {
+		if (GameManager::GetInstance().GetGameStart() == true) {
 			SetDrawActive(true);
 		}
 		else {
@@ -316,7 +316,7 @@ namespace basecross {
 		//‰Šú‰»
 	void ActionLine::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		ptrTrans->SetScale(Vec3(1.0f));
+		ptrTrans->SetScale(Vec3(1.0f,1.0f,1.0f));
 		ptrTrans->SetQuaternion(Quat());
 		ptrTrans->SetPosition(Vec3(0.0f));
 
