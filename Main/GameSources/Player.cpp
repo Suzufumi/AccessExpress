@@ -184,8 +184,9 @@ namespace basecross{
 		if (checkPoint){
 			checkPoint->ArriveCheckPoint();
 		}
-		if (!App::GetApp()->GetScene<Scene>()->GetGameStart()) {
-			App::GetApp()->GetScene<Scene>()->SetGameStart(true);
+		//最初のおりてくる演出、着地したらゲームを開始して操作できるようにする
+		if (!GameManager::GetInstance().GetGameStart()) {
+			GameManager::GetInstance().SetGameStart(true);
 			m_nowFallSpeed = 8.0f;
 		}
 	}
