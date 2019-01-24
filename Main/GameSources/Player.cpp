@@ -83,7 +83,7 @@ namespace basecross{
 		drawComp->AddAnimation(L"Move", 200, 30, true, 30.0f);
 		drawComp->AddAnimation(L"Fly", 310, 30, false, 17.0f);
 		drawComp->AddAnimation(L"Over", 350, 40, true, 30.0f);
-		drawComp->AddAnimation(L"Clear", 400, 50, true, 30.0f);
+		drawComp->AddAnimation(L"Clear", 400, 100, false, 30.0f);
 		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
 		//drawComp->SetDiffuse(Color);
 		//drawComp->SetColorAndAlpha(Color);
@@ -110,8 +110,6 @@ namespace basecross{
 		// 1フレームの実行にかかった時間を取得
 		float delta = app->GetElapsedTime();
 
-		// ゲームコントローラー取得
-		auto device = app->GetInputDevice();
 		if (GameManager::GetInstance().GetGameStart()) {
 			m_pad = GameManager::GetInstance().GetPad();
 		}
@@ -124,10 +122,12 @@ namespace basecross{
 		m_padDir = Vec3(m_pad.fThumbLX, 0.0f, m_pad.fThumbLY);
 		m_padDir = m_padDir.normalize();
 
+
 		//ステートマシンのアップデート
 		m_StateMachine->Update();
 
 		m_animStateMachine->Update();
+
 		// アニメーションを更新する
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
 		drawComp->UpdateAnimation(delta);
@@ -164,6 +164,9 @@ namespace basecross{
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
 
+
+		TimeUpAnimeFinishToResult();
+
 		// デバッグ文字の表示
 		DrawStrings();
 		CheckYButton();
@@ -187,7 +190,6 @@ namespace basecross{
 		//最初のおりてくる演出、着地したらゲームを開始して操作できるようにする
 		if (!GameManager::GetInstance().GetGameStart()) {
 			GameManager::GetInstance().SetGameStart(true);
-			m_nowFallSpeed = 8.0f;
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------
@@ -268,28 +270,11 @@ namespace basecross{
 		ptrUtil->RotToHead(m_forward, 0.1f);
 	}
 	//--------------------------------------------------------------------------------------------
-	//平行移動の速度をステートで分けて変更する
-	//--------------------------------------------------------------------------------------------
-	void Player::ChangeWalkSpeed(State state) {
-		switch (state){
-		case State::HUMAN:
-			m_nowWalkSpeed = m_humanWalkSpeed;
-			break;
-		case State::DATA:
-			m_nowWalkSpeed = m_dataWalkSpeed;
-			break;
-		default:
-			break;
-		}
-	}
-	//--------------------------------------------------------------------------------------------
 	//設定高さ以下になったらリスポーン位置にワープさせる
 	//--------------------------------------------------------------------------------------------
 	void Player::Response() {
 		if (GetComponent<Transform>()->GetWorldPosition().y <= m_responseHeght) {
 			GetComponent<Transform>()->SetWorldPosition(m_response);
-			//復帰後にすぐ動けるように少し回復させる
-			m_changeEnergy = 20.0f;
 		}
 	}
 	//--------------------------------------------------------------------------------------------
@@ -911,7 +896,7 @@ namespace basecross{
 	}
 
 	//---------------------------------------------------------------------------------------------
-	//押し出しの判定
+	//押し出しが必要か判定する
 	//---------------------------------------------------------------------------------------------
 	void Player::Extrusion(const weak_ptr<GameObject>& Other) {
 		//playerの情報
@@ -965,17 +950,18 @@ namespace basecross{
 		drawComp->SetMultiMeshIsDraw(afterFace, true);
 		m_faceNum = afterFace;
 	}
-
-	void Player::CheckPointArrived()
-	{
-		auto& checkPointGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
-		for (auto& checkPoint : checkPointGroup->GetGroupVector())
-		{
-			auto pointObj = checkPoint.lock();
-			auto obj = dynamic_pointer_cast<CheckPoint>(pointObj);
-			obj->ArriveCheckPoint();
+	// タイムアップ時にアニメーションを見せる
+	void Player::ShowTimeUpAnime(){
+		if (GameManager::GetInstance().GetTimeUp() && !m_isTimeUpAnime) {
+			GetAnimStateMachine()->ChangeState(PlayerClearAnim::Instance());
+			m_isTimeUpAnime = true;
 		}
-		GetAnimStateMachine()->ChangeState(PlayerClearAnim::Instance());
+	}		
+	//タイムアップアニメーションが終わったらリザルトにいく
+	void Player::TimeUpAnimeFinishToResult() {
+		if (GetComponent<PNTBoneModelDraw>()->IsTargetAnimeEnd() && m_isTimeUpAnime) {
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+		}
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -1040,13 +1026,15 @@ namespace basecross{
 		Obj->CameraControll();
 		Obj->CameraRoll();
 
-		//スロー状態なら、カメラとレイを開放する
-		if (GameManager::GetInstance().GetOnSlow()) {
-			Obj->RayShot();
-			Obj->ResetGoLink();
-		}
-		else {
-			Obj->PlayerRoll();
+		if (!GameManager::GetInstance().GetTimeUp()) {
+			//スロー状態なら、レイを開放する
+			if (GameManager::GetInstance().GetOnSlow()) {
+				Obj->ResetGoLink();
+				Obj->RayShot();
+			}
+			else {
+				Obj->PlayerRoll();
+			}
 		}
 		//どれに飛んでいるかで処理を変える
 		if (Obj->GetTarget() == Obj->LINK){
@@ -1079,8 +1067,6 @@ namespace basecross{
 	}
 	//ステートに入ったときに呼ばれる関数
 	void DataState::Enter(const shared_ptr<Player>& Obj) {
-		Obj->ChengeEnergyMai();
-		Obj->ChangeWalkSpeed(Player::State::DATA);
 
 	}
 	//ステート実行中に毎ターン呼ばれる関数
@@ -1094,6 +1080,10 @@ namespace basecross{
 		Obj->CameraRoll();
 		//プレイヤーの体の向きを変える
 		Obj->PlayerRoll();
+		//タイムアップしていたら、アニメーションを流す
+		if (GameManager::GetInstance().GetTimeUp()) {
+			Obj->ShowTimeUpAnime();
+		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
 	void DataState::Exit(const shared_ptr<Player>& Obj) {
