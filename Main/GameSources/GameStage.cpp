@@ -118,19 +118,20 @@ namespace basecross {
 			wstring dataDir;
 			App::GetApp()->GetDataDirectory(dataDir);
 			m_stageXmlPath = dataDir + L"Stage\\" + L"1.xml";
+			auto& gm = GameManager::GetInstance();
 
 			XmlDocReader xmlReader(m_stageXmlPath);
 			//ゲームが始まっているフラグを切る
-			App::GetApp()->GetScene<Scene>()->SetGameStart(false);
+			gm.SetGameStart(false);
 			//スローフラグをオフにしておく
-			GameManager::GetInstance().SetOnSlow(false);
+			gm.SetOnSlow(false);
 			//スコアを初期化する
-			GameManager::GetInstance().ResetNowScore();
-			GameManager::GetInstance().ResetCheckPointNum();
+			gm.ResetNowScore();
+			//gm.ResetCheckPointNum();
 			//マックスチェイン初期化
-			GameManager::GetInstance().ResetMaxChain();
-			//メール数リセット
-			GameManager::GetInstance().ResetMail();
+			gm.ResetMaxChain();
+			//メール数初期化
+			gm.ResetMail();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			CreateSharedObjectGroup(L"CheckPoints");
@@ -174,8 +175,7 @@ namespace basecross {
 		GameManager::GetInstance().UpDatePadData();
 
 		//スタートボタンを押すことでリザルトに行く
-		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_START
-			&& App::GetApp()->GetScene<Scene>()->GetGameStart()) {
+		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_START){
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 			//auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
 			//fade->SetIsAction(true);

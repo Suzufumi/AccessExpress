@@ -13,6 +13,7 @@ namespace basecross {
 		GameManager& operator=(const GameManager&); // コピー代入演算子も private に置き、定義しない
 		 ~GameManager() {} // デストラクタを private に置く。
 
+		 bool m_isGameStart;		//プレイヤーが操作できる状態ならtrue
 		 bool m_isSlow = false;		//スロー状態だったらtrue
 		 float m_slowSpeed = 30.0f;	//スロー状態で何分の１になるかの変数	
 		 CONTROLER_STATE m_pad;		//パッドの全情報
@@ -27,6 +28,14 @@ namespace basecross {
 			static GameManager inst; // private なコンストラクタを呼び出す。
 			return inst;
 		}
+		//--------------------------------------------------------------------------------------
+		//操作ができる状態か設定
+		//--------------------------------------------------------------------------------------
+		void SetGameStart(bool f) { m_isGameStart = f; };
+		//--------------------------------------------------------------------------------------
+		//操作ができる状態か取得
+		//--------------------------------------------------------------------------------------
+		bool GetGameStart() { return m_isGameStart; };
 		//--------------------------------------------------------------------------------------
 		//スローフラグの取得
 		//--------------------------------------------------------------------------------------
@@ -53,7 +62,7 @@ namespace basecross {
 			auto& app = App::GetApp();
 			// ゲームコントローラー取得
 			auto device = app->GetInputDevice();
-			if (app->GetScene<Scene>()->GetGameStart()) {
+			if (m_isGameStart) {
 				m_pad = device.GetControlerVec()[0];
 			}
 		};

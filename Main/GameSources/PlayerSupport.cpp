@@ -207,7 +207,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	FlyingChain::FlyingChain(const shared_ptr<Stage>& stagePtr)
 		: GameObject(stagePtr) {
-		m_places = 3;
+		m_places = 4;
 	}
 	//------------------------------------------------------------------------------------
 	//ÉXÉRÉAÇ÷îÚÇÒÇ≈Ç¢Ç≠êîéö
