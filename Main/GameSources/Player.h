@@ -14,23 +14,18 @@ namespace basecross {
 		const int FIRST_CHAIN_TIME = 180;	// 最初にチェインするときの時間
 
 		float m_nowFallSpeed = 8.0f;		//落下のスピード
-		float m_nowWalkSpeed = 10.0f;		//現在の移動のスピード
-		float m_humanWalkSpeed = 15.0f;		//人間状態の移動スピード
-		float m_dataWalkSpeed = 10.0f;		//データ状態の移動スピード
+		float m_nowWalkSpeed = 8.0f;		//現在の移動のスピード
 		float m_angleX;
 		float m_angeleXMax = 80.0f;				//縦方向を管理する変数のマックス値
 		float m_angleY;
 		float m_maxAngleSpeed;			//カメラが回転するスピード
 		float m_cameraDistance;			//カメラのプレイヤーからの距離
 		float m_cameraLookUp;			//カメラが見上げる高さ
-		bool m_isFall = true;					//Y軸方向の力を加えるかどうか
-		bool m_isHaveFile = false;
-		bool m_isHit = false;					//オブジェクトに当たっているかどうか
-		float m_Lerp = 0.0f;					//ベジエ曲線のための経過時間変数
-		Vec3 p0, p1,p2;							//ベジエ曲線のための位置情報
-		float m_energy = 100.0f;
-		float m_changeEnergy = 1.0f;
-		float m_maxEnergy = 100.0f;
+		bool m_isFall = true;				//Y軸方向の力を加えるかどうか
+		bool m_isHit = false;				//オブジェクトに当たっているかどうか
+		bool m_isTimeUpAnime = false;		//タイムアップのアニメーションが流れていたらtrue
+		float m_Lerp = 0.0f;				//ベジエ曲線のための経過時間変数
+		Vec3 p0, p1,p2;						//ベジエ曲線のための位置情報
 		int m_chain = 0;		// コンボのための変数
 		int m_chainTime = 0;	// コンボとコンボの時間を図る時間
 		int m_comboChainLimit = 0; // コンボが進んでいくにつれて更新する制限時間
@@ -125,8 +120,6 @@ namespace basecross {
 		void CameraRoll();
 		void CameraControll();
 
-		//ステートに応じて平行移動のスピードを変える
-		void ChangeWalkSpeed(State state);
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
@@ -166,14 +159,10 @@ namespace basecross {
 		bool CheckYButton();
 		// 表情の切り替え
 		void FaceChanger(FaceState beforeFace, FaceState afterFace);
-		// チェックポイントについたときに更新する
-		void CheckPointArrived();
-		//エネルギーが減るようにする
-		void ChengeEnergyMai() { m_changeEnergy = -5.0f; }
-		//エネルギーが増えるようにする
-		void ChengeEnergyPur() { m_changeEnergy = 2.0f; }
-		//エネルギーの量を返す
-		float GetEnergy() { return m_energy; }
+		// タイムアップ時にアニメーションを見せる
+		void ShowTimeUpAnime();
+		//タイムアップアニメーションが終わったらリザルトにいく
+		void TimeUpAnimeFinishToResult();
 		//照準の表示を切り替える
 		void SightingDeviceDrawActive(bool f) { 
 			auto devi = m_SightingDevice.lock(); 

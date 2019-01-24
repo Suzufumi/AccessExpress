@@ -42,36 +42,36 @@ namespace basecross{
 			count++;
 		}
 	}
-	void EnergyGaugeUI::OnUpdate() {
-		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
-		//赤領域
-		for (int i = 0; i < 3; i++) {
-			if (player->GetEnergy() < (3 + i * 5)) {
-				m_energyGauge[i].lock()->SetDrawActive(false);
-			}
-			else {
-				m_energyGauge[i].lock()->SetDrawActive(true);
-			}
-		}
-		//黄色領域
-		for (int i = 0; i < 4; i++) {
-			if (player->GetEnergy() < (18 + i * 8)) {
-				m_energyGauge[3 + i].lock()->SetDrawActive(false);
-			}
-			else {
-				m_energyGauge[3 + i].lock()->SetDrawActive(true);
-			}
-		}
-		//緑領域
-		for (int i = 0; i < 5; i++) {
-			if (player->GetEnergy() < (50 + i * 10)) {
-				m_energyGauge[7 + i].lock()->SetDrawActive(false);
-			}
-			else {
-				m_energyGauge[7 + i].lock()->SetDrawActive(true);
-			}
-		}
-	}
+	//void EnergyGaugeUI::OnUpdate() {
+	//	auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
+	//	//赤領域
+	//	for (int i = 0; i < 3; i++) {
+	//		if (player->GetEnergy() < (3 + i * 5)) {
+	//			m_energyGauge[i].lock()->SetDrawActive(false);
+	//		}
+	//		else {
+	//			m_energyGauge[i].lock()->SetDrawActive(true);
+	//		}
+	//	}
+	//	//黄色領域
+	//	for (int i = 0; i < 4; i++) {
+	//		if (player->GetEnergy() < (18 + i * 8)) {
+	//			m_energyGauge[3 + i].lock()->SetDrawActive(false);
+	//		}
+	//		else {
+	//			m_energyGauge[3 + i].lock()->SetDrawActive(true);
+	//		}
+	//	}
+	//	//緑領域
+	//	for (int i = 0; i < 5; i++) {
+	//		if (player->GetEnergy() < (50 + i * 10)) {
+	//			m_energyGauge[7 + i].lock()->SetDrawActive(false);
+	//		}
+	//		else {
+	//			m_energyGauge[7 + i].lock()->SetDrawActive(true);
+	//		}
+	//	}
+	//}
 	//------------------------------------------------------------------------------------
 	//メール数を表示するUI
 	//------------------------------------------------------------------------------------

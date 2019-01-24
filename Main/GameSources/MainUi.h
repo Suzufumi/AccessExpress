@@ -10,7 +10,7 @@ namespace basecross
 		EnergyGaugeUI(const shared_ptr<Stage>& stagePtr);
 		virtual ~EnergyGaugeUI();
 		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
+		//virtual void OnUpdate() override;
 	};
 	//------------------------------------------------------------------------
 	//ƒ[ƒ‹”‚ğ•\¦‚·‚éUI
