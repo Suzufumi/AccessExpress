@@ -137,32 +137,7 @@ namespace basecross {
 	//
 	//-------------------------------------------------------------------------------------------------------------------
 	void Player::OnUpdate2() {
-		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
-		// 最小になっている方向に対して押し出しを行う
-		switch (m_nestingMin) {
-		case 0:
-			pos.x += m_nesting;
-			break;
-		case 1:
-			pos.x -= m_nesting;
-			break;
-		case 2:
-			pos.y += m_nesting;
-			break;
-		case 3:
-			pos.y -= m_nesting;
-			break;
-		case 4:
-			pos.z += m_nesting;
-			break;
-		case 5:
-			pos.z -= m_nesting;
-			break;
-		default:
-			break;
-		}
-		GetComponent<Transform>()->SetWorldPosition(pos);
-		m_nesting = NULL;
+		Extrusion();
 
 		// デバッグ文字の表示
 		DrawStrings();
@@ -200,7 +175,7 @@ namespace basecross {
 			//自動でY方向に力を加える処理を行わないようにする
 			m_isFall = false;
 		}
-		Extrusion(Other);
+		ExtrusionJudgment(Other);
 
 	}
 	//--------------------------------------------------------------------------------------------------------------
@@ -895,7 +870,7 @@ namespace basecross {
 	//---------------------------------------------------------------------------------------------
 	//押し出しが必要か判定する
 	//---------------------------------------------------------------------------------------------
-	void Player::Extrusion(const weak_ptr<GameObject>& Other) {
+	void Player::ExtrusionJudgment(const weak_ptr<GameObject>& Other) {
 		//playerの情報
 		auto trans = GetComponent<Transform>();
 		auto pos = trans->GetWorldPosition();
@@ -927,6 +902,37 @@ namespace basecross {
 			m_nesting = diff[min];
 			m_nestingMin = min;
 		}
+	}
+	//---------------------------------------------------------------------------------------------
+	//押し出しをする
+	//---------------------------------------------------------------------------------------------
+	void Player::Extrusion() {
+		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
+		// 最小になっている方向に対して押し出しを行う
+		switch (m_nestingMin) {
+		case 0:
+			pos.x += m_nesting;
+			break;
+		case 1:
+			pos.x -= m_nesting;
+			break;
+		case 2:
+			pos.y += m_nesting;
+			break;
+		case 3:
+			pos.y -= m_nesting;
+			break;
+		case 4:
+			pos.z += m_nesting;
+			break;
+		case 5:
+			pos.z -= m_nesting;
+			break;
+		default:
+			break;
+		}
+		GetComponent<Transform>()->SetWorldPosition(pos);
+		m_nesting = NULL;
 	}
 
 	// Yボタンが押されたかどうかを返す
@@ -1006,10 +1012,6 @@ namespace basecross {
 		// 効果音を鳴らす
 		scenePtr->MusicOnceStart(L"Jump_SE", 1.0f);
 		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
-		auto pos = Obj->GetComponent<Transform>()->GetWorldPosition();
-		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
-		camera->SetAt(pos + Vec3(0.0f, 1.0f, 0.0f));
-		camera->SetEye(pos + Vec3(0.0f, 1.5f, -10.0f));
 
 		// コンボを加算する
 		Obj->AddCombo();

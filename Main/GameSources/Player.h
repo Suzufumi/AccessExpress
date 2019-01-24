@@ -106,8 +106,10 @@ namespace basecross {
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		//Õ“Ë‚ª‰ğœ‚³‚ê‚½‚Æ‚«
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
+		//‰Ÿ‚µo‚µ”»’è
+		void ExtrusionJudgment(const weak_ptr<GameObject>& Other);
 		//‰Ÿ‚µo‚µˆ—
-		void Extrusion(const weak_ptr<GameObject>& Other);
+		void Extrusion();
 
 		//XZ•½–Ê‚ÌˆÚ“®ˆ—
 		void Walk();
