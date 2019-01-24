@@ -146,7 +146,7 @@ namespace basecross{
 		if (gameManager.GetScore() != m_displayScore) {
 			m_displayScore += 1;
 			//表示スコアが内部スコアに追い付いていない際に加速する
-			m_displayScore += ((gameManager.GetScore() - m_displayScore) / 100);
+			m_displayScore += ((gameManager.GetScore() - m_displayScore) / 50);
 		}
 
 		int score = m_displayScore;
