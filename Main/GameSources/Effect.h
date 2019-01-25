@@ -4,16 +4,16 @@
 namespace basecross
 {
 	//-----------------------------------------------------------------------------------
-	/// 炎エフェクト
+	/// 獲得エフェクト
 	//-----------------------------------------------------------------------------------
-	class FireEffect : public MultiParticle
+	class GetEffect : public MultiParticle
 	{
 	public:
-		FireEffect(const shared_ptr<Stage>& stagePtr);
-		virtual ~FireEffect();
+		GetEffect(const shared_ptr<Stage>& stagePtr);
+		virtual ~GetEffect();
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		void InsertFire(const Vec3& pos);
+		void InsertGetEffect(const Vec3& pos);
 	};
 
 	//-----------------------------------------------------------------------------------

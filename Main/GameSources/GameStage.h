@@ -26,7 +26,7 @@ namespace basecross {
 		void CreateDrone();
 		void CreateGoal();
 		void CreateMail();
-		void CreateFire();
+		void CreateEffect();
 	public:
 		//\’z‚Æ”jŠü
 		GameStage() :Stage() {}

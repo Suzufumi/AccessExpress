@@ -336,10 +336,10 @@ namespace basecross {
 		m_isArrive = true;
 		SetDrawActive(false);
 		//ファイアの放出
-		auto ptriFire = GetStage()->GetSharedGameObject<FireEffect>(L"FireEffect", false);
+		auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
 		//MessageBox(NULL, L"", L"", MB_OK);
-		if (ptriFire) {
-			ptriFire->InsertFire(GetComponent<Transform>()->GetWorldPosition());
+		if (ptrEffect) {
+			ptrEffect->InsertGetEffect(GetComponent<Transform>()->GetWorldPosition());
 		}
 	}
 
