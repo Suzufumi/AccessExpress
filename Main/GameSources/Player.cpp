@@ -658,17 +658,18 @@ namespace basecross {
 		auto dir = sightPos - m_cameraPos;
 		dir = dir.normalize();
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
+		Rock(sightPos, dir, L"Drone", 1.0f);
 		Rock(sightPos, dir, L"Link", 4.0f);
 		Rock(sightPos, dir, L"CheckPoints", 2.0f);
 		Rock(sightPos, dir, L"Mails", 4.0f);
-		//ドローンとの判定
-		DroneRayCheck(sightPos, dir);
 		//リンクオブジェクトとの判定
 		LinkRayCheck(sightPos, dir);
 		// チェックポイントとの判定
 		CheckPointsRayCheck(sightPos, dir);
 		//メールとの判定
 		MailRayCheck(sightPos, dir);
+		//ドローンとの判定
+		DroneRayCheck(sightPos, dir);
 	}
 	//---------------------------------------------------------------------------------------------
 	//Rayを可視化する	
@@ -1021,7 +1022,6 @@ namespace basecross {
 		// コンボを加算する
 		Obj->AddCombo();
 
-		Obj->ResetGoLink();
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
@@ -1076,6 +1076,7 @@ namespace basecross {
 	//ステート実行中に毎ターン呼ばれる関数
 	void DataState::Execute(const shared_ptr<Player>& Obj) {
 		Obj->Walk();
+		Obj->ResetGoLink();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
 		//カメラを動かす
