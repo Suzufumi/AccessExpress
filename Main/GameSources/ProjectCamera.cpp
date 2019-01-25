@@ -5,8 +5,8 @@ namespace basecross
 {
 	TpsCamera::TpsCamera()
 		: Camera(),
-		m_AngleX(Deg2Rad(10.0f)),
-		m_AngleY(Deg2Rad(270)),
+		m_angleX(Deg2Rad(10.0f)),
+		m_angleY(Deg2Rad(270)),
 		m_maxAngleSpeed(2.0f),
 		m_cameraDistance(15.0f),
 		m_cameraLookUp(3.5f)
@@ -27,6 +27,50 @@ namespace basecross
 
 	void TpsCamera::SetTarget(const shared_ptr<Transform>& target)
 	{
+	}
+	//--------------------------------------------------------------------------------------------
+	//カメラの値変更
+	//--------------------------------------------------------------------------------------------
+	void TpsCamera::CameraControll() {
+		float delta = App::GetApp()->GetElapsedTime();
+		auto m_pad = GameManager::GetInstance().GetPad();
+
+		//右スティックに値が入力されていたら
+		if (m_pad.fThumbRX > 0.7f || m_pad.fThumbRX < -0.7f ||
+			m_pad.fThumbRY > 0.7f || m_pad.fThumbRY < -0.7f) {
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * 2 * delta; // カメラを回転させる
+			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * 2 * delta; // カメラを昇降させる
+		}
+		else if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
+			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
+			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
+			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
+		}
+		//Y軸基準角度の丸め(-360<360)
+		if (m_angleY > Deg2Rad(360.0f)) {
+			m_angleY = Deg2Rad(0.0f);
+		}
+		if (m_angleY < Deg2Rad(0.0f)) {
+			m_angleY = Deg2Rad(360.0f);
+		}
+		//X軸基準角度の丸め(-70<70)
+		if (m_angleX > Deg2Rad(m_angeleXMax)) {
+			m_angleX = Deg2Rad(m_angeleXMax);
+		}
+		if (m_angleX < -Deg2Rad(m_angeleXMax)) {
+			m_angleX = -Deg2Rad(m_angeleXMax);
+		}
+
+	}
+	//---------------------------------------------------------------------------------------------
+	//カメラのプレイヤー追従処理
+	//---------------------------------------------------------------------------------------------
+	void TpsCamera::CameraRoll(Vec3 sightPos) {
+		//照準を見る
+		SetAt(sightPos);
+		auto eye = sightPos + Vec3(cos(m_angleY) * m_cameraDistance,
+			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
+		SetEye(eye);
 	}
 	//--------------------------------------------------------------------------------------------
 	//ベジェ曲線で飛ばす(playerと一緒に動くためにplayerの現在Leapをもらってくる)
@@ -50,12 +94,42 @@ namespace basecross
 		p1 = (p2 - ((p2 - p0) / 2)) - a.normalize() * Vec3(p2 - p0).length();
 	}
 	//--------------------------------------------------------------------------------------------
-	//カメラとともに動く判定のコンストラクタ
+	//
 	//--------------------------------------------------------------------------------------------
+	void TpsCamera::GoingAround(float AroundEndAngleX, float AroundEndAngleY) {
+		if (m_leap == 0) {
+			m_aroundStartAngleX = m_angleX;
+			m_aroundStartAngleY = m_angleY;
+		}
+
+	}
+	///---------------------------------------------------------------------------------------------
+	//ロックオンしている対象がいる際のカメラ処理
+	///---------------------------------------------------------------------------------------------
+	void TpsCamera::RockonCameraMove(Vec3 sightPos,Vec3 linkPos) {
+		float deltaX = sightPos.x - linkPos.x;
+		float deltaZ = sightPos.z - linkPos.z;
+		float deltaY = sightPos.y - linkPos.y;
+		//横のカメラ位置を制御する角度
+		m_angleY = atan2f(deltaZ, deltaX);
+		if (m_angleY < 0.0f) {
+			m_angleY += Deg2Rad(360.0f);
+		}
+		//縦のカメラ位置をだすための辺出す
+		float syahen = hypotf(deltaX, deltaZ);
+		//縦のカメラ位置を制御する角度
+		m_angleX = atan2f(deltaY, syahen);
+	}
+
+
+	///--------------------------------------------------------------------------------------------
+	//カメラとともに動く判定のコンストラクタ
+	///--------------------------------------------------------------------------------------------
 	TpsCameraJudgment::TpsCameraJudgment(const shared_ptr<Stage>& StagePtr)
 		:GameObject(StagePtr)
 	{
 	}
+
 	//--------------------------------------------------------------------------------------------
 	//作成
 	//--------------------------------------------------------------------------------------------

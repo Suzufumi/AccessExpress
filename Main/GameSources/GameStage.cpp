@@ -141,7 +141,7 @@ namespace basecross {
 			gm.ResetMaxChain();
 			//ƒ[ƒ‹”‰Šú‰»
 			gm.ResetMail();
-			//ï¿½^ï¿½Cï¿½ï¿½ï¿½Aï¿½bï¿½vï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//E½^E½CE½E½E½AE½bE½vE½tE½E½E½OE½E½E½E½E½E½
 			gm.ResetTimeUp();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");

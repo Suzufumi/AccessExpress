@@ -28,10 +28,7 @@ namespace basecross {
 
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		m_tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
-		m_angleX = m_tpsCamera.lock()->GetCameraAngleX();
-		m_angleY = m_tpsCamera.lock()->GetCameraAngleY();
-		m_maxAngleSpeed = m_tpsCamera.lock()->GetMaxAngleSpeed();
-		m_cameraDistance = m_tpsCamera.lock()->GetCameraDistance();
+		//m_cameraDistance = m_tpsCamera.lock()->GetCameraDistance();
 		m_cameraLookUp = m_tpsCamera.lock()->GetCameraLookUp();
 	}
 	//-------------------------------------------------------------------------------------------------
@@ -193,7 +190,21 @@ namespace basecross {
 			}
 		}
 	}
+	void Player::Forword(){		
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+		// スティックの傾きを角度に変換する
+		float padRad = atan2f(m_padDir.z, m_padDir.x);
+		if (m_padDir.length() != 0.0f) {
+			// スティックの角度にカメラの角度を加える
+			padRad += tpsCamera->GetCameraAngleY() + XM_PIDIV2;  // カメラの角度に９０度加える
+			// 角度をXZ成分に分解してベクトルを作り直す
+			m_padDir.x = cosf(padRad); // 新しい角度を X 成分に分解する
+			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
+			m_forward = m_padDir;
+		}
+	}
 
 	//--------------------------------------------------------------------------------------------
 	//XZ平面の移動処理
@@ -249,64 +260,8 @@ namespace basecross {
 			GetComponent<Transform>()->SetWorldPosition(m_response);
 		}
 	}
-	//--------------------------------------------------------------------------------------------
-	//カメラの回転処理
-	//--------------------------------------------------------------------------------------------
-	void Player::CameraRoll() {
-		float delta = App::GetApp()->GetElapsedTime();
-
-		//右スティックに値が入力されていたら
-		if (m_pad.fThumbRX > 0.7f || m_pad.fThumbRX < -0.7f ||
-			m_pad.fThumbRY > 0.7f || m_pad.fThumbRY < -0.7f) {
-			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * 2 * delta; // カメラを回転させる
-			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * 2 * delta; // カメラを昇降させる
-		}
-		else if (m_pad.fThumbRX > 0.2f || m_pad.fThumbRX < -0.2f ||
-			m_pad.fThumbRY > 0.2f || m_pad.fThumbRY < -0.2f) {
-			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // カメラを回転させる
-			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // カメラを昇降させる
-		}
-		//Y軸基準角度の丸め(-360<360)
-		if (m_angleY > Deg2Rad(360.0f)) {
-			m_angleY = Deg2Rad(0.0f);
-		}
-		if (m_angleY < Deg2Rad(0.0f)) {
-			m_angleY = Deg2Rad(360.0f);
-		}
-		//X軸基準角度の丸め(-70<70)
-		if (m_angleX > Deg2Rad(m_angeleXMax)) {
-			m_angleX = Deg2Rad(m_angeleXMax);
-		}
-		if (m_angleX < -Deg2Rad(m_angeleXMax)) {
-			m_angleX = -Deg2Rad(m_angeleXMax);
-		}
-
-		// スティックの傾きを角度に変換する
-		float padRad = atan2f(m_padDir.z, m_padDir.x);
-		if (m_padDir.length() != 0.0f) {
-			// スティックの角度にカメラの角度を加える
-			padRad += m_angleY + XM_PIDIV2;  // カメラの角度に９０度加える
-			// 角度をXZ成分に分解してベクトルを作り直す
-			m_padDir.x = cosf(padRad); // 新しい角度を X 成分に分解する
-			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
-
-			m_forward = m_padDir;
-		}
-	}
 	//---------------------------------------------------------------------------------------------
-	//カメラのプレイヤー追従処理
-	//---------------------------------------------------------------------------------------------
-	void Player::CameraControll() {
-		auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-		//照準を見る
-		camera->SetAt(sightPos);
-		auto eye = sightPos + Vec3(cos(m_angleY) * m_cameraDistance,
-			sin(m_angleX) * m_cameraDistance, sin(m_angleY) * m_cameraDistance);
-		camera->SetEye(eye);
-	}
-	//---------------------------------------------------------------------------------------------
-	//Lボタンを押しているときにリンクオブジェが照準の近くだったらそっちを向く
+	//Lボタンを押しているときに対象オブジェが照準の見ている先の近くだったらそっちを向く
 	//---------------------------------------------------------------------------------------------
 	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
 		//Lボタンを押し続けているとき
@@ -319,33 +274,22 @@ namespace basecross {
 		else {
 			m_islockon = false;
 		}
+		//ロックオンしているとき
 		if (m_islockon) {
-			Vec3 delta = GetComponent<Transform>()->GetWorldPosition() -
-				m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
+			auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
+			auto lockOnPos = m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
+
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+			//ロックオンオブジェを対象にカメラの処理
+			tpsCamera->RockonCameraMove(sightPos,lockOnPos);
+			//ロックオン対象が近くにいる場合はロックオンを解除
+			Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - lockOnPos;
 			if (delta.length() <= 4.0f) {
 				m_islockon = false;
 			}
 		}
-		//リンクオブジェクトを照準にとらえてロックオンしているとき
-		if (m_islockon) {
-			//カメラの制御をおこなう
-			auto sightingDevicePos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
-			auto linkTrans = m_LockOnObj.lock()->GetComponent<Transform>();
-			float deltaX = sightingDevicePos.x - linkTrans->GetWorldPosition().x;
-			float deltaZ = sightingDevicePos.z - linkTrans->GetWorldPosition().z;
-			float deltaY = sightingDevicePos.y - linkTrans->GetWorldPosition().y;
-			//横のカメラ位置を制御する角度
-			m_angleY = atan2f(deltaZ, deltaX);
-			if (m_angleY < 0.0f) {
-				m_angleY += Deg2Rad(360.0f);
-			}
-			//縦のカメラ位置をだすための辺出す
-			float syahen = hypotf(deltaX, deltaZ);
-			//縦のカメラ位置を制御する角度
-			m_angleX = atan2f(deltaY, syahen);
-		}
 	}
-
 	///---------------------------------------------------------------------------------------------
 	//ロックオンするオブジェクトを設定
 	///---------------------------------------------------------------------------------------------
@@ -653,17 +597,18 @@ namespace basecross {
 		auto dir = sightPos - m_cameraPos;
 		dir = dir.normalize();
 		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
+		Rock(sightPos, dir, L"Drone", 1.0f);
 		Rock(sightPos, dir, L"Link", 4.0f);
 		Rock(sightPos, dir, L"CheckPoints", 2.0f);
 		Rock(sightPos, dir, L"Mails", 4.0f);
-		//ドローンとの判定
-		DroneRayCheck(sightPos, dir);
 		//リンクオブジェクトとの判定
 		LinkRayCheck(sightPos, dir);
 		// チェックポイントとの判定
 		CheckPointsRayCheck(sightPos, dir);
 		//メールとの判定
 		MailRayCheck(sightPos, dir);
+		//ドローンとの判定
+		DroneRayCheck(sightPos, dir);
 	}
 	//---------------------------------------------------------------------------------------------
 	//Rayを可視化する	
@@ -1016,14 +961,17 @@ namespace basecross {
 		// コンボを加算する
 		Obj->AddCombo();
 
-		Obj->ResetGoLink();
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
-		Obj->CameraControll();
-		Obj->CameraRoll();
-
+		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+		//カメラを動かす
+		tpsCamera->CameraRoll(Obj->GetSightPos());
 		if (!GameManager::GetInstance().GetTimeUp()) {
+			//カメラ制御のための値を変更する
+			tpsCamera->CameraControll();
+
 			//スロー状態なら、レイを開放する
 			if (GameManager::GetInstance().GetOnSlow()) {
 				Obj->ResetGoLink();
@@ -1068,13 +1016,17 @@ namespace basecross {
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void DataState::Execute(const shared_ptr<Player>& Obj) {
+		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+
 		Obj->Walk();
+		Obj->ResetGoLink();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
+		//カメラを動かす
+		tpsCamera->CameraRoll(Obj->GetSightPos());
 		//カメラ制御のための値を変更する
-		Obj->CameraControll();
-		//右スティックの値でカメラの回転処理を行う
-		Obj->CameraRoll();
+		tpsCamera->CameraControll();
 		//プレイヤーの体の向きを変える
 		Obj->PlayerRoll();
 		//タイムアップしていたら、アニメーションを流す
