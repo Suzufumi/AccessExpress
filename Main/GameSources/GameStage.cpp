@@ -112,13 +112,14 @@ namespace basecross {
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Mails");
 	}
 
-	void GameStage::CreateFire()
+	void GameStage::CreateEffect()
 	{
-		auto multiFirePtr = AddGameObject<FireEffect>();
+		auto multiEfkPtr = AddGameObject<GetEffect>();
 		//共有オブジェクトに炎を登録
-		SetSharedGameObject(L"FireEffect", multiFirePtr);
+		SetSharedGameObject(L"GetEffect", multiEfkPtr);
 		auto multiSparkPtr = AddGameObject<SparkEffect>();
 		SetSharedGameObject(L"SparkEffect", multiSparkPtr);
+
 	}
 
 
@@ -176,7 +177,7 @@ namespace basecross {
 			scoreSprite->SetPosition(Vec2(1120, 30));
 			auto timeSprite = AddGameObject<Sprite>(L"TIME_TX", Vec2(100, 35));
 			timeSprite->SetPosition(Vec2(640, 27));
-			CreateFire();
+			CreateEffect();
 		}
 		catch (...) {
 			throw;
