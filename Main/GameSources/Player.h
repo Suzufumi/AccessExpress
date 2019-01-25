@@ -15,11 +15,6 @@ namespace basecross {
 
 		float m_nowFallSpeed = 8.0f;		//落下のスピード
 		float m_nowWalkSpeed = 8.0f;		//現在の移動のスピード
-		float m_angleX;
-		float m_angeleXMax = 80.0f;				//縦方向を管理する変数のマックス値
-		float m_angleY;
-		float m_maxAngleSpeed;			//カメラが回転するスピード
-		float m_cameraDistance;			//カメラのプレイヤーからの距離
 		float m_cameraLookUp;			//カメラが見上げる高さ
 		bool m_isFall = true;				//Y軸方向の力を加えるかどうか
 		bool m_isHit = false;				//オブジェクトに当たっているかどうか
@@ -117,9 +112,7 @@ namespace basecross {
 		void Fall();
 		//左スティックの値でプレイヤーを回転させる
 		void PlayerRoll();
-
-		void CameraRoll();
-		void CameraControll();
+		void Forword();
 
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
@@ -146,8 +139,6 @@ namespace basecross {
 		void Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		// ロックオンするオブジェクトを設定
 		void RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
-		//ロックオンしている対象がいる際のカメラ処理
-		void RockonCameraMove();
 
 		//Rayとリンクオブジェクトが当たっているかを見る処理
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
@@ -170,6 +161,9 @@ namespace basecross {
 		void SightingDeviceDrawActive(bool f) { 
 			auto devi = m_SightingDevice.lock(); 
 			devi->SetDrawActive(f);
+		}
+		Vec3 GetSightPos() { 
+			return m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition(); 
 		}
 
 		// コンボを加算する
