@@ -94,14 +94,29 @@ namespace basecross
 		p1 = (p2 - ((p2 - p0) / 2)) - a.normalize() * Vec3(p2 - p0).length();
 	}
 	//--------------------------------------------------------------------------------------------
-	//
+	//回り込む処理の前準備（in：デグリー角）
 	//--------------------------------------------------------------------------------------------
-	void TpsCamera::GoingAround(float AroundEndAngleX, float AroundEndAngleY) {
-		if (m_leap == 0) {
-			m_aroundStartAngleX = m_angleX;
-			m_aroundStartAngleY = m_angleY;
+	void TpsCamera::SetGoingAround(float aroundEndAngleX, float aroundEndAngleY) {
+		m_aroundStartAngleX = m_angleX;
+		m_aroundStartAngleY = m_angleY;
+		m_aroundEndAngleX = aroundEndAngleX;
+		m_aroundEndAngleY = aroundEndAngleY;
+		m_leap = 0.0f;
+	}
+	//--------------------------------------------------------------------------------------------
+	//回り込む処理（out：回り込み終わったらtrue）
+	//--------------------------------------------------------------------------------------------
+	bool TpsCamera::GoingAround() {
+		if (m_leap < 1.0f) {
+			m_leap += App::GetApp()->GetElapsedTime() * 2;
+			m_angleX = (1 - m_leap) * m_aroundStartAngleX + m_leap * m_aroundEndAngleX;
+			m_angleY = (1 - m_leap) * m_aroundStartAngleY + m_leap * m_aroundEndAngleY;
+			return false;
 		}
-
+		else {
+			m_leap = 1.0f;
+			return true;
+		}
 	}
 	///---------------------------------------------------------------------------------------------
 	//ロックオンしている対象がいる際のカメラ処理
@@ -120,7 +135,6 @@ namespace basecross
 		//縦のカメラ位置を制御する角度
 		m_angleX = atan2f(deltaY, syahen);
 	}
-
 
 	///--------------------------------------------------------------------------------------------
 	//カメラとともに動く判定のコンストラクタ

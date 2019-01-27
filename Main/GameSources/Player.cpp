@@ -901,7 +901,6 @@ namespace basecross {
 	// タイムアップ時にアニメーションを見せる
 	void Player::ShowTimeUpAnime() {
 		GetAnimStateMachine()->ChangeState(PlayerClearAnim::Instance());
-		GetStateMachine()->ChangeState(ClearState::Instance());
 	}
 	//タイムアップアニメーションが終わったらリザルトにいく
 	void Player::TimeUpAnimeFinishToResult() {
@@ -909,6 +908,22 @@ namespace basecross {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 	}
+	//プレイヤーの向いている方向を返す
+	Vec2 Player::forwardAngle() {
+		Vec2 forwardAngle;
+		//横のカメラ位置を制御する角度
+		forwardAngle.y = atan2f(m_forward.z, m_forward.x);
+		forwardAngle += Deg2Rad(90);
+		if (forwardAngle.y < 0.0f) {
+			forwardAngle.y += Deg2Rad(360.0f);
+		}
+		//縦のカメラ位置をだすための辺出す
+		float syahen = hypotf(m_forward.x, m_forward.z);
+		//縦のカメラ位置を制御する角度
+		forwardAngle.x = atan2f(m_forward.y, syahen);
+
+		return forwardAngle;
+	};
 
 	//---------------------------------------------------------------------------------------------
 	//情報の表示
@@ -1031,7 +1046,7 @@ namespace basecross {
 		Obj->PlayerRoll();
 		//タイムアップしていたら、アニメーションを流す
 		if (GameManager::GetInstance().GetTimeUp()) {
-			Obj->ShowTimeUpAnime();
+			Obj->GetStateMachine()->ChangeState(ClearState::Instance());
 		}
 	}
 	//ステートにから抜けるときに呼ばれる関数
@@ -1048,10 +1063,21 @@ namespace basecross {
 	}
 	//ステートに入ったときに呼ばれる関数
 	void ClearState::Enter(const shared_ptr<Player>& Obj) {
-
+		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+		tpsCamera->SetGoingAround(Obj->forwardAngle().x, Obj->forwardAngle().y);
 	}
 	//ステート実行中に毎ターン呼ばれる関数
 	void ClearState::Execute(const shared_ptr<Player>& Obj) {
+		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
+		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+		Obj->SightingDeviceChangePosition();
+
+		if (!tpsCamera->GoingAround()) {
+				Obj->ShowTimeUpAnime();
+		}
+		tpsCamera->CameraRoll(Obj->GetSightPos());
+
 		Obj->TimeUpAnimeFinishToResult();
 	}
 	//ステートにから抜けるときに呼ばれる関数

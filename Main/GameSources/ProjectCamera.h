@@ -20,6 +20,8 @@ namespace basecross
 		//回り込む際に使う角度の数値
 		float m_aroundStartAngleY;
 		float m_aroundStartAngleX;
+		float m_aroundEndAngleY;
+		float m_aroundEndAngleX;
 	public:
 		TpsCamera();
 		virtual ~TpsCamera();
@@ -33,8 +35,9 @@ namespace basecross
 		void SetTarget(const shared_ptr<Transform>& target);
 		void SetBezier(weak_ptr<GameObject> playerPtr,Vec3 p2Player);
 		void BezierMove(float leap,Vec3 playerPos);
+		void TpsCamera::SetGoingAround(float aroundEndAngleX, float aroundEndAngleY) ;
 		//回り込む
-		void GoingAround(float AroundEndAngleX,float AroundEndAngleY);
+		bool GoingAround();
 		//ロックオンしている対象がいる際のカメラ処理
 		void RockonCameraMove(Vec3 sightPos,Vec3 linkPos);
 
