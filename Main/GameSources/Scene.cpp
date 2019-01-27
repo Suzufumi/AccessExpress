@@ -83,6 +83,7 @@ namespace basecross{
 			{L"result_A.png", L"RESULT_A_TX"},
 			{L"result_B.png", L"RESULT_B_TX"},
 			{L"result_C.png", L"RESULT_C_TX"},
+			{L"TIMEUP.png", L"TIMEUP_TX"}
 		};
 
 		for (auto texture : textures)

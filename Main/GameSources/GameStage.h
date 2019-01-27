@@ -27,6 +27,8 @@ namespace basecross {
 		void CreateGoal();
 		void CreateMail();
 		void CreateEffect();
+
+		float m_timeOver;
 	public:
 		//\’z‚Æ”jŠü
 		GameStage() :Stage() {}
