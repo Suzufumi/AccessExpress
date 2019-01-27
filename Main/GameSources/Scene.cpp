@@ -136,7 +136,9 @@ namespace basecross{
 			//SE
 			{L"bomb.wav",L"bomb_se"},
 			{L"jumpAnime.wav", L"Jump_SE"},
-			{L"decision02.wav", L"Decision_SE"}
+			{L"decision02.wav", L"Decision_SE"},
+			{L"countUpSE.wav", L"Countup_SE"},
+			{L"GetMail_SE.wav", L"Mail_SE"}
 		};
 		//プロジェクトに登録
 		for (auto music : musics){

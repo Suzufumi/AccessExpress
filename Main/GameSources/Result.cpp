@@ -33,17 +33,7 @@ namespace basecross {
 			AddScore();
 			break;
 		case progress::SCORE_COUNTUP :
-			if (m_scoreNum.lock()->GetFinishCountUp()) {
-				m_push.lock()->SetDrawActive(true);
-				m_mailText.lock()->SetDrawActive(false);
-				m_mailNum.lock()->SetDrawActive(false);
-				m_maxChainText.lock()->SetDrawActive(false);
-				m_maxChainNum.lock()->SetDrawActive(false);
-				m_scoreText.lock()->SetPosition(Vec2(720.0f, 340.0f));
-				//m_scoreNum.lock()->GetComponent<Transform>()->SetPosition()
-				CreatePlayer();
-				m_progress = progress::END;
-			}
+			CountupScore();
 			break;
 		case progress::END :
 			if (CntlVec[0].wPressedButtons) {
@@ -128,6 +118,25 @@ namespace basecross {
 		m_mailNum.lock()->GetComponent<Transform>()->SetPosition(chackPos);
 		Vec3 chainPos = (1 - m_leap) * m_maxChainP1 + m_leap * m_scoreP2;
 		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(chainPos);
+	}
+		
+
+	void ResultStage::CountupScore()
+	{
+		auto scenePtr = App::GetApp()->GetScene<Scene>();
+		scenePtr->MusicOnceStart(L"Countup_SE", 5.0f);
+		if (m_scoreNum.lock()->GetFinishCountUp()) {
+			m_push.lock()->SetDrawActive(true);
+			m_mailText.lock()->SetDrawActive(false);
+			m_mailNum.lock()->SetDrawActive(false);
+			m_maxChainText.lock()->SetDrawActive(false);
+			m_maxChainNum.lock()->SetDrawActive(false);
+			m_scoreText.lock()->SetPosition(Vec2(720.0f, 340.0f));
+			//m_scoreNum.lock()->GetComponent<Transform>()->SetPosition()
+			CreatePlayer();
+			m_progress = progress::END;
+		}
+
 	}
 	///-----------------------------------------------------------------------------
 	//プレイヤーを画面に出す

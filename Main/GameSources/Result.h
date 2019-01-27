@@ -9,6 +9,7 @@ namespace basecross {
 		void CreateMaximumChain();
 		void CreateScore();
 		void AddScore();
+		void CountupScore();
 		void CreatePlayer();
 		float m_leap = 0.0f;
 		weak_ptr<GameObject> m_player;
