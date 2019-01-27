@@ -202,7 +202,7 @@ namespace basecross {
 			m_padDir.x = cosf(padRad); // 新しい角度を X 成分に分解する
 			m_padDir.z = sinf(padRad); // 新しい角度を Z 成分に分解する
 
-			m_forward = m_padDir;
+			m_forward = m_padDir.normalize();
 		}
 	}
 
@@ -913,7 +913,6 @@ namespace basecross {
 		Vec2 forwardAngle;
 		//横のカメラ位置を制御する角度
 		forwardAngle.y = atan2f(m_forward.z, m_forward.x);
-		forwardAngle += Deg2Rad(90);
 		if (forwardAngle.y < 0.0f) {
 			forwardAngle.y += Deg2Rad(360.0f);
 		}
@@ -1034,6 +1033,7 @@ namespace basecross {
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 
+		Obj->Forword();
 		Obj->Walk();
 		Obj->ResetGoLink();
 		Obj->RayShot();
