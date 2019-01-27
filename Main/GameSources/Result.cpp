@@ -8,6 +8,7 @@ namespace basecross {
 		CreateCollectedMail();
 		CreateMaximumChain();
 		CreateScore();
+		CreateRank();
 		auto resultBack = AddGameObject<Sprite>(L"ClearBack_TX", Vec2(1441, 811));
 		resultBack->SetPosition(Vec2(640, 400));
 		resultBack->SetDrawLayer(-3);
@@ -36,20 +37,7 @@ namespace basecross {
 			CountupScore();
 			break;
 		case progress::END :
-			if (CntlVec[0].wPressedButtons) {
-				auto scenePtr = App::GetApp()->GetScene<Scene>();
-				scenePtr->MusicOnceStart(L"Decision_SE", 1.0f);
-				auto fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
-				fade->SetIsFadeOut(true);
-				//m_progress = progress::FADE;
-			}
-			//フェード中かどうか
-			if (!gm.GetIsFade())
-			{
-				gm.SetIsFade(true);
-				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
-			}
-			m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(App::GetApp()->GetElapsedTime());
+			ResultProcess(gm.GetScore());
 			break;
 		//case progress::FADE:
 		//	FadeProcess();
@@ -101,6 +89,37 @@ namespace basecross {
 		m_scoreNum.lock()->CountSkip();//表示スコアを内部スコアまで上げておく
 		m_scoreP2 = m_scoreNum.lock()->GetComponent<Transform>()->GetPosition() + Vec3(50.0f,0,0);
 	};
+
+	///-----------------------------------------------------------------------------
+	//ランクの表示作成
+	///-----------------------------------------------------------------------------
+	void ResultStage::CreateRank()
+	{
+		float width = static_cast<float>(App::GetApp()->GetGameWidth());
+		m_rankText = AddGameObject<Sprite>(L"RANK_TEXT_TX", Vec2(205, 102));
+		m_rankText.lock()->SetPosition(Vec2((float)((width/ 2)), 220));
+		m_rankText.lock()->SetDrawActive(false);
+		// 各ランクの設定
+		m_rankResult.push_back(AddGameObject<Sprite>(L"RANK_S_TX", Vec2(205, 205)));
+		m_rankResult.push_back(AddGameObject<Sprite>(L"RANK_A_TX", Vec2(205, 205)));
+		m_rankResult.push_back(AddGameObject<Sprite>(L"RANK_B_TX", Vec2(205, 205)));
+		m_rankResult.push_back(AddGameObject<Sprite>(L"RANK_C_TX", Vec2(205, 205)));
+		for (auto rankResult : m_rankResult)
+		{
+			rankResult.lock()->SetPosition(Vec2(900, 270));
+			rankResult.lock()->SetDrawActive(false);
+		}
+		// ランクに応じた表情テクスチャの設定
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_S_TX", Vec2(410, 410)));
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_A_TX", Vec2(410, 410)));
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_B_TX", Vec2(410, 410)));
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_C_TX", Vec2(410, 410)));
+		for (auto rankFace : m_rankFace)
+		{
+			rankFace.lock()->SetDrawActive(false);
+		}
+	}
+
 	///-----------------------------------------------------------------------------
 	//スコアを演出後に増やす
 	///-----------------------------------------------------------------------------
@@ -124,20 +143,71 @@ namespace basecross {
 	void ResultStage::CountupScore()
 	{
 		auto scenePtr = App::GetApp()->GetScene<Scene>();
-		scenePtr->MusicOnceStart(L"Countup_SE", 5.0f);
+		scenePtr->MusicOnceStart(L"Countup_SE", 1.0f);
 		if (m_scoreNum.lock()->GetFinishCountUp()) {
+			m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(750, -500, 0);
 			m_push.lock()->SetDrawActive(true);
 			m_mailText.lock()->SetDrawActive(false);
 			m_mailNum.lock()->SetDrawActive(false);
 			m_maxChainText.lock()->SetDrawActive(false);
 			m_maxChainNum.lock()->SetDrawActive(false);
-			m_scoreText.lock()->SetPosition(Vec2(720.0f, 340.0f));
+			m_scoreText.lock()->SetPosition(Vec2(720.0f, 470.0f));
 			//m_scoreNum.lock()->GetComponent<Transform>()->SetPosition()
 			CreatePlayer();
 			m_progress = progress::END;
 		}
 
 	}
+	///-----------------------------------------------------------------------------
+	// 最終スコア表示とランク表示
+	///-----------------------------------------------------------------------------
+	void ResultStage::ResultProcess(int resultScore)
+	{
+		ShowRank(resultScore);
+		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		if (CntlVec[0].wPressedButtons) {
+			auto scenePtr = App::GetApp()->GetScene<Scene>();
+			scenePtr->MusicOnceStart(L"Decision_SE", 1.0f);
+			auto fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
+			fade->SetIsFadeOut(true);
+			//m_progress = progress::FADE;
+		}
+		auto& gm = GameManager::GetInstance();
+		//フェード中かどうか
+		if (!gm.GetIsFade())
+		{
+			gm.SetIsFade(true);
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+		}
+		m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(App::GetApp()->GetElapsedTime());
+
+	}
+
+	///-----------------------------------------------------------------------------
+	//最終評価ランク
+	///-----------------------------------------------------------------------------
+	void ResultStage::ShowRank(int resultScore)
+	{
+		if (resultScore >= RANK_S)
+		{
+			m_rankResult[0].lock()->SetDrawActive(true);
+		}
+		else if (resultScore >= RANK_A && resultScore < RANK_S)
+		{
+			m_rankResult[1].lock()->SetDrawActive(true);
+		}
+		else if (resultScore >= RANK_B && resultScore < RANK_A)
+		{
+			m_rankResult[2].lock()->SetDrawActive(true);
+		}
+		else
+		{
+			m_rankResult[3].lock()->SetDrawActive(true);
+		}
+
+	}
+
+
 	///-----------------------------------------------------------------------------
 	//プレイヤーを画面に出す
 	///-----------------------------------------------------------------------------
