@@ -73,7 +73,16 @@ namespace basecross{
 			{ L"kakeru.png",L"kakeru_TX"},
 			{ L"ClearBack.png",L"ClearBack_TX"},
 			{ L"GetEffect.png", L"GetEffect_TX"},
-			{ L"spark2.png", L"SPARK_TX"}
+			{ L"spark2.png", L"SPARK_TX"},
+			{L"rankText.png", L"RANK_TEXT_TX"},
+			{L"rankS.png", L"RANK_S_TX"},
+			{L"rankA.png", L"RANK_A_TX"},
+			{L"rankB.png", L"RANK_B_TX"},
+			{L"rankC.png", L"RANK_C_TX"},
+			{L"resultS.png", L"RESULT_S_TX"},
+			{L"resultA.png", L"RESULT_A_TX"},
+			{L"resultB.png", L"RESULT_B_TX"},
+			{L"resultC.png", L"RESULT_C_TX"},
 		};
 
 		for (auto texture : textures)
