@@ -184,10 +184,11 @@ namespace basecross {
 	}
 
 	///-----------------------------------------------------------------------------
-	//ÅI•]‰¿ƒ‰ƒ“ƒN
+		//ÅI•]‰¿ƒ‰ƒ“ƒN
 	///-----------------------------------------------------------------------------
 	void ResultStage::ShowRank(int resultScore)
 	{
+		m_rankText.lock()->SetDrawActive(true);
 		if (resultScore >= RANK_S)
 		{
 			m_rankResult[0].lock()->SetDrawActive(true);
