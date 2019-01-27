@@ -31,6 +31,8 @@ namespace basecross {
 		float m_rayRange;				//レイの届く距離
 		float m_rayRangeDefolt = 30.0f;	//レイの届く距離基準値
 		CONTROLER_STATE m_pad;					//パッドの全情報
+		bool m_isGoLink;				//飛ぶことが確定していたらtrue
+
 
 		//コンストラクタで持ってきた引数を入れる
 		Vec3 m_position;
@@ -189,10 +191,8 @@ namespace basecross {
 		//落下した際にリスポーン位置へワープする
 		void Response();
 		float GetRayRange() { return m_rayRange; }
-		//飛ぶことが確定していたらtrue
-		bool m_isGoLink;
 		void ResetGoLink() { m_isGoLink = false; }
-
+		Vec2 forwardAngle();
 
 		void DrawStrings();
 	};
