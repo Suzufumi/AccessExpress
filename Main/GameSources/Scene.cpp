@@ -73,7 +73,16 @@ namespace basecross{
 			{ L"kakeru.png",L"kakeru_TX"},
 			{ L"ClearBack.png",L"ClearBack_TX"},
 			{ L"GetEffect.png", L"GetEffect_TX"},
-			{ L"spark2.png", L"SPARK_TX"}
+			{ L"spark2.png", L"SPARK_TX"},
+			{L"rankText.png", L"RANK_TEXT_TX"},
+			{L"rankS.png", L"RANK_S_TX"},
+			{L"rankA.png", L"RANK_A_TX"},
+			{L"rankB.png", L"RANK_B_TX"},
+			{L"rankC.png", L"RANK_C_TX"},
+			{L"result_S.png", L"RESULT_S_TX"},
+			{L"result_A.png", L"RESULT_A_TX"},
+			{L"result_B.png", L"RESULT_B_TX"},
+			{L"result_C.png", L"RESULT_C_TX"},
 		};
 
 		for (auto texture : textures)
@@ -136,7 +145,9 @@ namespace basecross{
 			//SE
 			{L"bomb.wav",L"bomb_se"},
 			{L"jumpAnime.wav", L"Jump_SE"},
-			{L"decision02.wav", L"Decision_SE"}
+			{L"decision02.wav", L"Decision_SE"},
+			{L"countUpSE.wav", L"Countup_SE"},
+			{L"GetMail_SE.wav", L"Mail_SE"}
 		};
 		//プロジェクトに登録
 		for (auto music : musics){
