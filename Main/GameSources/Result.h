@@ -3,9 +3,9 @@
 
 namespace basecross {
 	class ResultStage : public Stage {
-		const int RANK_S = 40000;
-		const int RANK_A = 20000;
-		const int RANK_B = 10000;
+		const int RANK_S = 30000;
+		const int RANK_A = 15000;
+		const int RANK_B = 5000;
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
 		void CreateCollectedMail();
