@@ -83,7 +83,8 @@ namespace basecross{
 			{L"result_A.png", L"RESULT_A_TX"},
 			{L"result_B.png", L"RESULT_B_TX"},
 			{L"result_C.png", L"RESULT_C_TX"},
-			{L"TIMEUP.png", L"TIMEUP_TX"}
+			{L"TIMEUP.png", L"TIMEUP_TX"},
+			{L"Balloon.png", L"BALLOON_TX"}
 		};
 
 		for (auto texture : textures)
@@ -160,10 +161,11 @@ namespace basecross{
 	//----------------------------------------------------------------------------------------
 	//âπÇàÍâÒñ¬ÇÁÇ∑
 	//----------------------------------------------------------------------------------------
-	void Scene::MusicOnceStart(wstring key,float volume) {
+	shared_ptr<SoundItem> Scene::MusicOnceStart(wstring key,float volume) {
 		auto audioMana = m_audioManager.lock();
-		audioMana->Start(key, XAUDIO2_NO_LOOP_REGION, volume);
+		return audioMana->Start(key, XAUDIO2_NO_LOOP_REGION, volume);
 	}
+
 	//----------------------------------------------------------------------------------------
 	//âπÇÉãÅ[ÉvÇ≈ó¨Ç∑
 	//----------------------------------------------------------------------------------------

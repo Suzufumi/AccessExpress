@@ -30,11 +30,7 @@ namespace basecross {
 			transComp->SetPosition(pos.x, -pos.y, 0);
 		};
 
-		void SetScale(const Vec2& scale)
-		{
-			auto transComp = GetComponent<Transform>();
-			transComp->SetScale(Vec3(scale.x, scale.y, 1.0f));
-		}
+		void SetScale(const Vec2& scale);
 
 		void SetMesh(const shared_ptr<MeshResource> mesh);
 	};
