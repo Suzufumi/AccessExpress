@@ -178,6 +178,11 @@ namespace basecross {
 			auto timeSprite = AddGameObject<Sprite>(L"TIME_TX", Vec2(100, 35));
 			timeSprite->SetPosition(Vec2(640, 27));
 			CreateEffect();
+
+			auto timeOverTx = AddGameObject<Sprite>(L"TIMEUP_TX", Vec2(512, 256));
+			timeOverTx->SetDrawActive(false);
+			timeOverTx->SetPosition(Vec2(640, 240));
+			SetSharedGameObject(L"timeUp", timeOverTx);
 		}
 		catch (...) {
 			throw;
@@ -186,6 +191,18 @@ namespace basecross {
 	void GameStage::OnUpdate() {
 		//マネージャーが持つパッド情報を更新
 		GameManager::GetInstance().UpDatePadData();
+
+		if (GameManager::GetInstance().GetTimeUp()) {
+			auto timeOverTx = GetSharedGameObject<Sprite>(L"timeUp");
+			if (m_timeOver == 0) {
+				timeOverTx->SetDrawActive(true);
+				App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"TIMEUP_SE", 1.0f);
+			}
+			m_timeOver += App::GetApp()->GetElapsedTime();
+			if (m_timeOver >= 1.0f) {
+				timeOverTx->SetDrawActive(false);
+			}
+		}
 
 		//スタートボタンを押すことでリザルトに行く
 		if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_START){
