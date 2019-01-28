@@ -178,11 +178,11 @@ namespace basecross {
 			auto timeSprite = AddGameObject<Sprite>(L"TIME_TX", Vec2(100, 35));
 			timeSprite->SetPosition(Vec2(640, 27));
 			CreateEffect();
-
 			auto timeOverTx = AddGameObject<Sprite>(L"TIMEUP_TX", Vec2(512, 256));
 			timeOverTx->SetDrawActive(false);
 			timeOverTx->SetPosition(Vec2(640, 240));
 			SetSharedGameObject(L"timeUp", timeOverTx);
+			//m_fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
 		}
 		catch (...) {
 			throw;
@@ -210,6 +210,11 @@ namespace basecross {
 			//auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
 			//fade->SetIsAction(true);
 		}
+
+		//if (GameManager::GetInstance().GetTimeUp() && !m_fade.lock()->GetIsFadeOut())
+		//{
+		//	m_fade.lock()->SetIsFadeOut(true);
+		//}
 	}
 }
 //end basecross
