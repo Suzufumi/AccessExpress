@@ -9,8 +9,8 @@ namespace basecross {
 
 		CreateViewLight();
 		CreatePlayer();
-		auto titleBack = AddGameObject<Sprite>(L"SKY_TX", Vec2(1280, 1080));
-		titleBack->SetPosition(Vec2(640, 480));
+		auto titleBack = AddGameObject<Sprite>(L"SkyBox_Back_TX", Vec2(1300, 800));
+		titleBack->SetPosition(Vec2(640, 400));
 		auto titleSprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(819, 205));
 		titleSprite->SetPosition(Vec2(640, 140));
 		auto buttonSprite = AddGameObject<AnimSprite>(L"Title_BUTTON_TX", true,  Vec2(1000, 100), Vec2(0, -300));

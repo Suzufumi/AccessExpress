@@ -14,6 +14,7 @@ namespace basecross {
 	class GameStage : public Stage {
 		// ステージのパスを保存する
 		wstring m_stageXmlPath;
+		//weak_ptr<FadeInOut> m_fade;
 		//ビューの作成
 		void CreateViewLight();
 		//床の作成
