@@ -42,6 +42,32 @@ namespace basecross{
 
 	}
 
+	void Sprite::SetScale(const Vec2& scale)
+	{
+		float sprite_w = _rect.right - _rect.left;
+		float sprite_h = _rect.bottom - _rect.top;
+
+		float half_w = sprite_w * 0.5f;
+		float half_h = sprite_h * 0.5f;
+
+		float start_x = _rect.left / scale.x;
+		float end_x = _rect.right / scale.x;
+		float start_y = _rect.top / scale.y;
+		float end_y = _rect.bottom / scale.y;
+
+		// 頂点(Vertex)の配列を作る
+		vector<VertexPositionTexture> vertices = {
+			{Vec3(-half_w,+half_h,0.0f),Vec2(start_x,start_y)},	// 0番目の頂点
+			{Vec3(+half_w,+half_h,0.0f),Vec2(end_x,start_y)},	// 1番目の頂点
+			{Vec3(-half_w,-half_h,0.0f),Vec2(start_x,end_y)},	// 2番目の頂点
+			{Vec3(+half_w,-half_h,0.0f),Vec2(end_x,end_y)}	// 3番目の頂点
+		};
+
+		auto drawComp = GetComponent<PTSpriteDraw>();
+		drawComp->UpdateVertices(vertices);
+	}
+
+
 	//------------------------------------------------------------------------------------
 	/// fadeクラス
 	//------------------------------------------------------------------------------------

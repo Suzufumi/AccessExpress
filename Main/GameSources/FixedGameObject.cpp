@@ -335,7 +335,7 @@ namespace basecross {
 		gm.AddMail();
 		m_isArrive = true;
 		SetDrawActive(false);
-		App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"Mail_SE", 0.6f);
+		App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"Mail_SE", 1.0f);
 		// 獲得エフェクトを表示
 		auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
 		//MessageBox(NULL, L"", L"", MB_OK);

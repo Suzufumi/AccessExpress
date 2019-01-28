@@ -3,9 +3,9 @@
 
 namespace basecross {
 	class ResultStage : public Stage {
-		const int RANK_S = 40000;
-		const int RANK_A = 20000;
-		const int RANK_B = 10000;
+		const int RANK_S = 30000;
+		const int RANK_A = 15000;
+		const int RANK_B = 5000;
 		//ÉrÉÖÅ[ÇÃçÏê¨
 		void CreateViewLight();
 		void CreateCollectedMail();
@@ -23,6 +23,7 @@ namespace basecross {
 		void CreatePlayer();
 		float m_leap = 0.0f;
 		weak_ptr<GameObject> m_player;
+		weak_ptr<Sprite> m_clearSprite;
 		weak_ptr<Sprite> m_mailText;
 		weak_ptr<NumberSprite> m_mailNum;
 		weak_ptr<Sprite> m_maxChainText;
@@ -33,7 +34,10 @@ namespace basecross {
 		weak_ptr<Sprite> m_rankText;
 		vector<weak_ptr<Sprite>> m_rankResult;
 		vector<weak_ptr<Sprite>> m_rankFace;
+		weak_ptr<SoundItem> m_audioPtr;
+		bool m_isCountUpEnd = false;
 		Vec3 m_mailP1,m_maxChainP1,m_scoreP2;
+		float m_time = 1.2f;
 		enum progress {
 			START,
 			ADD_SCORE,

@@ -12,10 +12,10 @@ namespace basecross {
 		auto resultBack = AddGameObject<Sprite>(L"ClearBack_TX", Vec2(1441, 811));
 		resultBack->SetPosition(Vec2(640, 400));
 		resultBack->SetDrawLayer(-3);
-		auto clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(800.0f, 120.0f));
-		clearSprite->SetPosition(Vec2(640.0f, 100.0f));
+		m_clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(800.0f, 120.0f));
+		m_clearSprite.lock()->SetPosition(Vec2(640.0f, 100.0f));
 		m_push = AddGameObject<Sprite>(L"Title_BUTTON_TX", Vec2(1000, 100));
-		m_push.lock()->SetPosition(Vec2(640.0f, 700.0f));
+		m_push.lock()->SetPosition(Vec2(640.0f, 670.0f));
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
 	}
@@ -97,7 +97,7 @@ namespace basecross {
 	{
 		float width = static_cast<float>(App::GetApp()->GetGameWidth());
 		m_rankText = AddGameObject<Sprite>(L"RANK_TEXT_TX", Vec2(205, 102));
-		m_rankText.lock()->SetPosition(Vec2((float)((width/ 2)), 220));
+		m_rankText.lock()->SetPosition(Vec2(960, 400));
 		m_rankText.lock()->SetDrawActive(false);
 		// 各ランクの設定
 		m_rankResult.push_back(AddGameObject<Sprite>(L"RANK_S_TX", Vec2(205, 205)));
@@ -106,16 +106,17 @@ namespace basecross {
 		m_rankResult.push_back(AddGameObject<Sprite>(L"RANK_C_TX", Vec2(205, 205)));
 		for (auto rankResult : m_rankResult)
 		{
-			rankResult.lock()->SetPosition(Vec2(900, 270));
+			rankResult.lock()->SetPosition(Vec2(700, 330));
 			rankResult.lock()->SetDrawActive(false);
 		}
 		// ランクに応じた表情テクスチャの設定
-		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_S_TX", Vec2(410, 410)));
-		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_A_TX", Vec2(410, 410)));
-		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_B_TX", Vec2(410, 410)));
-		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_C_TX", Vec2(410, 410)));
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_S_TX", Vec2(307, 307)));
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_A_TX", Vec2(307, 307)));
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_B_TX", Vec2(307, 307)));
+		m_rankFace.push_back(AddGameObject<Sprite>(L"RESULT_C_TX", Vec2(307, 307)));
 		for (auto rankFace : m_rankFace)
 		{
+			rankFace.lock()->SetPosition(Vec2(380, 340));
 			rankFace.lock()->SetDrawActive(false);
 		}
 	}
@@ -142,18 +143,27 @@ namespace basecross {
 
 	void ResultStage::CountupScore()
 	{
-		auto scenePtr = App::GetApp()->GetScene<Scene>();
-		scenePtr->MusicOnceStart(L"Countup_SE", 1.0f);
+		m_time += App::GetApp()->GetElapsedTime();
+		if (m_time >= 1.2f)
+		{
+			auto scenePtr = App::GetApp()->GetScene<Scene>();
+			m_audioPtr = scenePtr->MusicOnceStart(L"Countup_SE", 1.0f);
+			m_time = 0.0f;
+		}
 		if (m_scoreNum.lock()->GetFinishCountUp()) {
-			m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(750, -500, 0);
+			//m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(750, -470, 0);
 			m_push.lock()->SetDrawActive(true);
 			m_mailText.lock()->SetDrawActive(false);
 			m_mailNum.lock()->SetDrawActive(false);
 			m_maxChainText.lock()->SetDrawActive(false);
 			m_maxChainNum.lock()->SetDrawActive(false);
-			m_scoreText.lock()->SetPosition(Vec2(720.0f, 470.0f));
+			auto audioMa = App::GetApp()->GetXAudio2Manager();
+			audioMa->Stop(m_audioPtr.lock());
+			m_isCountUpEnd = true;
+			m_scoreText.lock()->SetScale(Vec2(256, 128));
+			m_scoreText.lock()->SetPosition(Vec2(450, 585));
 			//m_scoreNum.lock()->GetComponent<Transform>()->SetPosition()
-			CreatePlayer();
+			//CreatePlayer();
 			m_progress = progress::END;
 		}
 
@@ -163,6 +173,13 @@ namespace basecross {
 	///-----------------------------------------------------------------------------
 	void ResultStage::ResultProcess(int resultScore)
 	{
+		if (m_isCountUpEnd)
+		{
+			auto balloon = AddGameObject<Sprite>(L"BALLOON_TX", Vec2(338, 293));
+			balloon->SetPosition(Vec2(690, 330));
+			balloon->SetDrawLayer(-1);
+			m_isCountUpEnd = false;
+		}
 		ShowRank(resultScore);
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		if (CntlVec[0].wPressedButtons) {
@@ -179,7 +196,7 @@ namespace basecross {
 			gm.SetIsFade(true);
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 		}
-		m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(App::GetApp()->GetElapsedTime());
+		//m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(App::GetApp()->GetElapsedTime());
 
 	}
 
@@ -192,18 +209,22 @@ namespace basecross {
 		if (resultScore >= RANK_S)
 		{
 			m_rankResult[0].lock()->SetDrawActive(true);
+			m_rankFace[0].lock()->SetDrawActive(true);
 		}
 		else if (resultScore >= RANK_A && resultScore < RANK_S)
 		{
 			m_rankResult[1].lock()->SetDrawActive(true);
+			m_rankFace[1].lock()->SetDrawActive(true);
 		}
 		else if (resultScore >= RANK_B && resultScore < RANK_A)
 		{
 			m_rankResult[2].lock()->SetDrawActive(true);
+			m_rankFace[2].lock()->SetDrawActive(true);
 		}
 		else
 		{
 			m_rankResult[3].lock()->SetDrawActive(true);
+			m_rankFace[3].lock()->SetDrawActive(true);
 		}
 
 	}
@@ -216,7 +237,7 @@ namespace basecross {
 		m_player = AddGameObject<GameObject>();
 		m_player.lock()->SetDrawLayer(100);
 		auto transComp = m_player.lock()->GetComponent<Transform>();
-		transComp->SetPosition(-4.0f, -4.0f, -5.0f);
+		transComp->SetPosition(-4.0f, -1.0f, -5.0f);
 		transComp->SetScale(1.5f, 1.5f, 1.5f);
 		auto drawComp = m_player.lock()->AddComponent<BcPNTBoneModelDraw>();
 		drawComp->SetMultiMeshResource(L"PLAYER_MODEL");
