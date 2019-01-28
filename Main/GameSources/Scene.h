@@ -45,7 +45,8 @@ namespace basecross{
 		
 		void CreateResources();
 		void CreateMusicResources();
-		void MusicOnceStart(wstring key,float volume);
+		//void MusicOnceStart(wstring key,float volume);
+		shared_ptr<SoundItem> MusicOnceStart(wstring key, float volume);
 		shared_ptr<SoundItem> MusicRoopStart(wstring key, float volume);
 
 		int GetStageNum() const { return m_stageNum; }
