@@ -449,8 +449,10 @@ namespace basecross {
 		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && m_checkPointNum != NULL) {
 			m_Lerp = 1.0f;
 			// 対象のチェックポイントがfalseだったら
+			//演出でチェイン数を飛ばす
+			auto flyingChain = GetStage()->AddGameObject<FlyingChain>();
 			//演出でチェイン数を飛ばすために値を与える
-			GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
+			flyingChain->FlySet(GetChain());
 			// フラグを立てる
 			checkPoint->ArriveCheckPoint();
 			//スローの経過時間をリセット
@@ -501,8 +503,10 @@ namespace basecross {
 			m_Lerp = 1.0f;
 			//メールを取得状態にする
 			mail->ArriveMail();
+			//演出でチェイン数を飛ばす
+			auto flyingChain = GetStage()->AddGameObject<FlyingChain>();
 			//演出でチェイン数を飛ばすために値を与える
-			GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
+			flyingChain->FlySet(GetChain());
 			//スローの経過時間をリセット
 			gameManager.ResetSloawPassage();
 			//スローにする
@@ -871,7 +875,9 @@ namespace basecross {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 	}
+	///-------------------------------------------------------------------------------
 	//プレイヤーの向いている方向を返す
+	///-------------------------------------------------------------------------------
 	Vec2 Player::forwardAngle() {
 		Vec2 forwardAngle;
 		//横のカメラ位置を制御する角度
