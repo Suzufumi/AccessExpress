@@ -322,7 +322,7 @@ namespace basecross {
 					continue;
 				}
 				//Rayの範囲よりも遠い時は、判定上は当たっていても無視する
-				if (deltaLength >= m_rayRange) {
+				if (deltaLength >= m_rayRange+1) {
 					continue;
 				}
 				m_LockOnObj = lockonObj;
@@ -364,10 +364,8 @@ namespace basecross {
 			gameManager.SetOnSlow(false);
 			//スコアを増やす
 			gameManager.AddScore(GetChain() * 20 + GetChain() * 10);
-			//軌跡を消す
-			//m_ActionLine.lock()->SetOnDraw(false);
-			//次のリンクへ飛べなかったのでコンボリセットする
-			ResetCombo();
+			//次のリンクへ飛べなかったのでチェインリセットする
+			ChainFailure();
 			//飛び終わったらステートをデータ体にする
 			m_StateMachine->ChangeState(DataState::Instance());
 		}
@@ -399,7 +397,7 @@ namespace basecross {
 		if (m_Lerp >= 1.0f && m_DroneNo != NULL) {
 			m_Lerp = 1.0f;
 			//コンボリセットする
-			ResetCombo();
+			ChainFailure();
 			//飛ぶ対象がいる状態のオフ
 			ResetGoLink();
 			//向かっているドローンの初期化
@@ -436,7 +434,7 @@ namespace basecross {
 				//向かっているドローンの初期化
 				m_checkPointNum = NULL;
 				//次の目標へ飛べなかったのでコンボリセット
-				ResetCombo();
+				ChainFailure();
 				//スロー時間が終了したためステートをデータ体にする
 				m_StateMachine->ChangeState(DataState::Instance());
 			}
@@ -488,8 +486,8 @@ namespace basecross {
 			if (gameManager.GetSlowPassage() >= 1.0f) {
 				//スローを終わる
 				gameManager.SetOnSlow(false);
-				//次の目標へ飛べなかったのでコンボリセット
-				ResetCombo();
+				//次の目標へ飛べなかったのでチェインリセット
+				ChainFailure();
 				//スロー時間が終了したためステートをデータ体にする
 				m_StateMachine->ChangeState(DataState::Instance());
 			}
@@ -623,7 +621,7 @@ namespace basecross {
 			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
 				//Rayの範囲内にあるオブジェクトかを見る
-				if ((origin - linkTrans->GetWorldPosition()).length() <= m_rayRange) {
+				if ((origin - linkTrans->GetWorldPosition()).length() <= m_rayRange+1.0f) {
 					//照準に当たっていることを教える
 					sightingDevice->SetCaptureLink(true);
 					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
@@ -671,7 +669,7 @@ namespace basecross {
 			//最後にベジエ曲線で飛んだオブジェクトじゃないものに当たっていたら
 			if (hit && p2 + Vec3(0, -1, 0) != droneTrans->GetWorldPosition()) {
 				//Rayの範囲内にあるオブジェクトかを見る
-				if ((origin - droneTrans->GetWorldPosition()).length() <= m_rayRange) {
+				if ((origin - droneTrans->GetWorldPosition()).length() <= m_rayRange+1.0f) {
 					//照準に当たっていることを教える
 					sightingDevice->SetCaptureLink(true);
 					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
@@ -751,7 +749,7 @@ namespace basecross {
 				//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
 				if (hit && (p2 + Vec3(0, -1, 0)) != mailTrans->GetWorldPosition()) {
 					//Rayの範囲内にあるオブジェクトかを見る
-					if ((origin - mailTrans->GetWorldPosition()).length() <= m_rayRange) {
+					if ((origin - mailTrans->GetWorldPosition()).length() <= m_rayRange+1.0f) {
 						//照準に当たっていることを教える
 						sightingDevice->SetCaptureLink(true);
 						if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
@@ -869,7 +867,7 @@ namespace basecross {
 	}
 	//タイムアップアニメーションが終わったらリザルトにいく
 	void Player::TimeUpAnimeFinishToResult() {
-		if (GetComponent<PNTBoneModelDraw>()->IsTargetAnimeEnd()) {
+		if (GetComponent<PNTBoneModelDraw>()->IsTargetAnimeEnd() && GameManager::GetInstance().GetTimeUp()) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
 		}
 	}
@@ -906,6 +904,17 @@ namespace basecross {
 			}
 		}
 	}
+	// チェイン失敗時に色々リセットする
+	void Player::ChainFailure() {
+		m_chain = 0;
+		m_rayRange = m_rayRangeDefolt;
+		Vec3 delta = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition()
+			- m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
+		float deltaLength = delta.length();
+		if (deltaLength >= m_rayRange + 1)
+			m_islockon = false;
+	}
+
 
 	//---------------------------------------------------------------------------------------------
 	//情報の表示
