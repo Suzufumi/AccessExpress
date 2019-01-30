@@ -47,7 +47,7 @@ namespace basecross {
 		int m_checkPointNum = NULL;
 		int m_MailNum = NULL;
 		weak_ptr<GameObject> m_LockOnObj;		//ロックオンしているオブジェクト
-		weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
+		//weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
@@ -137,7 +137,7 @@ namespace basecross {
 		//Rayを飛ばす
 		void RayShot();
 		//Rayを可視化する
-		void RayView(Vec3 origin,Vec3 originDir);
+		//void RayView(Vec3 origin,Vec3 originDir);
 		//レイが修正範囲内に入っていてLボタンを押していたら修正する
 		void Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		// ロックオンするオブジェクトを設定

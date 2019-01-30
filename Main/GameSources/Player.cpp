@@ -365,7 +365,7 @@ namespace basecross {
 			//スコアを増やす
 			gameManager.AddScore(GetChain() * 20 + GetChain() * 10);
 			//軌跡を消す
-			m_ActionLine.lock()->SetOnDraw(false);
+			//m_ActionLine.lock()->SetOnDraw(false);
 			//次のリンクへ飛べなかったのでコンボリセットする
 			ResetCombo();
 			//飛び終わったらステートをデータ体にする
@@ -490,8 +490,6 @@ namespace basecross {
 				gameManager.SetOnSlow(false);
 				//次の目標へ飛べなかったのでコンボリセット
 				ResetCombo();
-				//軌跡を消す
-				m_ActionLine.lock()->SetDrawActive(false);
 				//スロー時間が終了したためステートをデータ体にする
 				m_StateMachine->ChangeState(DataState::Instance());
 			}
@@ -604,23 +602,6 @@ namespace basecross {
 		DroneRayCheck(sightPos, dir);
 	}
 	//---------------------------------------------------------------------------------------------
-	//Rayを可視化する	
-	//---------------------------------------------------------------------------------------------
-	void Player::RayView(Vec3 origin, Vec3 end) {
-		auto ptrActionLine = m_ActionLine.lock();
-		if (ptrActionLine) {
-			ptrActionLine->ResetObject(origin, end);
-			ptrActionLine->SetOnDraw(true);
-		}
-		else {
-			//ラインの作成
-			auto ptrLine = GetStage()->AddGameObject<ActionLine>(origin, end);
-			m_ActionLine = ptrLine;
-			ptrLine->SetDrawActive(true);
-		}
-
-	}
-	//---------------------------------------------------------------------------------------------
 	//RayとLinkオブジェクトが当たっているかを調べる
 	//---------------------------------------------------------------------------------------------
 	void Player::LinkRayCheck(Vec3 origin, Vec3 originDir) {
@@ -650,8 +631,6 @@ namespace basecross {
 						dir.y = 0;
 						//オブジェクトに被らないように方向を加味してずらした値を渡す
 						SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
-						//軌跡
-						RayView(origin, linkTrans->GetWorldPosition() + dir.normalize());
 						//経過をリセット
 						m_Lerp = 0;
 						//飛ぶの確定
@@ -698,9 +677,6 @@ namespace basecross {
 					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 						SetBezierPoint(droneTrans->GetWorldPosition());
 						m_DroneNo = count;
-						if (m_ActionLine.lock()) {
-							m_ActionLine.lock()->SetDrawActive(false);
-						}
 						//経過をリセット
 						m_Lerp = 0;
 						//飛ぶの確定
@@ -743,8 +719,6 @@ namespace basecross {
 					//オブジェクトに被らないように方向を加味してずらした値を渡す
 					SetBezierPoint(pointTrans->GetWorldPosition() + dir.normalize());
 					m_checkPointNum = count;
-					//軌跡
-					RayView(origin, pointTrans->GetWorldPosition() + dir.normalize());
 					m_Lerp = 0;
 					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
 					m_DroneNo = NULL;
@@ -785,8 +759,6 @@ namespace basecross {
 							dir.y = 0;
 							//オブジェクトに被らないように方向を加味してずらした値を渡す
 							SetBezierPoint(mailTrans->GetWorldPosition() + dir.normalize());
-							//軌跡
-							RayView(origin, mailTrans->GetWorldPosition() + dir.normalize());
 							//何番のメールにアクセスしているか保存
 							m_MailNum = count;
 							m_Lerp = 0;

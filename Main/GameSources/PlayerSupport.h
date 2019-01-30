@@ -81,32 +81,4 @@ namespace basecross {
 		virtual void OnDraw() override;
 		void FlySet(int chain);
 	};
-	//--------------------------------------------------------------------------------------
-	///	ライン
-	//--------------------------------------------------------------------------------------
-	class ActionLine : public GameObject {
-		Vec3 m_StartObj;
-		Vec3 m_EndObj;
-	public:
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	コンストラクタ
-		@param[in]	StagePtr	ステージ
-		@param[in]	StartObj	スタートのオブジェクト
-		@param[in]	EndObj	エンドのオブジェクト
-		*/
-		//--------------------------------------------------------------------------------------
-		ActionLine(const shared_ptr<Stage>& StagePtr, Vec3 StartObj,Vec3 EndObj);
-		virtual ~ActionLine() {}
-		//初期化
-		virtual void OnCreate() override;
-		//更新
-		virtual void OnUpdate() override;
-		//線のスタートとエンドオブジェクトの設定
-		void ResetObject(Vec3 StartObj, Vec3 EndObj) {
-			m_StartObj = StartObj;
-			m_EndObj = EndObj;
-		}
-		void SetOnDraw(bool f);
-	};
 }
