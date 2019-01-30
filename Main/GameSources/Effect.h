@@ -17,6 +17,19 @@ namespace basecross
 	};
 
 	//-----------------------------------------------------------------------------------
+	/// ボーナスエフェクト
+	//-----------------------------------------------------------------------------------
+	class BonusEffect : public MultiParticle
+	{
+	public:
+		BonusEffect(const shared_ptr<Stage>& stagePtr);
+		virtual ~BonusEffect();
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		void InsertBounusEffect(const Vec3& pos, const Vec2& scale);
+	};
+
+	//-----------------------------------------------------------------------------------
 	/// 雷エフェクト
 	//-----------------------------------------------------------------------------------
 	class SparkEffect : public MultiParticle
