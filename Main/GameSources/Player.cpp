@@ -356,6 +356,14 @@ namespace basecross {
 		if (m_Lerp >= 0.9f && gameManager.GetOnSlow() == false) {
 			//スローにする
 			gameManager.SetOnSlow(true);
+			if (m_chain % BONUS_CHAIN == 0)
+			{
+				auto ptrEffect = GetStage()->GetSharedGameObject<BonusEffect>(L"BonusEffect", false);
+				if (ptrEffect) {
+					auto playerPos = GetComponent<Transform>()->GetWorldPosition();
+					ptrEffect->InsertBounusEffect(Vec3(playerPos.x, playerPos.y - 3.0f, playerPos.z), Vec2(3.0f, 3.0f));
+				}
+			}
 		}
 		//飛ぶ処理が終わったら
 		if (gameManager.GetSlowPassage() >= 1.0f) {
@@ -511,6 +519,14 @@ namespace basecross {
 			gameManager.ResetSloawPassage();
 			//スローにする
 			gameManager.SetOnSlow(true);
+			if (m_chain % BONUS_CHAIN == 0)
+			{
+				auto ptrEffect = GetStage()->GetSharedGameObject<BonusEffect>(L"BonusEffect", false);
+				if (ptrEffect) {
+					auto playerPos = GetComponent<Transform>()->GetWorldPosition();
+					ptrEffect->InsertBounusEffect(Vec3(playerPos.x, playerPos.y - 3.0f, playerPos.z), Vec2(3.0f, 3.0f));
+				}
+			}
 		}
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
@@ -903,11 +919,11 @@ namespace basecross {
 		if (m_chain % BONUS_CHAIN == 0)
 		{
 			// 獲得エフェクトを表示
-			auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
+			//auto ptrEffect = GetStage()->GetSharedGameObject<BonusEffect>(L"BonusEffect", false);
 			//MessageBox(NULL, L"", L"", MB_OK);
-			if (ptrEffect) {
-				ptrEffect->InsertGetEffect(GetComponent<Transform>()->GetWorldPosition());
-			}
+			//if (ptrEffect) {
+			//	ptrEffect->InsertBounusEffect(GetComponent<Transform>()->GetWorldPosition(), Vec2(2.0f, 2.0f));
+			//}
 		}
 	}
 	// チェイン失敗時に色々リセットする

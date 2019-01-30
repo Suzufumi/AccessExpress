@@ -45,6 +45,7 @@ namespace basecross
 		ptrParticle->SetMaxTime(0.5f);
 		// 読み込んだエフェクトをスプライトにして設定
 		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
+			// どの方向に拡散させるか
 			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne() * 2.0f;
 			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne() * 1.0f;
 			rParticleSprite.m_LocalPos.z = Util::RandZeroToOne() * 2.0f;
@@ -89,7 +90,7 @@ namespace basecross
 
 	void BonusEffect::InsertBounusEffect(const Vec3& pos, const Vec2& scale)
 	{
-		auto ptrParticle = InsertParticle(10);
+		auto ptrParticle = InsertParticle(15);
 		ptrParticle->SetEmitterPos(pos);
 		// エフェクト画像の読み込み
 		ptrParticle->SetTextureResource(L"GetEffect_TX");
@@ -97,9 +98,9 @@ namespace basecross
 		ptrParticle->SetMaxTime(0.5f);
 		// 読み込んだエフェクトをスプライトにして設定
 		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
-			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne() * 2.0f;
-			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne() * 1.0f;
-			rParticleSprite.m_LocalPos.z = Util::RandZeroToOne() * 2.0f;
+			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne();
+			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne();
+			rParticleSprite.m_LocalPos.z = Util::RandZeroToOne();
 
 			if (rParticleSprite.m_LocalPos.y < 0) {
 				rParticleSprite.m_LocalScale = Vec2(-scale);
@@ -108,14 +109,18 @@ namespace basecross
 				rParticleSprite.m_LocalScale = Vec2(scale);
 			}
 
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+			auto distance = tpsCamera->GetEye() - pos;
+			auto dir = distance.normalize();
 			//各パーティクルの移動速度を指定
 			rParticleSprite.m_Velocity = Vec3(
 				rParticleSprite.m_LocalPos.x * 5.0f,
-				rParticleSprite.m_LocalPos.y * 10.0f,
+				rParticleSprite.m_LocalPos.y * 15.0f,
 				rParticleSprite.m_LocalPos.z * 5.0f
 			);
 			//色の指定
-			rParticleSprite.m_Color = Col4(1.0f, 1.0f, 0.0f, 0.3f);
+			rParticleSprite.m_Color = Col4(1.0f, 1.0f, 0.0f, 0.6f);
 		}
 
 	}
