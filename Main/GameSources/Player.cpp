@@ -917,6 +917,24 @@ namespace basecross {
 		return forwardAngle;
 	};
 
+	void Player::AddChain()
+	{
+		m_chain++;
+		if (GameManager::GetInstance().GetMaxChain() < m_chain) {
+			GameManager::GetInstance().SetMaxChain(m_chain);
+		}
+
+		if (m_chain % BONUS_CHAIN == 0)
+		{
+			// 獲得エフェクトを表示
+			auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
+			//MessageBox(NULL, L"", L"", MB_OK);
+			if (ptrEffect) {
+				ptrEffect->InsertGetEffect(GetComponent<Transform>()->GetWorldPosition());
+			}
+		}
+	}
+
 	//---------------------------------------------------------------------------------------------
 	//情報の表示
 	//---------------------------------------------------------------------------------------------
@@ -966,7 +984,7 @@ namespace basecross {
 		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
 
 		// コンボを加算する
-		Obj->AddCombo();
+		Obj->AddChain();
 
 	}
 	//ステート実行中に毎ターン呼ばれる関数

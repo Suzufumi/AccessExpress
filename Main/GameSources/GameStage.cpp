@@ -119,7 +119,8 @@ namespace basecross {
 		SetSharedGameObject(L"GetEffect", multiEfkPtr);
 		auto multiSparkPtr = AddGameObject<SparkEffect>();
 		SetSharedGameObject(L"SparkEffect", multiSparkPtr);
-
+		auto ptrEffect = GetSharedGameObject<GetEffect>(L"GetEffect", false);
+		ptrEffect->InsertGetEffect(Vec3(0, 0, 0));
 	}
 
 
