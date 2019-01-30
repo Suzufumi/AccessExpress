@@ -71,12 +71,15 @@ namespace basecross {
 		: GameObject(stagePtr)
 	{
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto quatStr = XmlDocReader::GetAttribute(pNode, L"Quat");
 		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
 
 		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		auto quat = MyUtil::unityVec3StrToBCVec3(quatStr);
 		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 
 		m_position = pos;
+		m_qt = quat;
 		m_scale = scale;
 
 	}
@@ -85,10 +88,8 @@ namespace basecross {
 		auto ptrTrans = GetComponent<Transform>();
 		//auto col = AddComponent<CollisionObb>();
 		//col->SetAfterCollision(AfterCollision::None);
-		Quat Qt;
-		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
 		ptrTrans->SetWorldPosition(m_position);
-		ptrTrans->SetQuaternion(Qt);
+		ptrTrans->SetQuaternion(m_qt);
 		ptrTrans->SetScale(m_scale);
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
@@ -100,13 +101,15 @@ namespace basecross {
 		);
 
 		//描画コンポーネントの追加
-		auto drawComp = AddComponent<PNTStaticDraw>();
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		SetDrawLayer(-1);
 		drawComp->SetMeshResource(L"CHECKPOINT_MODEL");
 		drawComp->SetMeshToTransformMatrix(spanMat);
-		//Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
+		//drawComp->SetLightingEnabled(false);
+		//Col4 Color(1.0f, 1.0f, 1.0f, 0.5f);
 		//drawComp->SetDiffuse(Color);
+		SetAlphaActive(true);
 
 		GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
@@ -115,15 +118,16 @@ namespace basecross {
 	}
 	void CheckPoint::ArriveCheckPoint() {
 		auto& gm = GameManager::GetInstance();
-		gm.SetCheckPointNum((gm.GetCheckPointNum() - 1));
-		m_isArrive = true;
-		Col4 col(1.0f, 0.0f, 0.0f, 1.0f);
-		auto drawComp = GetComponent<PNTStaticDraw>();
-		drawComp->SetDiffuse(col);
-		if(gm.GetCheckPointNum() == 0)
+		int count = 0;
+		while (gm.GetMail() > 0)
 		{
-			PostEvent(1.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+			gm.DecreaseMail();
+			count++;
 		}
+		gm.AddMaxMail(count);
+		Col4 col(0.4f, 1.0f, 0.4f, 1.0f);
+		auto drawComp = GetComponent<BcPNTStaticDraw>();
+		drawComp->SetDiffuse(col);
 	}
 
 	//---------------------------------------------------------------------------------------------
@@ -271,7 +275,7 @@ namespace basecross {
 
 	}
 	///-----------------------------------------------------------------------------------
-	// CheckPoint
+	// Mail
 	///-----------------------------------------------------------------------------------
 
 	MailObject::MailObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)

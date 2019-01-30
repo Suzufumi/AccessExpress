@@ -106,7 +106,7 @@ namespace basecross {
 		m_rankResult.push_back(AddGameObject<Sprite>(L"RANK_C_TX", Vec2(205, 205)));
 		for (auto rankResult : m_rankResult)
 		{
-			rankResult.lock()->SetPosition(Vec2(700, 330));
+			rankResult.lock()->SetPosition(Vec2(700, 320));
 			rankResult.lock()->SetDrawActive(false);
 		}
 		// ランクに応じた表情テクスチャの設定
@@ -161,7 +161,7 @@ namespace basecross {
 			audioMa->Stop(m_audioPtr.lock());
 			m_isCountUpEnd = true;
 			m_scoreText.lock()->SetScale(Vec2(256, 128));
-			m_scoreText.lock()->SetPosition(Vec2(450, 585));
+			m_scoreText.lock()->SetPosition(Vec2(480, 585));
 			//m_scoreNum.lock()->GetComponent<Transform>()->SetPosition()
 			//CreatePlayer();
 			m_progress = progress::END;
@@ -176,7 +176,7 @@ namespace basecross {
 		if (m_isCountUpEnd)
 		{
 			auto balloon = AddGameObject<Sprite>(L"BALLOON_TX", Vec2(338, 293));
-			balloon->SetPosition(Vec2(690, 330));
+			balloon->SetPosition(Vec2(690, 320));
 			balloon->SetDrawLayer(-1);
 			m_isCountUpEnd = false;
 		}

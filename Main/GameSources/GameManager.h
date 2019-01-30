@@ -23,6 +23,7 @@ namespace basecross {
 		 int m_checkPointNum = 5;	// チェックポイントの数
 		 int m_maxChain = 0;
 		 bool m_isFade = true;		// フェード中かどうか
+		 int m_maxMailNum;
 		 int m_mailNum;
 	public:
 		static GameManager& GetInstance() {
@@ -122,18 +123,6 @@ namespace basecross {
 			m_slowPassage = 0;
 		}
 		//----------------------------------------------------------------------------------
-		///現在チェックポイントが何個あるか取得
-		//----------------------------------------------------------------------------------
-		int GetCheckPointNum() const
-		{ return m_checkPointNum; }
-		//----------------------------------------------------------------------------------
-		///
-		void SetCheckPointNum(int checkPointNum)
-		{ m_checkPointNum = checkPointNum; }
-		
-		void ResetCheckPointNum()
-		{ m_checkPointNum = 5; }
-		//----------------------------------------------------------------------------------
 		//マックスチェイン数取得
 		//----------------------------------------------------------------------------------
 		int GetMaxChain() { return m_maxChain; }
@@ -152,6 +141,16 @@ namespace basecross {
 		{ m_isFade = isFade; }
 
 		//----------------------------------------------------------------------------------
+		//届けたメールの総数を更新
+		//----------------------------------------------------------------------------------
+		void AddMaxMail(int mailNum)
+		{ m_maxMailNum += mailNum; }
+		int GetMaxMail()
+		{ return m_maxMailNum; }
+		void ResetMaxMail()
+		{ m_maxMailNum = 0; }
+
+		//----------------------------------------------------------------------------------
 		//メール数を増やす
 		//----------------------------------------------------------------------------------
 		void AddMail() { m_mailNum++; }
@@ -163,5 +162,7 @@ namespace basecross {
 		//メール数をリセットする
 		//----------------------------------------------------------------------------------
 		void ResetMail() { m_mailNum = 0; }
+
+		void DecreaseMail() { m_mailNum--; }
 	};
 }

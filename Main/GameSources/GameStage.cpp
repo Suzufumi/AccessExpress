@@ -119,7 +119,8 @@ namespace basecross {
 		SetSharedGameObject(L"GetEffect", multiEfkPtr);
 		auto multiSparkPtr = AddGameObject<SparkEffect>();
 		SetSharedGameObject(L"SparkEffect", multiSparkPtr);
-
+		auto ptrEffect = GetSharedGameObject<GetEffect>(L"GetEffect", false);
+		ptrEffect->InsertGetEffect(Vec3(0, 0, 0));
 	}
 
 
@@ -137,11 +138,12 @@ namespace basecross {
 			gm.SetOnSlow(false);
 			//スコアを初期化する
 			gm.ResetNowScore();
-			//gm.ResetCheckPointNum();
 			//マックスチェイン初期化
 			gm.ResetMaxChain();
 			//メール数初期化
 			gm.ResetMail();
+			// 最大メール数の初期化
+			gm.ResetMaxMail();
 			//・ｽ^・ｽC・ｽ・ｽ・ｽA・ｽb・ｽv・ｽt・ｽ・ｽ・ｽO・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ
 			gm.ResetTimeUp();
 			CreateSharedObjectGroup(L"Link");

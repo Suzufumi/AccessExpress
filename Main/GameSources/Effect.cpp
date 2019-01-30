@@ -31,7 +31,7 @@ namespace basecross
 		//		}
 		//	}
 		//}
-		//親クラスのOnUpdate()を呼ぶ
+		// 親クラスのOnUpdate()を呼ぶ
 		MultiParticle::OnUpdate();
 	}
 
@@ -42,7 +42,7 @@ namespace basecross
 		// エフェクト画像の読み込み
 		ptrParticle->SetTextureResource(L"GetEffect_TX");
 		// 生存時間の設定
-		ptrParticle->SetMaxTime(0.5f);
+		ptrParticle->SetMaxTime(200.0f);
 		// 読み込んだエフェクトをスプライトにして設定
 		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
 			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne() * 2.0f;
