@@ -137,11 +137,12 @@ namespace basecross {
 			gm.SetOnSlow(false);
 			//スコアを初期化する
 			gm.ResetNowScore();
-			//gm.ResetCheckPointNum();
 			//マックスチェイン初期化
 			gm.ResetMaxChain();
 			//メール数初期化
 			gm.ResetMail();
+			// 最大メール数の初期化
+			gm.ResetMaxMail();
 			//・ｽ^・ｽC・ｽ・ｽ・ｽA・ｽb・ｽv・ｽt・ｽ・ｽ・ｽO・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ
 			gm.ResetTimeUp();
 			CreateSharedObjectGroup(L"Link");
