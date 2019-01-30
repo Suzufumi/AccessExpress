@@ -41,6 +41,10 @@ namespace basecross {
 	}
 
 	void RemainingTimerSprite::OnCreate() {
+		auto& gm = GameManager::GetInstance();
+		//・ｽ^・ｽC・ｽ・ｽ・ｽA・ｽb・ｽv・ｽt・ｽ・ｽ・ｽO・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ
+		gm.ResetTimeUp();
+
 		// 数字ごとの範囲を設定する
 		for (int i = 0; i < 10; i++) {
 			m_numRects.push_back({

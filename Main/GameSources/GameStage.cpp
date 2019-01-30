@@ -144,8 +144,6 @@ namespace basecross {
 			gm.ResetMail();
 			// 最大メール数の初期化
 			gm.ResetMaxMail();
-			//・ｽ^・ｽC・ｽ・ｽ・ｽA・ｽb・ｽv・ｽt・ｽ・ｽ・ｽO・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ
-			gm.ResetTimeUp();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			CreateSharedObjectGroup(L"CheckPoints");
