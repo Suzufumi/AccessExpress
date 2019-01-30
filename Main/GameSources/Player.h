@@ -12,6 +12,7 @@ namespace basecross {
 		unique_ptr<StateMachine<Player>>  m_StateMachine;	//ステートマシーン
 		unique_ptr<StateMachine<Player>> m_animStateMachine; // アニメーションのステートマシン
 		const int FIRST_CHAIN_TIME = 180;	// 最初にチェインするときの時間
+		const int BONUS_CHAIN = 5;	// ボーナスを与える倍数
 
 		float m_nowFallSpeed = 8.0f;		//落下のスピード
 		float m_nowWalkSpeed = 8.0f;		//現在の移動のスピード
@@ -169,12 +170,7 @@ namespace basecross {
 		}
 
 		// コンボを加算する
-		void AddCombo() { 
-			m_chain++; 
-			if (GameManager::GetInstance().GetMaxChain() < m_chain) {
-				GameManager::GetInstance().SetMaxChain(m_chain);
-			}
-		}
+		void AddChain();
 		// コンボをリセットする
 		void ResetCombo() { m_chain = 0; }
 		// 現在のコンボ数を返す

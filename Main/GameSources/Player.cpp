@@ -451,21 +451,14 @@ namespace basecross {
 		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && m_checkPointNum != NULL) {
 			m_Lerp = 1.0f;
 			// 対象のチェックポイントがfalseだったら
-			if (!checkPoint->GetIsArrive()) {
-				//演出でチェイン数を飛ばすために値を与える
-				GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
-				// フラグを立てる
-				checkPoint->ArriveCheckPoint();
-				//スローの経過時間をリセット
-				gameManager.ResetSloawPassage();
-				//スローにする
-				gameManager.SetOnSlow(true);
-			}
-			else
-			{
-				//スロー時間が終了したためステートをデータ体にする
-				m_StateMachine->ChangeState(DataState::Instance());
-			}
+			//演出でチェイン数を飛ばすために値を与える
+			GetStage()->GetSharedGameObject<FlyingChain>(L"FlyingChain")->FlySet(GetChain());
+			// フラグを立てる
+			checkPoint->ArriveCheckPoint();
+			//スローの経過時間をリセット
+			gameManager.ResetSloawPassage();
+			//スローにする
+			gameManager.SetOnSlow(true);
 		}
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
@@ -924,6 +917,24 @@ namespace basecross {
 		return forwardAngle;
 	};
 
+	void Player::AddChain()
+	{
+		m_chain++;
+		if (GameManager::GetInstance().GetMaxChain() < m_chain) {
+			GameManager::GetInstance().SetMaxChain(m_chain);
+		}
+
+		if (m_chain % BONUS_CHAIN == 0)
+		{
+			// 獲得エフェクトを表示
+			auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
+			//MessageBox(NULL, L"", L"", MB_OK);
+			if (ptrEffect) {
+				ptrEffect->InsertGetEffect(GetComponent<Transform>()->GetWorldPosition());
+			}
+		}
+	}
+
 	//---------------------------------------------------------------------------------------------
 	//情報の表示
 	//---------------------------------------------------------------------------------------------
@@ -934,8 +945,8 @@ namespace basecross {
 		strFps += Util::UintToWStr(fps);
 		strFps += L"\n";
 		wstring checkNum(L"CheckPointNum : ");
-		auto& gm = GameManager::GetInstance();
-		checkNum += Util::IntToWStr(gm.GetCheckPointNum()) + L"\n";
+		//auto& gm = GameManager::GetInstance();
+		//checkNum += Util::IntToWStr(gm.GetCheckPointNum()) + L"\n";
 		wstring combo(L"Combo : ");
 		combo += Util::IntToWStr(m_chain) + L"\n";
 		wstring chainLimit(L"CHAIN_TIME : ");
@@ -973,7 +984,7 @@ namespace basecross {
 		Obj->GetAnimStateMachine()->ChangeState(PlayerFlyAnim::Instance());
 
 		// コンボを加算する
-		Obj->AddCombo();
+		Obj->AddChain();
 
 	}
 	//ステート実行中に毎ターン呼ばれる関数
