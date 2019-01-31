@@ -92,7 +92,7 @@ namespace basecross {
 	//チェインの文字とバーを見せるオブジェクト
 	//-------------------------------------------------------------------------------------------------
 	ViewChainLetter::ViewChainLetter(const shared_ptr<Stage>& stagePtr)
-		: Sprite(stagePtr, L"chain_gauge_TX", Vec2(155, 155))
+		: Sprite(stagePtr, L"chain_gauge_TX", Vec2(155, 155)), m_maxGageLength(1.0f)
 	{
 
 	}
@@ -108,7 +108,7 @@ namespace basecross {
 	}
 	void ViewChainLetter::OnUpdate() {
 		auto& manager = GameManager::GetInstance();
-		float remainingGage = 1.0f - manager.GetSlowPassage();
+		float remainingGage = m_maxGageLength - (m_maxGageLength * manager.GetSlowPassage() * manager.GetControlGageSpeed());
 		m_gage.lock()->GetComponent<Transform>()->SetScale(remainingGage,1.0f , 1.0f);
 		m_gage.lock()->SetPosition(Vec2(718.0f + (74*remainingGage), 640));
 		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
@@ -191,6 +191,12 @@ namespace basecross {
 			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
 		}
 		OnDraw();
+		//auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
+		//if (ptrEffect)
+		//{
+		//	ptrEffect->InsertGetEffect(Vec3(GetComponent<Transform>()->GetPosition()));
+		//}
+
 	}
 
 	void ViewChainNum::OnDraw() {

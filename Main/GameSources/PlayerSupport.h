@@ -34,6 +34,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class ViewChainLetter : public Sprite {
 		weak_ptr<Sprite> m_gage;
+		float m_maxGageLength;
 		public:
 			ViewChainLetter(const shared_ptr<Stage>& stagePtr);
 			virtual ~ViewChainLetter() {};

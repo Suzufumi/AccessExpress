@@ -20,11 +20,12 @@ namespace basecross {
 		 CONTROLER_STATE m_pad;		//パッドの全情報
 		 int m_nowScore = 0;		//現在のスコアの値
 		 float m_slowPassage;		//スローになってからの経過(1.0fが最大として扱う)
-		 int m_checkPointNum = 5;	// チェックポイントの数
 		 int m_maxChain = 0;
 		 bool m_isFade = true;		// フェード中かどうか
 		 int m_maxMailNum;
 		 int m_mailNum;
+		 float m_controlGageSpeed = 1.0f;	// チェインゲージの進行スピードの管理
+
 	public:
 		static GameManager& GetInstance() {
 			static GameManager inst; // private なコンストラクタを呼び出す。
@@ -164,5 +165,22 @@ namespace basecross {
 		void ResetMail() { m_mailNum = 0; }
 
 		void DecreaseMail() { m_mailNum--; }
+
+		//----------------------------------------------------------------------------------
+		//ゲージスピードを設定
+		//----------------------------------------------------------------------------------
+		void SetControlGageSpeed(float gageSpeed)
+		{ m_controlGageSpeed = gageSpeed;}
+		//----------------------------------------------------------------------------------
+		//ゲージスピードを取得
+		//----------------------------------------------------------------------------------
+		float GetControlGageSpeed()
+		{ return m_controlGageSpeed;}
+		//----------------------------------------------------------------------------------
+		//ゲージスピードをリセット(チェインが途切れた時)
+		//----------------------------------------------------------------------------------
+		void ResetControlGageSpeed()
+		{ m_controlGageSpeed = 1.0f; }
+
 	};
 }
