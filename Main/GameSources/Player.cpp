@@ -266,13 +266,13 @@ namespace basecross {
 	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
 		//Lボタンを押し続けているとき
 		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
-			if (!m_islockon) {
-				RockonObject(origin, originDir, groupName, correction);
-			}
+			m_islockon = false;
 		}
 		//Lボタンを押していないとき
 		else {
-			m_islockon = false;
+			if (!m_islockon) {
+				RockonObject(origin, originDir, groupName, correction);
+			}
 		}
 		//ロックオンしているとき
 		if (m_islockon) {
