@@ -121,7 +121,7 @@ namespace basecross{
 		auto drawComp = GetComponent<PTSpriteDraw>();
 		drawComp->SetDrawActive(true);
 		drawComp->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, m_alpha));
-		if (m_alpha > 1.0f)
+		if (m_alpha >= 1.0f)
 		{
 			m_isFadeOut = false;
 			GameManager::GetInstance().SetIsFade(false);
