@@ -83,6 +83,10 @@ namespace basecross {
 		m_scale = scale;
 
 	}
+	CheckPoint::CheckPoint(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale)
+		:GameObject(stagePtr),m_position(pos),m_qt(quat),m_scale(scale)
+	{
+	}
 
 	void CheckPoint::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
@@ -111,7 +115,7 @@ namespace basecross {
 		//drawComp->SetDiffuse(Color);
 		SetAlphaActive(true);
 
-		GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
+		//GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
 	void CheckPoint::OnUpdate() {
 
@@ -289,6 +293,11 @@ namespace basecross {
 
 		m_position = pos;
 		m_scale = scale;
+
+	}
+	MailObject::MailObject(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale)
+		:GameObject(stagePtr), m_position(pos), m_scale(scale)
+	{
 
 	}
 
