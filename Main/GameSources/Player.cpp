@@ -912,18 +912,14 @@ namespace basecross {
 	void Player::AddChain()
 	{
 		m_chain++;
-		if (GameManager::GetInstance().GetMaxChain() < m_chain) {
-			GameManager::GetInstance().SetMaxChain(m_chain);
+		auto& gm = GameManager::GetInstance();
+		if (gm.GetMaxChain() < m_chain) {
+			gm.SetMaxChain(m_chain);
 		}
 
 		if (m_chain % BONUS_CHAIN == 0)
 		{
-			// 獲得エフェクトを表示
-			//auto ptrEffect = GetStage()->GetSharedGameObject<BonusEffect>(L"BonusEffect", false);
-			//MessageBox(NULL, L"", L"", MB_OK);
-			//if (ptrEffect) {
-			//	ptrEffect->InsertBounusEffect(GetComponent<Transform>()->GetWorldPosition(), Vec2(2.0f, 2.0f));
-			//}
+			//gm.SetControlGageSpeed(m_chain * App::GetApp()->GetElapsedTime());
 		}
 	}
 	// チェイン失敗時に色々リセットする
@@ -934,7 +930,13 @@ namespace basecross {
 			- m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
 		float deltaLength = delta.length();
 		if (deltaLength >= m_rayRange + 1)
+		{
 			m_islockon = false;
+		}
+
+		auto& gm = GameManager::GetInstance();
+		// チェインゲージの速度をリセット
+		gm.ResetControlGageSpeed();
 	}
 
 
