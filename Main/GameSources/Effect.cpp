@@ -42,9 +42,10 @@ namespace basecross
 		// エフェクト画像の読み込み
 		ptrParticle->SetTextureResource(L"GetEffect_TX");
 		// 生存時間の設定
-		ptrParticle->SetMaxTime(200.0f);
+		ptrParticle->SetMaxTime(0.5f);
 		// 読み込んだエフェクトをスプライトにして設定
 		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
+			// どの方向に拡散させるか
 			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne() * 2.0f;
 			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne() * 1.0f;
 			rParticleSprite.m_LocalPos.z = Util::RandZeroToOne() * 2.0f;
@@ -64,6 +65,62 @@ namespace basecross
 			);
 			//色の指定
 			rParticleSprite.m_Color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+
+	}
+
+	//-----------------------------------------------------------------------------------
+	/// ボーナスエフェクト
+	//-----------------------------------------------------------------------------------
+	BonusEffect::BonusEffect(const shared_ptr<Stage>& stagePtr)
+		: MultiParticle(stagePtr)
+	{}
+	BonusEffect::~BonusEffect()
+	{}
+
+	void BonusEffect::OnCreate()
+	{
+		SetAddType(true);
+	}
+
+	void BonusEffect::OnUpdate()
+	{
+		MultiParticle::OnUpdate();
+	}
+
+	void BonusEffect::InsertBounusEffect(const Vec3& pos, const Vec2& scale)
+	{
+		auto ptrParticle = InsertParticle(15);
+		ptrParticle->SetEmitterPos(pos);
+		// エフェクト画像の読み込み
+		ptrParticle->SetTextureResource(L"GetEffect_TX");
+		// 生存時間の設定
+		ptrParticle->SetMaxTime(0.5f);
+		// 読み込んだエフェクトをスプライトにして設定
+		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
+			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne();
+			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne();
+			rParticleSprite.m_LocalPos.z = Util::RandZeroToOne();
+
+			if (rParticleSprite.m_LocalPos.y < 0) {
+				rParticleSprite.m_LocalScale = Vec2(-scale);
+			}
+			else {
+				rParticleSprite.m_LocalScale = Vec2(scale);
+			}
+
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+			auto distance = tpsCamera->GetEye() - pos;
+			auto dir = distance.normalize();
+			//各パーティクルの移動速度を指定
+			rParticleSprite.m_Velocity = Vec3(
+				rParticleSprite.m_LocalPos.x * 5.0f,
+				rParticleSprite.m_LocalPos.y * 15.0f,
+				rParticleSprite.m_LocalPos.z * 5.0f
+			);
+			//色の指定
+			rParticleSprite.m_Color = Col4(1.0f, 1.0f, 0.0f, 0.6f);
 		}
 
 	}
