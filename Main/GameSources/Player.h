@@ -169,10 +169,10 @@ namespace basecross {
 			return m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition(); 
 		}
 
-		// コンボを加算する
+		// チェインを加算する
 		void AddChain();
-		// コンボをリセットする
-		void ResetCombo() { m_chain = 0; }
+		// チェイン失敗時に色々リセットする
+		void ChainFailure();
 		// 現在のコンボ数を返す
 		int GetChain() const { return m_chain; }
 		// 初めの時間を取得する

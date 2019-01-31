@@ -14,7 +14,7 @@ namespace basecross {
 		 ~GameManager() {} // デストラクタを private に置く。
 
 		 bool m_isGameStart;		//プレイヤーが操作できる状態ならtrue
-		 bool m_isTimeUp;			//時間が切れたらtrue
+		 bool m_isTimeUp = false;			//時間が切れたらtrue
 		 bool m_isSlow = false;		//スロー状態だったらtrue
 		 float m_slowSpeed = 30.0f;	//スロー状態で何分の１になるかの変数	
 		 CONTROLER_STATE m_pad;		//パッドの全情報

@@ -166,7 +166,6 @@ namespace basecross {
 			m_numbers.push_back(number);
 		}
 
-		auto flyingChain = GetStage()->AddGameObject<FlyingChain>();
 	}
 
 	void ViewChainNum::OnUpdate() {
@@ -248,7 +247,6 @@ namespace basecross {
 
 			m_numbers.push_back(number);
 		}
-		GetStage()->SetSharedGameObject(L"FlyingChain", GetThis<FlyingChain>());
 	}
 
 	void FlyingChain::OnUpdate() {
@@ -286,6 +284,7 @@ namespace basecross {
 				m_leap = 0;
 				m_isFly = false;
 				m_wait = 0;
+				GetStage()->RemoveGameObject<FlyingChain>(GetThis<FlyingChain>());
 			}
 		}
 
