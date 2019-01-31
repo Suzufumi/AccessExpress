@@ -8,10 +8,13 @@ namespace basecross {
 		const int RANK_B = 5000;
 		//ビューの作成
 		void CreateViewLight();
+		//リザルト関連を作成する
+		void CreateResult();
 		void CreateCollectedMail();
 		void CreateMaximumChain();
 		void CreateScore();
 		void CreateRank();
+		void CreateMail(Vec3 position,Vec3 scale);
 		// スコアを加算する(メールとチェイン数がスコアへ飛ぶ)
 		void AddScore();
 		// 最終的なスコアのカウント
@@ -22,6 +25,10 @@ namespace basecross {
 		void ShowRank(int resultScore);
 		void CreatePlayer();
 		float m_leap = 0.0f;
+		Vec3 playerP0, playerP1, playerP2;
+		Vec3 mailP0, mailP1;
+		//プレイヤーの向く方向
+		Vec3 m_playerForward;
 		weak_ptr<GameObject> m_player;
 		weak_ptr<Sprite> m_clearSprite;
 		weak_ptr<Sprite> m_mailText;
@@ -35,17 +42,22 @@ namespace basecross {
 		vector<weak_ptr<Sprite>> m_rankResult;
 		vector<weak_ptr<Sprite>> m_rankFace;
 		weak_ptr<SoundItem> m_audioPtr;
+		weak_ptr<GameObject> m_antenna;
+		weak_ptr<GameObject> m_mail;
 		bool m_isCountUpEnd = false;
-		Vec3 m_mailP1,m_maxChainP1,m_scoreP2;
+		Vec3 m_mailP0,m_maxChainP0,m_scoreP1;
 		float m_time = 1.2f;
+		bool m_isMailFly = false;
 		enum progress {
+			ANTENNA,
+			MAIL_UP,
 			START,
 			ADD_SCORE,
 			SCORE_COUNTUP,
 			END
 			//FADE
 		};
-		progress m_progress = progress::START;
+		progress m_progress = progress::ANTENNA;
 	public:
 		virtual ~ResultStage() {};
 		virtual void OnCreate()override;

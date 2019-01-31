@@ -25,6 +25,7 @@ namespace basecross {
 		Quat m_qt;
 	public:
 		CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
+		CheckPoint(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale);
 		virtual ~CheckPoint() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
@@ -72,6 +73,7 @@ namespace basecross {
 		float m_rotateSpeed = 2.0f;	// ÉÅÅ[ÉãÇÃâÒì]ë¨ìx
 	public:
 		MailObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
+		MailObject(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale);
 		virtual ~MailObject() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
