@@ -920,6 +920,7 @@ namespace basecross {
 		if (m_chain % BONUS_CHAIN == 0)
 		{
 			//gm.SetControlGageSpeed(m_chain * App::GetApp()->GetElapsedTime());
+			gm.AddBouns();
 		}
 	}
 	// チェイン失敗時に色々リセットする
@@ -935,8 +936,7 @@ namespace basecross {
 		}
 
 		auto& gm = GameManager::GetInstance();
-		// チェインゲージの速度をリセット
-		gm.ResetControlGageSpeed();
+		gm.ResetBouns();
 	}
 
 

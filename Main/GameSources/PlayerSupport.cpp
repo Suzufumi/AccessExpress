@@ -92,7 +92,7 @@ namespace basecross {
 	//チェインの文字とバーを見せるオブジェクト
 	//-------------------------------------------------------------------------------------------------
 	ViewChainLetter::ViewChainLetter(const shared_ptr<Stage>& stagePtr)
-		: Sprite(stagePtr, L"chain_gauge_TX", Vec2(155, 155)), m_maxGageLength(1.0f)
+		: Sprite(stagePtr, L"ChainLetter_TX", Vec2(155, 155)), m_gageDefaltLength(1.0f)
 	{
 
 	}
@@ -102,22 +102,33 @@ namespace basecross {
 		SetPosition(Vec2(790, 640));
 		SetDrawLayer(1);
 		//ゲージバー
-		m_gage = GetStage()->AddGameObject<Sprite>(L"chainbar_TX", Vec2(155,155));
-		m_gage.lock()->SetPosition(Vec2(790, 640));
+		m_gage = GetStage()->AddGameObject<Sprite>(L"chainbar_TX", Vec2(155.0f,155.0f));
+		m_gage.lock()->SetPosition(Vec2(790.0f, 640.0f));
 		m_gage.lock()->SetDrawLayer(1);
+		//ゲージ枠
+		m_gageFram = GetStage()->AddGameObject<Sprite>(L"ChainGauge_TX", Vec2(155.0f, 155.0f));
+		m_gageFram.lock()->SetPosition(Vec2(790.0f, 640.0f));
+		m_gageFram.lock()->SetDrawLayer(1);
 	}
 	void ViewChainLetter::OnUpdate() {
 		auto& manager = GameManager::GetInstance();
-		float remainingGage = m_maxGageLength - (m_maxGageLength * manager.GetSlowPassage() * manager.GetControlGageSpeed());
+		auto gageMaxLength = m_gageDefaltLength + (m_gageBounsLength * manager.GetBouns());
+		float remainingGage = gageMaxLength - (gageMaxLength * manager.GetSlowPassage()); 
+		//ゲージバーを変動
 		m_gage.lock()->GetComponent<Transform>()->SetScale(remainingGage,1.0f , 1.0f);
-		m_gage.lock()->SetPosition(Vec2(718.0f + (74*remainingGage), 640));
+		m_gage.lock()->SetPosition(Vec2(718.0f + (((155.0f * gageMaxLength) / 2.0f) * (1 - manager.GetSlowPassage())), 640));
+		//ゲージ枠を変動
+		m_gageFram.lock()->GetComponent<Transform>()->SetScale(gageMaxLength, 1.0f, 1.0f);
+		m_gageFram.lock()->SetPosition(Vec2(718.0f + (((155.0f * gageMaxLength) / 2.0f)), 640));
 		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
 			SetDrawActive(true);
 			m_gage.lock()->SetDrawActive(true);
+			m_gageFram.lock()->SetDrawActive(true);
 		}
 		else {
 			SetDrawActive(false);
 			m_gage.lock()->SetDrawActive(false);
+			m_gageFram.lock()->SetDrawActive(false);
 		}
 	}
 	//-------------------------------------------------------------------------------------------------

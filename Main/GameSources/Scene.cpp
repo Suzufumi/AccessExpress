@@ -66,8 +66,6 @@ namespace basecross{
 			{ L"scoreResult.png",L"ScoreText_TX"},
 			{ L"Time.png", L"TIME_TX"},
 			{ L"score.png", L"SCORE_TX"},
-			{ L"chain_gauge.png",L"chain_gauge_TX"},
-			{ L"chainbar.png",L"chainbar_TX"},
 			{ L"CollectedMail.png",L"CollectedMail_TX"},
 			{ L"mail.png",L"mail_TX"},
 			{ L"kakeru.png",L"kakeru_TX"},
@@ -84,7 +82,11 @@ namespace basecross{
 			{L"result_B.png", L"RESULT_B_TX"},
 			{L"result_C.png", L"RESULT_C_TX"},
 			{L"TIMEUP.png", L"TIMEUP_TX"},
-			{L"Balloon.png", L"BALLOON_TX"}
+			{L"Balloon.png", L"BALLOON_TX"},
+			{ L"chain_gauge.png",L"chain_gauge_TX"},
+			{ L"chainbar.png",L"chainbar_TX"},
+			{ L"ChainGauge.png",L"ChainGauge_TX"},
+			{ L"ChainLetter.png", L"ChainLetter_TX"}
 		};
 
 		for (auto texture : textures)
