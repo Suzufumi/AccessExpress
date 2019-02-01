@@ -136,7 +136,7 @@ namespace basecross {
 	//-------------------------------------------------------------------------------------------------
 	ViewChainNum::ViewChainNum(const shared_ptr<Stage>& stagePtr)
 		: GameObject(stagePtr){
-		m_places = 2;
+		m_places = 3;
 	}
 	//------------------------------------------------------------------------------------
 	//構築
@@ -212,8 +212,25 @@ namespace basecross {
 
 	void ViewChainNum::OnDraw() {
 		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
+			int chain = GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain();
+			int places = 0;
+			//何桁表示するかを算出する
+			while (chain > 0) {
+				chain /= 10;
+				places++;
+			}
+			//各桁の表示の切替
+			int count = 0;
 			for (auto number : m_numbers) {
-				number->OnDraw();
+				if (count < places || count < 2) {
+					number->OnDraw();
+
+					number->SetDrawActive(true);
+				}
+				else {
+					number->SetDrawActive(false);
+				}
+				count++;
 			}
 		}
 	}

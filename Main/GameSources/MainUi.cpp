@@ -96,7 +96,7 @@ namespace basecross{
 		: GameObject(stagePtr)
 	{
 		m_displayScore = 0;
-		m_places = 5;
+		m_places = 6;
 	}
 	//------------------------------------------------------------------------------------
 	//スコアUI構築
