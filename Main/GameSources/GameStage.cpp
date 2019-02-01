@@ -127,8 +127,19 @@ namespace basecross {
 	void GameStage::OnCreate() {
 		try {
 			wstring dataDir;
+			auto scenePtr = App::GetApp()->GetScene<Scene>();
 			App::GetApp()->GetDataDirectory(dataDir);
-			m_stageXmlPath = dataDir + L"Stage\\" + L"1.xml";
+			switch (scenePtr->GetStageNum())
+			{
+			case 1:
+				m_stageXmlPath = dataDir + L"Stage\\" + L"1.xml";
+				break;
+			case 2:
+				m_stageXmlPath = dataDir + L"Stage\\" + L"2.xml";
+				break;
+			default:
+				break;
+			}
 			auto& gm = GameManager::GetInstance();
 
 			XmlDocReader xmlReader(m_stageXmlPath);

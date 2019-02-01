@@ -88,6 +88,8 @@ namespace basecross{
 			{ L"ChainGauge.png",L"ChainGauge_TX"},
 			{ L"ChainLetter.png", L"ChainLetter_TX"},
 			{ L"sippai.png", L"sippai_TX"}
+			{ L"normal.png", L"NORMAL_TX"},
+			{ L"hard.png", L"HARD_TX"}
 		};
 
 		for (auto texture : textures)

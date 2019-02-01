@@ -135,12 +135,12 @@ namespace basecross{
 	AnimSprite::AnimSprite(const shared_ptr<Stage>& StagePtr, const wstring& TextureKey, bool Trace,
 		const Vec2& StartScale, const Vec2& StartPos) :
 		GameObject(StagePtr),
-		m_TextureKey(TextureKey),
-		m_Trace(Trace),
-		m_StartScale(StartScale),
-		m_StartPos(StartPos),
-		m_TotalTime(0.0f),
-		m_Selected(false)
+		m_textureKey(TextureKey),
+		m_trace(Trace),
+		m_startScale(StartScale),
+		m_startPos(StartPos),
+		m_totalTime(0.0f),
+		m_selected(false)
 	{}
 
 	AnimSprite::~AnimSprite() {}
@@ -156,26 +156,35 @@ namespace basecross{
 		};
 		//インデックス配列
 		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
-		SetAlphaActive(m_Trace);
+		SetAlphaActive(m_trace);
 		auto PtrTransform = GetComponent<Transform>();
-		PtrTransform->SetScale(m_StartScale.x, m_StartScale.y, 1.0f);
-		PtrTransform->SetPosition(m_StartPos.x, m_StartPos.y, 0.0f);
+		PtrTransform->SetScale(m_startScale.x, m_startScale.y, 1.0f);
+		PtrTransform->SetPosition(m_startPos.x, m_startPos.y, 0.0f);
 		//頂点とインデックスを指定してスプライト作成
 		auto PtrDraw = AddComponent<PCTSpriteDraw>(vertex, indices);
 		PtrDraw->SetSamplerState(SamplerState::LinearWrap);
-		PtrDraw->SetTextureResource(m_TextureKey);
+		PtrDraw->SetTextureResource(m_textureKey);
 	}
 
 	void AnimSprite::OnUpdate() {
-		float ElapsedTime = App::GetApp()->GetElapsedTime();
-		m_TotalTime += ElapsedTime * 5.0f;
-		if (m_TotalTime >= XM_2PI) {
-			m_TotalTime = 0;
+		if (m_selected)
+		{
+			float elapsedTime = App::GetApp()->GetElapsedTime();
+			m_totalTime += elapsedTime * 5.0f;
+			if (m_totalTime >= XM_2PI) {
+				m_totalTime = 0;
+			}
+			auto drawComp = GetComponent<PCTSpriteDraw>();
+			Col4 col(1.0, 1.0, 1.0, 1.0);
+			col.w = sin(m_totalTime) * 0.7f + 0.6f;
+			drawComp->SetDiffuse(col);
 		}
-		auto PtrDraw = GetComponent<PCTSpriteDraw>();
-		Col4 col(1.0, 1.0, 1.0, 1.0);
-		col.w = sin(m_TotalTime) * 0.7f + 0.6f;
-		PtrDraw->SetDiffuse(col);
+		else
+		{
+			auto drawComp = GetComponent<PCTSpriteDraw>();
+			Col4 col(1.0, 1.0, 1.0, 1.0);
+			drawComp->SetDiffuse(col);
+		}
 	}
 	///------------------------------------------------------------------------------------
 	//数字のスプライト
