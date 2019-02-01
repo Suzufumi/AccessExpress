@@ -45,7 +45,7 @@ namespace basecross{
 			//{ L"Building1.png", L"Building1_TX" },
 			{ L"Logo.png", L"TITLE_TX"},
 			{ L"StageSelect.png", L"StageSelect_TX"},
-			{ L"DeliverClear.png", L"ResultStage_TX"},
+			{ L"kannryou.png", L"ResultStage_TX"},
 			{ L"cursor.png", L"cursor_TX"},
 			{ L"Back.png", L"SKY_TX"},
 			{ L"GameOver.png", L"GameOver_TX"},

@@ -95,7 +95,7 @@ namespace basecross
 		// エフェクト画像の読み込み
 		ptrParticle->SetTextureResource(L"GetEffect_TX");
 		// 生存時間の設定
-		ptrParticle->SetMaxTime(0.5f);
+		ptrParticle->SetMaxTime(0.6f);
 		// 読み込んだエフェクトをスプライトにして設定
 		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
 			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne();
@@ -187,6 +187,58 @@ namespace basecross
 			//色の指定
 			rParticleSprite.m_Color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
 		}
+
+	}
+
+	//-----------------------------------------------------------------------------------
+	/// リザルトエフェクト
+	//-----------------------------------------------------------------------------------
+	ResultEffect::ResultEffect(const shared_ptr<Stage>& stagePtr)
+		: MultiParticle(stagePtr)
+	{}
+	ResultEffect::~ResultEffect()
+	{}
+	void ResultEffect::OnCreate()
+	{
+		SetAddType(true);
+	}
+	void ResultEffect::OnUpdate()
+	{
+		MultiParticle::OnUpdate();
+	}
+	void ResultEffect::InsertResultEffect(const Vec3& pos, const Vec2& scale)
+	{
+		// 複数のパーティクルを設定(ここでは2)
+		auto ptrParticle = InsertParticle(5);
+		ptrParticle->SetEmitterPos(Vec3(pos));
+		// エフェクト画像の読み込み
+		ptrParticle->SetTextureResource(L"GetEffect_TX");
+		// 生存時間の設定
+		ptrParticle->SetMaxTime(0.3f);
+		// 読み込んだエフェクトをスプライトにして設定
+		for (auto& rParticleSprite : ptrParticle->GetParticleSpriteVec()) {
+			// 拡散させる方向の設定
+			rParticleSprite.m_LocalPos.x = Util::RandZeroToOne();
+			rParticleSprite.m_LocalPos.y = Util::RandZeroToOne();
+			rParticleSprite.m_LocalPos.z = Util::RandZeroToOne();
+
+			if (rParticleSprite.m_LocalPos.y < 0) {
+				rParticleSprite.m_LocalScale = Vec2(-scale);
+			}
+			else {
+				rParticleSprite.m_LocalScale = Vec2(scale);
+			}
+
+			//各パーティクルの移動速度を指定
+			rParticleSprite.m_Velocity = Vec3(
+				rParticleSprite.m_LocalPos.x * 3.0f,
+				rParticleSprite.m_LocalPos.y * 1.0f,
+				rParticleSprite.m_LocalPos.z * 3.0f
+			);
+			//色の指定
+			rParticleSprite.m_Color = Col4(1.0f, 1.0f, 1.0f, 0.7f);
+		}
+
 
 	}
 }
