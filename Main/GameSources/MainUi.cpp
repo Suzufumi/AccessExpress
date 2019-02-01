@@ -132,7 +132,7 @@ namespace basecross{
 			auto transComp = number->GetComponent<Transform>();
 			// GetThisでThisオブジェクトのshared_ptrを取ってこれる
 			transComp->SetParent(GetThis<ScoreUI>());	// 基準点が画面の左上からScoreUIの場所になった
-			number->SetPosition(Vec2(64 * (float)m_places - (128 + 32 + 64 * i), 135));
+			number->SetPosition(Vec2(64 * (float)m_places - (64 + 64 * i), 135));
 			transComp->SetScale(Vec3(1.2f, 0.7f, 0.9f));
 			m_numbers.push_back(number);
 		}
