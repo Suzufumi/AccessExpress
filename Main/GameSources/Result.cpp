@@ -18,6 +18,7 @@ namespace basecross {
 		playerP2 = m_antenna.lock()->GetComponent<Transform>()->GetWorldPosition() + Vec3(3.0f, -1.0f, 0.0f);
 		auto multiEfkPtr = AddGameObject<ResultEffect>();
 		SetSharedGameObject(L"ResultEfk", multiEfkPtr);
+		m_fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
 	}
@@ -107,9 +108,9 @@ namespace basecross {
 		case progress::END :
 			ResultProcess(gm.GetScore());
 			break;
-		//case progress::FADE:
-		//	FadeProcess();
-		//	break;
+		case progress::FADE:
+			FadeProcess();
+			break;
 		default:
 			break;
 		}
@@ -275,18 +276,9 @@ namespace basecross {
 		if (CntlVec[0].wPressedButtons) {
 			auto scenePtr = App::GetApp()->GetScene<Scene>();
 			scenePtr->MusicOnceStart(L"Decision_SE", 1.0f);
-			auto fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
-			fade->SetIsFadeOut(true);
-			//m_progress = progress::FADE;
+			m_fade.lock()->SetIsFadeOut(true);
+			m_progress = progress::FADE;
 		}
-		auto& gm = GameManager::GetInstance();
-		//フェード中かどうか
-		if (!gm.GetIsFade())
-		{
-			gm.SetIsFade(true);
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
-		}
-
 	}
 
 	///-----------------------------------------------------------------------------
@@ -402,11 +394,10 @@ namespace basecross {
 
 	void ResultStage::FadeProcess()
 	{
-		auto fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
-		fade->SetIsFadeOut(true);
 		auto& gm = GameManager::GetInstance();
+		//MessageBox(NULL, L"", L"", MB_OK);
 		//フェード中かどうか
-		if (!gm.GetIsFade())
+		if (!m_fade.lock()->GetIsFadeOut())
 		{
 			gm.SetIsFade(true);
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");

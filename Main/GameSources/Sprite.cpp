@@ -110,7 +110,6 @@ namespace basecross{
 		if (m_alpha <= 0.0f)
 		{
 			m_isFadeIn = false;
-			GameManager::GetInstance().SetIsFade(false);
 		}
 		m_alpha -= m_fadeSpeed;
 	}
@@ -123,8 +122,8 @@ namespace basecross{
 		drawComp->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, m_alpha));
 		if (m_alpha >= 1.0f)
 		{
-			m_isFadeOut = false;
 			GameManager::GetInstance().SetIsFade(false);
+			m_isFadeOut = false;
 		}
 		m_alpha += m_fadeSpeed;
 

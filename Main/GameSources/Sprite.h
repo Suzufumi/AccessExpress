@@ -45,7 +45,7 @@ namespace basecross {
 		Vec2 m_startScale;
 		const float m_fadeSpeed = 0.01f;
 		float m_alpha;
-		bool m_isFadeIn;
+		bool m_isFadeIn = false;
 		bool m_isFadeOut = false;
 	public:
 		FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos, const Vec2& scale);
@@ -66,6 +66,8 @@ namespace basecross {
 		{
 			m_isFadeOut = isFadeIn;
 		}
+		void SetAlpha(float alpha)
+		{ m_alpha = alpha;}
 	};
 
 	class AnimSprite : public GameObject

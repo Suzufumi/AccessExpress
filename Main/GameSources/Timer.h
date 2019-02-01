@@ -18,7 +18,7 @@ namespace basecross {
 	//------------------------------------------------------------------
 	class RemainingTimerSprite : public GameObject {
 	protected:
-		const int NOTICE_TIME = 15;	//
+		const int NOTICE_TIME = 5;	//
 		float m_timer;	// 残り時間
 		int m_places;	// タイムの表示桁
 		bool m_isSetTimer = false;	// 既定の時間になったらオンにする
