@@ -72,14 +72,14 @@ namespace basecross {
 
 	class AnimSprite : public GameObject
 	{
-		bool m_Trace;
-		Vec2 m_StartScale;
-		Vec2 m_StartPos;
-		wstring m_TextureKey;
+		bool m_trace;
+		Vec2 m_startScale;
+		Vec2 m_startPos;
+		wstring m_textureKey;
 		//トータル時間
-		float m_TotalTime;
+		float m_totalTime;
 		//選択されているかどうか
-		bool m_Selected;
+		bool m_selected;
 	public:
 		//--------------------------------------------------------------------------------------
 		/*!
@@ -91,8 +91,8 @@ namespace basecross {
 		@param[in]	StartPos	初期位置
 		*/
 		//--------------------------------------------------------------------------------------
-		AnimSprite(const shared_ptr<Stage>& StagePtr, const wstring& TextureKey, bool Trace,
-			const Vec2& StartScale, const Vec2& StartPos);
+		AnimSprite(const shared_ptr<Stage>& stagePtr, const wstring& textureKey, bool trace,
+			const Vec2& startScale, const Vec2& startPos);
 		//破棄
 		virtual ~AnimSprite();
 		//初期化
@@ -101,11 +101,11 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		//アクセサ
 		bool IsSelect() const {
-			return m_Selected;
+			return m_selected;
 		}
 		void SetSelect(bool b) {
-			m_Selected = b;
-			m_TotalTime = 0.0f;
+			m_selected = b;
+			m_totalTime = 0.0f;
 		}
 	};
 	///---------------------------------------------------------------------------------

@@ -14,6 +14,7 @@ namespace basecross {
 		auto titleSprite = AddGameObject<Sprite>(L"TITLE_TX", Vec2(819, 205));
 		titleSprite->SetPosition(Vec2(640, 140));
 		auto buttonSprite = AddGameObject<AnimSprite>(L"Title_BUTTON_TX", true,  Vec2(1000, 100), Vec2(0, -300));
+		buttonSprite->SetSelect(true);
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"Title_TX");
 	}
@@ -30,7 +31,7 @@ namespace basecross {
 		if (!gm.GetIsFade())
 		{
 			gm.SetIsFade(true);
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToStageSelect");
 		}
 		float delta = App::GetApp()->GetElapsedTime();
 		m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->UpdateAnimation(delta);

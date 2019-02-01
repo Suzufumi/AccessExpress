@@ -4,53 +4,36 @@
 namespace basecross {
 	void StageSelect::OnCreate() {
 		CreateViewLight();
-		auto stageSel = AddGameObject<Sprite>(L"StageSelect_TX", Vec2(800, 200));
-		stageSel->SetPosition(Vec2((float)App::GetApp()->GetGameWidth() / 2.0f, 100));
+		auto titleBack = AddGameObject<Sprite>(L"SkyBox_Back_TX", Vec2(1300, 800));
+		titleBack->SetPosition(Vec2(640, 400));
+		m_fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
 		CreateStageNum();
 	}
 	void StageSelect::OnUpdate() {
-		auto PtrScene = App::GetApp()->GetScene<Scene>();
-		int StageNum = PtrScene->GetStageNum();
-		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
-		if (CntlVec[0].wPressedButtons) {
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
-			//シーンの取得
-			//コントローラの取得
-			auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
-			if (CntlVec[0].bConnected) {
-				//ゲームステージへ
-				//Aボタン
-				if (CntlVec[0].wPressedButtons & XINPUT_GAMEPAD_A) {
-					PostEvent(0.0f, GetThis<StageSelect>(), PtrScene, L"ToGameStage");
-					return;
-				}
-				if (!m_CntrolLock) {
-					if (CntlVec[0].fThumbLY >= 0.8f) {
-						StageNum--;
-						if (StageNum < 1) {
-							StageNum = 3;
-						}
-						m_CntrolLock = true;
-						PtrScene->SetStageNum(StageNum);
-						ChangeSelect(StageNum);
-					}
-					else if (CntlVec[0].fThumbLY <= -0.8f) {
-						StageNum++;
-						if (StageNum > 3) {
-							StageNum = 1;
-						}
-						m_CntrolLock = true;
-						PtrScene->SetStageNum(StageNum);
-						ChangeSelect(StageNum);
-					}
-				}
-				else {
-					if (CntlVec[0].fThumbLY == 0.0f) {
-						m_CntrolLock = false;
-					}
-				}
+		auto ptrScene = App::GetApp()->GetScene<Scene>();
+		int stageNum = ptrScene->GetStageNum();
+		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		//シーンの取得
+		//コントローラの取得
+		if (cntlVec[0].bConnected) {
+			//ゲームステージへ
+			//Aボタン
+			if (cntlVec[0].wPressedButtons & XINPUT_GAMEPAD_A) {
+				App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"Decision_SE", 1.0f);
+				m_fade.lock()->SetAlpha(0.0f);
+				m_fade.lock()->SetIsFadeOut(true);
+				return;
 			}
+			Select();
 		}
+		auto& gm = GameManager::GetInstance();
+		// フェード中かどうか
+		if (!gm.GetIsFade())
+		{
+			gm.SetIsFade(true);
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+		}
+
 	}
 	void StageSelect::CreateViewLight() {
 		auto ptrView = CreateView<SingleView>();
@@ -62,35 +45,20 @@ namespace basecross {
 
 	void StageSelect::CreateStageNum()
 	{
-		float height = (float)App::GetApp()->GetGameWidth();
-		//for (int i = 0; i < 5; i++)
-		//{
-		//	int num = (i + 1);
-		//	auto stageNum = AddGameObject<Sprite>(L"Stage" + num, Vec2(200, 200));
-		//	stageNum->SetPosition(Vec2(200.0f * (i + 1), height / 3.0f));
-		//}
-		auto stageNum = AddGameObject<AnimSprite>(L"Stage1", true, Vec2(256, 256), Vec2(-400.0f, 0.0f));
-		stageNum->SetSelect(true);
-		m_SpVec[0] = stageNum;
-		stageNum = AddGameObject<AnimSprite>(L"Stage2", true, Vec2(256, 256), Vec2(-200.0f, 0.0f));
-		m_SpVec[1] = stageNum;
-		stageNum = AddGameObject<AnimSprite>(L"Stage3", true, Vec2(256, 256), Vec2(0.0f, 0.0f));
-		m_SpVec[2] = stageNum;
-		stageNum = AddGameObject<AnimSprite>(L"Stage4", true, Vec2(256, 256), Vec2(200.0f, 0.0f));
-		m_SpVec[3] = stageNum;
-		stageNum = AddGameObject<AnimSprite>(L"Stage5", true, Vec2(256, 256), Vec2(400.0f, 0.0f));
-		m_SpVec[4] = stageNum;
+		auto ptrSp = AddGameObject<AnimSprite>(L"NORMAL_TX", true,
+			Vec2(410, 205), Vec2(-300.0f, 0.0f));
+		ptrSp->SetSelect(true);
+		m_spVec[0] = ptrSp;
+		ptrSp = AddGameObject<AnimSprite>(L"HARD_TX", true,
+			Vec2(410, 205), Vec2(300.0f, 0.0f));
+		m_spVec[1] = ptrSp;
 	}
 
-	void StageSelect::StageSel()
-	{
-	}
-	
 
 	void StageSelect::ChangeSelect(int num)
 	{
-		for (int i = 0; i < 5; i++) {
-			shared_ptr<AnimSprite> shptr = m_SpVec[i].lock();
+		for (int i = 0; i < 2; i++) {
+			shared_ptr<AnimSprite> shptr = m_spVec[i].lock();
 			if (shptr) {
 				if ((i + 1) == num) {
 					shptr->SetSelect(true);
@@ -98,6 +66,39 @@ namespace basecross {
 				else {
 					shptr->SetSelect(false);
 				}
+			}
+		}
+
+	}
+
+	void StageSelect::Select()
+	{
+		auto ptrScene = App::GetApp()->GetScene<Scene>();
+		int stageNum = ptrScene->GetStageNum();
+		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		if (!m_CntrolLock) {
+			if (cntlVec[0].fThumbLX >= 0.8f) {
+				stageNum++;
+				if (stageNum > 2) {
+					stageNum = 2;
+				}
+				m_CntrolLock = true;
+				ptrScene->SetStageNum(stageNum);
+				ChangeSelect(stageNum);
+			}
+			else if (cntlVec[0].fThumbLX <= -0.8f) {
+				stageNum--;
+				if (stageNum < 1) {
+					stageNum = 1;
+				}
+				m_CntrolLock = true;
+				ptrScene->SetStageNum(stageNum);
+				ChangeSelect(stageNum);
+			}
+		}
+		else {
+			if (cntlVec[0].fThumbLX == 0.0f) {
+				m_CntrolLock = false;
 			}
 		}
 
