@@ -16,6 +16,8 @@ namespace basecross {
 		playerP0 = m_player.lock()->GetComponent<Transform>()->GetWorldPosition();
 		playerP1 = m_antenna.lock()->GetComponent<Transform>()->GetWorldPosition() + Vec3(0.0f, 5.0f, 0.0f);
 		playerP2 = m_antenna.lock()->GetComponent<Transform>()->GetWorldPosition();
+		auto multiEfkPtr = AddGameObject<ResultEffect>();
+		SetSharedGameObject(L"ResultEfk", multiEfkPtr);
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
 		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
 	}
@@ -63,7 +65,13 @@ namespace basecross {
 				auto mailPos = (1 - m_leap) * mailP0 + m_leap * mailP1;
 				playerTrs->SetWorldPosition(playerPos);
 				m_antenna.lock()->GetComponent<Transform>()->SetWorldPosition(playerPos + Vec3(0.0f,0.0f,-2.0f));
-				m_mail.lock()->GetComponent<Transform>()->SetWorldPosition(mailPos);
+				m_mail.lock()->GetComponent<Transform>()->SetWorldPosition(Vec3(mailPos.x, mailPos.y - 2.0f, mailPos.z));
+				auto particle = GetSharedGameObject<ResultEffect>(L"ResultEfk", false);
+				if (particle)
+				{
+					//auto mailPos = m_mail.lock()->GetComponent<Transform>()->GetWorldPosition();
+					particle->InsertResultEffect(Vec3(mailPos.x, mailPos.y - 3.0f, mailPos.z),Vec2(2.0f, 2.0f));
+				}
 				if (m_leap >= 1.0f) {
 					m_leap = 0.0f;
 					CreateResult();
@@ -108,7 +116,7 @@ namespace basecross {
 	///-----------------------------------------------------------------------------
 	void ResultStage::CreateResult() {
 		//配達完了の文字
-		m_clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(800.0f, 120.0f));
+		m_clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(410, 205));
 		m_clearSprite.lock()->SetPosition(Vec2(640.0f, 100.0f));
 		//プッシュエニーボタン
 		m_push = AddGameObject<Sprite>(L"Title_BUTTON_TX", Vec2(1000, 100));
@@ -269,6 +277,14 @@ namespace basecross {
 	void ResultStage::ShowRank(int resultScore)
 	{
 		m_rankText.lock()->SetDrawActive(true);
+		//if (resultScore >= RANK_SS)
+		//{
+		//	m_rankResult[0].lock()->SetDrawActive(true);
+		//	m_rankResult[0].lock()->SetScale(Vec2(154, 154));
+		//	//m_rankResult[0].lock()->SetDrawActive(true);
+		//	//m_rankResult[0].lock()->SetScale(Vec2(154, 154));
+
+		//}
 		if (resultScore >= RANK_S)
 		{
 			m_rankResult[0].lock()->SetDrawActive(true);

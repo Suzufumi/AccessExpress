@@ -42,7 +42,6 @@ namespace basecross {
 
 	void RemainingTimerSprite::OnCreate() {
 		auto& gm = GameManager::GetInstance();
-		//・ｽ^・ｽC・ｽ・ｽ・ｽA・ｽb・ｽv・ｽt・ｽ・ｽ・ｽO・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ
 		gm.ResetTimeUp();
 
 		// 数字ごとの範囲を設定する
@@ -100,6 +99,11 @@ namespace basecross {
 		}
 		int timer = (int)m_timer;
 
+		if (timer == NOTICE_TIME && !m_isSetTimer)
+		{
+			SpriteColorChange();
+		}
+
 		for (int i = 0; i < m_places; i++) {
 			int num = timer % 10;	// 一の位を抜き出す
 			timer /= 10;			// 一の位を切り捨てる
@@ -116,12 +120,37 @@ namespace basecross {
 
 			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
 			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
+
 		}
+
 	}
 
 	void RemainingTimerSprite::OnDraw() {
 		for (auto number : m_numbers) {
 			number->OnDraw();
+		}
+	}
+
+	void RemainingTimerSprite::SpriteColorChange()
+	{
+		m_isSetTimer = true;
+		int timer = (int)m_timer;
+		for (int i = 0; i < m_places; i++) {
+			int num = timer % 10;	// 一の位を抜き出す
+			timer /= 10;			// 一の位を切り捨てる
+
+			float start_x = m_numRects[num].left / 640.0f;
+			float end_x = m_numRects[num].right / 640.0f;
+			float start_y = m_numRects[num].top / 128.0f;
+			float end_y = m_numRects[num].bottom / 128.0f;
+
+			m_vertices[i][0].textureCoordinate = Vec2(start_x, start_y);
+			m_vertices[i][1].textureCoordinate = Vec2(end_x, start_y);
+			m_vertices[i][2].textureCoordinate = Vec2(start_x, end_y);
+			m_vertices[i][3].textureCoordinate = Vec2(end_x, end_y);
+
+			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
+			drawComp->SetDiffuse(Col4(1.0f, 0.3f, 0.0f, 1.0f));
 		}
 	}
 }

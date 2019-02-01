@@ -41,4 +41,17 @@ namespace basecross
 		virtual void OnUpdate() override;
 		void InsertSpark(const Vec3& pos);
 	};
+
+	//-----------------------------------------------------------------------------------
+	/// リザルトエフェクト()
+	//-----------------------------------------------------------------------------------
+	class ResultEffect : public MultiParticle
+	{
+	public:
+		ResultEffect(const shared_ptr<Stage>& stagePtr);
+		virtual ~ResultEffect();
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		void InsertResultEffect(const Vec3& pos, const Vec2& scale);
+	};
 }
