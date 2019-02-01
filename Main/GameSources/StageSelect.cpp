@@ -6,6 +6,8 @@ namespace basecross {
 		CreateViewLight();
 		auto titleBack = AddGameObject<Sprite>(L"SkyBox_Back_TX", Vec2(1300, 800));
 		titleBack->SetPosition(Vec2(640, 400));
+		auto selectText = AddGameObject<Sprite>(L"StageSelect_TX", Vec2(1024, 128));
+		selectText->SetPosition(Vec2(650, 50));
 		m_fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
 		CreateStageNum();
 	}
