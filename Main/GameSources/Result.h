@@ -3,6 +3,7 @@
 
 namespace basecross {
 	class ResultStage : public Stage {
+		const int RANK_SS = 60000;
 		const int RANK_S = 30000;
 		const int RANK_A = 15000;
 		const int RANK_B = 5000;
