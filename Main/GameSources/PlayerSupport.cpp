@@ -126,11 +126,11 @@ namespace basecross {
 			m_gage.lock()->SetDrawActive(true);
 			m_gageFram.lock()->SetDrawActive(true);
 		}
-		/*else {
+		else {
 			SetDrawActive(false);
 			m_gage.lock()->SetDrawActive(false);
 			m_gageFram.lock()->SetDrawActive(false);
-		}*/
+		}
 	}
 	//-------------------------------------------------------------------------------------------------
 	//チェインの数字を見せるオブジェクト
