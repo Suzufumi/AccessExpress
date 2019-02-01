@@ -266,13 +266,13 @@ namespace basecross {
 	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
 		//Lボタンを押し続けているとき
 		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
-			if (!m_islockon) {
-				RockonObject(origin, originDir, groupName, correction);
-			}
+			m_islockon = false;
 		}
 		//Lボタンを押していないとき
 		else {
-			m_islockon = false;
+			if (!m_islockon) {
+				RockonObject(origin, originDir, groupName, correction);
+			}
 		}
 		//ロックオンしているとき
 		if (m_islockon) {
@@ -920,6 +920,7 @@ namespace basecross {
 		if (m_chain % BONUS_CHAIN == 0)
 		{
 			//gm.SetControlGageSpeed(m_chain * App::GetApp()->GetElapsedTime());
+			gm.AddBouns();
 		}
 	}
 	// チェイン失敗時に色々リセットする
@@ -935,8 +936,7 @@ namespace basecross {
 		}
 
 		auto& gm = GameManager::GetInstance();
-		// チェインゲージの速度をリセット
-		gm.ResetControlGageSpeed();
+		gm.ResetBouns();
 	}
 
 
