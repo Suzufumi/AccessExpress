@@ -35,6 +35,7 @@ namespace basecross {
 	class ViewChainLetter : public Sprite {
 		weak_ptr<Sprite> m_gage;
 		weak_ptr<Sprite> m_gageFram;
+		weak_ptr<GameObject> m_gageParent;
 		float m_gageDefaltLength;
 		float m_gageBounsLength = 0.1f;
 		public:

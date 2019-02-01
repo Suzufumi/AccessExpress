@@ -15,7 +15,7 @@ namespace basecross {
 		CreatePlayer();
 		playerP0 = m_player.lock()->GetComponent<Transform>()->GetWorldPosition();
 		playerP1 = m_antenna.lock()->GetComponent<Transform>()->GetWorldPosition() + Vec3(0.0f, 5.0f, 0.0f);
-		playerP2 = m_antenna.lock()->GetComponent<Transform>()->GetWorldPosition();
+		playerP2 = m_antenna.lock()->GetComponent<Transform>()->GetWorldPosition() + Vec3(3.0f, -1.0f, 0.0f);
 		auto multiEfkPtr = AddGameObject<ResultEffect>();
 		SetSharedGameObject(L"ResultEfk", multiEfkPtr);
 		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
@@ -55,8 +55,8 @@ namespace basecross {
 				playerP0 = playerTrs->GetWorldPosition();
 				playerP1 = playerP0 + Vec3(0.0f, -10.0f, 0.0f);
 				CreateMail(playerP0, Vec3(2.0f, 2.0f, 2.0f));
-				mailP0 = playerP0;
-				mailP1 = playerP0 + Vec3(0.0f,20.0f,0.0f);
+				mailP0 = playerP0 + Vec3(-3.0f, 0.0f, 0.0f);
+				mailP1 = mailP0 + Vec3(0.0f,20.0f,0.0f);
 			}
 			//メールがでてきたら処理
 			if (m_isMailFly) {
@@ -64,7 +64,7 @@ namespace basecross {
 				auto playerPos = (1 - m_leap) * playerP0 + m_leap * playerP1;
 				auto mailPos = (1 - m_leap) * mailP0 + m_leap * mailP1;
 				playerTrs->SetWorldPosition(playerPos);
-				m_antenna.lock()->GetComponent<Transform>()->SetWorldPosition(playerPos + Vec3(0.0f,0.0f,-2.0f));
+				m_antenna.lock()->GetComponent<Transform>()->SetWorldPosition(playerPos + Vec3(-3.0f,0.0f,-2.0f));
 				m_mail.lock()->GetComponent<Transform>()->SetWorldPosition(Vec3(mailPos.x, mailPos.y - 2.0f, mailPos.z));
 				auto particle = GetSharedGameObject<ResultEffect>(L"ResultEfk", false);
 				if (particle)
@@ -158,9 +158,9 @@ namespace basecross {
 		m_scoreText.lock()->SetPosition(Vec2(370.0f, 540.0f));
 		//数字
 		m_scoreNum = AddGameObject<ScoreUI>();
-		m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(750, -450, 0);
+		m_scoreNum.lock()->GetComponent<Transform>()->SetPosition(590, -450, 0);
 		m_scoreNum.lock()->CountSkip();//表示スコアを内部スコアまで上げておく
-		m_scoreP1 = m_scoreNum.lock()->GetComponent<Transform>()->GetPosition() + Vec3(50.0f,0,0);
+		m_scoreP1 = m_scoreNum.lock()->GetComponent<Transform>()->GetPosition() + Vec3(200.0f,0,0);
 	};
 
 	///-----------------------------------------------------------------------------
