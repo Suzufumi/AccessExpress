@@ -313,8 +313,6 @@ namespace basecross {
 			//照準からでるRayとOBBで判定
 			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 			if (hit) {
-				GameManager::GetInstance().AddScore(20);
-
 				Vec3 delta = origin - objTrans->GetWorldPosition();
 				float deltaLength = delta.length();
 				//近いときはロックオンしない
@@ -927,12 +925,16 @@ namespace basecross {
 	void Player::ChainFailure() {
 		m_chain = 0;
 		m_rayRange = m_rayRangeDefolt;
-		Vec3 delta = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition()
-			- m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
-		float deltaLength = delta.length();
-		if (deltaLength >= m_rayRange + 1)
-		{
-			m_islockon = false;
+		//ロックオン対象が居たら
+		if (m_islockon) {
+			Vec3 delta = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition()
+				- m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
+			float deltaLength = delta.length();
+			//Rayの範囲とロックオンオブジェとの距離を比べて範囲外だったらロックオンを外す
+			if (deltaLength >= m_rayRange + 1)
+			{
+				m_islockon = false;
+			}
 		}
 
 		auto& gm = GameManager::GetInstance();
