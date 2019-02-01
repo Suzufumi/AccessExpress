@@ -101,35 +101,36 @@ namespace basecross {
 		Sprite::OnCreate();
 		SetPosition(Vec2(790, 640));
 		SetDrawLayer(1);
-		//ゲージバー
-		m_gage = GetStage()->AddGameObject<Sprite>(L"chainbar_TX", Vec2(155.0f,155.0f));
-		m_gage.lock()->SetPosition(Vec2(790.0f, 640.0f));
-		m_gage.lock()->SetDrawLayer(1);
+
 		//ゲージ枠
-		m_gageFram = GetStage()->AddGameObject<Sprite>(L"ChainGauge_TX", Vec2(155.0f, 155.0f));
+		m_gageFram = GetStage()->AddGameObject<Sprite>(L"ChainGauge_TX", Vec2(160.0f, 160.0f));
 		m_gageFram.lock()->SetPosition(Vec2(790.0f, 640.0f));
-		m_gageFram.lock()->SetDrawLayer(1);
+		m_gageFram.lock()->SetDrawLayer(2);
+		//ゲージバー
+		m_gage = GetStage()->AddGameObject<Sprite>(L"chainbar_TX", Vec2(160.0f, 160.0f));
+		m_gage.lock()->SetPosition(Vec2(800.0f - 5.0f, 640.0f));
+		m_gage.lock()->SetDrawLayer(1);
 	}
 	void ViewChainLetter::OnUpdate() {
 		auto& manager = GameManager::GetInstance();
 		auto gageMaxLength = m_gageDefaltLength + (m_gageBounsLength * manager.GetBouns());
-		float remainingGage = gageMaxLength - (gageMaxLength * manager.GetSlowPassage()); 
+		float remainingGage = gageMaxLength * (1.0f - manager.GetSlowPassage()); 
 		//ゲージバーを変動
-		m_gage.lock()->GetComponent<Transform>()->SetScale(remainingGage,1.0f , 1.0f);
-		m_gage.lock()->SetPosition(Vec2(718.0f + (((155.0f * gageMaxLength) / 2.0f) * (1 - manager.GetSlowPassage())), 640));
+		m_gage.lock()->GetComponent<Transform>()->SetScale(remainingGage, 1.0f, 1.0f);
+		m_gage.lock()->SetPosition(Vec2(720 + (80.0f * remainingGage) + (10.0f * (gageMaxLength - remainingGage)), 640.0f));
 		//ゲージ枠を変動
 		m_gageFram.lock()->GetComponent<Transform>()->SetScale(gageMaxLength, 1.0f, 1.0f);
-		m_gageFram.lock()->SetPosition(Vec2(718.0f + (((155.0f * gageMaxLength) / 2.0f)), 640));
+		m_gageFram.lock()->SetPosition(Vec2(720.0f + (((160.0f * gageMaxLength) / 2.0f)), 640));
 		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
 			SetDrawActive(true);
 			m_gage.lock()->SetDrawActive(true);
 			m_gageFram.lock()->SetDrawActive(true);
 		}
-		else {
+		/*else {
 			SetDrawActive(false);
 			m_gage.lock()->SetDrawActive(false);
 			m_gageFram.lock()->SetDrawActive(false);
-		}
+		}*/
 	}
 	//-------------------------------------------------------------------------------------------------
 	//チェインの数字を見せるオブジェクト
