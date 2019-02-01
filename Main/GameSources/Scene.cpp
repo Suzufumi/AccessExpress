@@ -22,7 +22,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");		}
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToResultStage");		}
 		catch (...) {
 			throw;
 		}
@@ -86,7 +86,8 @@ namespace basecross{
 			{ L"chain_gauge.png",L"chain_gauge_TX"},
 			{ L"chainbar.png",L"chainbar_TX"},
 			{ L"ChainGauge.png",L"ChainGauge_TX"},
-			{ L"ChainLetter.png", L"ChainLetter_TX"}
+			{ L"ChainLetter.png", L"ChainLetter_TX"},
+			{ L"sippai.png", L"sippai_TX"}
 		};
 
 		for (auto texture : textures)

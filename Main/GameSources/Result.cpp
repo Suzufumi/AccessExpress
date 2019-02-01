@@ -41,8 +41,13 @@ namespace basecross {
 				m_playerForward = m_playerForward.normalize();
 				//経過を初期化
 				m_leap = 0.0f;
-				//クリアアニメーションにする
-				m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->ChangeCurrentAnimation(L"Clear");
+				if (gm.GetMail() > 0) {
+					//クリアアニメーションにする
+					m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->ChangeCurrentAnimation(L"Clear");
+				}
+				else {
+					m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->ChangeCurrentAnimation(L"Default");
+				}
 				m_progress = progress::MAIL_UP;
 			}
 			break;
@@ -54,23 +59,30 @@ namespace basecross {
 				m_player.lock()->GetComponent<BcPNTBoneModelDraw>()->ChangeCurrentAnimation(L"Default");
 				playerP0 = playerTrs->GetWorldPosition();
 				playerP1 = playerP0 + Vec3(0.0f, -10.0f, 0.0f);
-				CreateMail(playerP0, Vec3(2.0f, 2.0f, 2.0f));
-				mailP0 = playerP0 + Vec3(-3.0f, 0.0f, 0.0f);
-				mailP1 = mailP0 + Vec3(0.0f,20.0f,0.0f);
+				//メールを１つでも獲得していたら
+				if (gm.GetMail() > 0) {
+					CreateMail(playerP0, Vec3(2.0f, 2.0f, 2.0f));
+					mailP0 = playerP0 + Vec3(-3.0f, 0.0f, 0.0f);
+					mailP1 = mailP0 + Vec3(0.0f, 20.0f, 0.0f);
+				}
 			}
 			//メールがでてきたら処理
 			if (m_isMailFly) {
 				m_leap += elapsedTime / 2.0f;
 				auto playerPos = (1 - m_leap) * playerP0 + m_leap * playerP1;
-				auto mailPos = (1 - m_leap) * mailP0 + m_leap * mailP1;
 				playerTrs->SetWorldPosition(playerPos);
 				m_antenna.lock()->GetComponent<Transform>()->SetWorldPosition(playerPos + Vec3(-3.0f,0.0f,-2.0f));
-				m_mail.lock()->GetComponent<Transform>()->SetWorldPosition(Vec3(mailPos.x, mailPos.y - 2.0f, mailPos.z));
-				auto particle = GetSharedGameObject<ResultEffect>(L"ResultEfk", false);
-				if (particle)
-				{
-					//auto mailPos = m_mail.lock()->GetComponent<Transform>()->GetWorldPosition();
-					particle->InsertResultEffect(Vec3(mailPos.x, mailPos.y - 3.0f, mailPos.z),Vec2(2.0f, 2.0f));
+				//メールを１つでも獲得していたら
+				if (gm.GetMail() > 0) {
+					auto mailPos = (1 - m_leap) * mailP0 + m_leap * mailP1;
+					m_mail.lock()->GetComponent<Transform>()->SetWorldPosition(Vec3(mailPos.x, mailPos.y - 2.0f, mailPos.z));
+
+					auto particle = GetSharedGameObject<ResultEffect>(L"ResultEfk", false);
+					if (particle)
+					{
+						//auto mailPos = m_mail.lock()->GetComponent<Transform>()->GetWorldPosition();
+						particle->InsertResultEffect(Vec3(mailPos.x, mailPos.y - 3.0f, mailPos.z), Vec2(2.0f, 2.0f));
+					}
 				}
 				if (m_leap >= 1.0f) {
 					m_leap = 0.0f;
@@ -116,8 +128,14 @@ namespace basecross {
 	///-----------------------------------------------------------------------------
 	void ResultStage::CreateResult() {
 		//配達完了の文字
-		m_clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(410, 205));
+		if (GameManager::GetInstance().GetMail() > 0.0f) {
+			m_clearSprite = AddGameObject<Sprite>(L"ResultStage_TX", Vec2(410, 205));
+		}
+		else {
+			m_clearSprite = AddGameObject<Sprite>(L"sippai_TX", Vec2(410, 205));
+		}
 		m_clearSprite.lock()->SetPosition(Vec2(640.0f, 100.0f));
+
 		//プッシュエニーボタン
 		m_push = AddGameObject<Sprite>(L"Title_BUTTON_TX", Vec2(1000, 100));
 		m_push.lock()->SetPosition(Vec2(640.0f, 670.0f));
@@ -324,19 +342,32 @@ namespace basecross {
 		drawComp->SetTextureResource(L"PLAYER_TX");
 		drawComp->SetLightingEnabled(false);
 		// アニメーションを追加する
-		drawComp->AddAnimation(L"Default", 0, 110, true, 60.0f);
+		drawComp->AddAnimation(L"Default", 0, 110, false, 60.0f);
 		drawComp->AddAnimation(L"Fly", 310, 30, false, 17.0f);
+		drawComp->AddAnimation(L"Over", 350, 40, false, 30.0f);
 		drawComp->AddAnimation(L"Clear", 400, 100, false, 30.0f);
 		// アニメーションの設定
 		drawComp->ChangeCurrentAnimation(L"Fly");
-		drawComp->SetMultiMeshIsDraw(0, false); // 一番上の線
-		drawComp->SetMultiMeshIsDraw(1, false);	// 真ん中の線
-		drawComp->SetMultiMeshIsDraw(2, false);	// 一番下の線
-		drawComp->SetMultiMeshIsDraw(3, false);	// 通常顔
-		drawComp->SetMultiMeshIsDraw(4, true);	// うれしい
-		drawComp->SetMultiMeshIsDraw(5, true); // 体
-		drawComp->SetMultiMeshIsDraw(6, false);	// 寝てる顔
-		drawComp->SetMultiMeshIsDraw(7, false);	// 悲しい顔
+		if (GameManager::GetInstance().GetMail() > 0) {
+			drawComp->SetMultiMeshIsDraw(0, false); // 一番上の線
+			drawComp->SetMultiMeshIsDraw(1, false);	// 真ん中の線
+			drawComp->SetMultiMeshIsDraw(2, false);	// 一番下の線
+			drawComp->SetMultiMeshIsDraw(3, false);	// 通常顔
+			drawComp->SetMultiMeshIsDraw(4, true);	// うれしい
+			drawComp->SetMultiMeshIsDraw(5, true); // 体
+			drawComp->SetMultiMeshIsDraw(6, false);	// 寝てる顔
+			drawComp->SetMultiMeshIsDraw(7, false);	// 悲しい顔
+		}
+		else {
+			drawComp->SetMultiMeshIsDraw(0, false); // 一番上の線
+			drawComp->SetMultiMeshIsDraw(1, false);	// 真ん中の線
+			drawComp->SetMultiMeshIsDraw(2, false);	// 一番下の線
+			drawComp->SetMultiMeshIsDraw(3, false);	// 通常顔
+			drawComp->SetMultiMeshIsDraw(4, false);	// うれしい
+			drawComp->SetMultiMeshIsDraw(5, true); // 体
+			drawComp->SetMultiMeshIsDraw(6, false);	// 寝てる顔
+			drawComp->SetMultiMeshIsDraw(7, true);	// 悲しい顔
+		}
 	}
 	///-----------------------------------------------------------------------------
 	//メールを画面に出す
