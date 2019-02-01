@@ -313,8 +313,6 @@ namespace basecross {
 			//Æ€‚©‚ç‚Å‚éRay‚ÆOBB‚Å”»’è
 			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
 			if (hit) {
-				GameManager::GetInstance().AddScore(20);
-
 				Vec3 delta = origin - objTrans->GetWorldPosition();
 				float deltaLength = delta.length();
 				//‹ß‚¢‚Æ‚«‚ÍƒƒbƒNƒIƒ“‚µ‚È‚¢
