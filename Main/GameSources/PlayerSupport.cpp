@@ -200,7 +200,13 @@ namespace basecross {
 			m_vertices[i][3].textureCoordinate = Vec2(end_x, end_y);
 
 			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
+			drawComp->SetDiffuse(Col4(1.0f, 1.0f, 1.0f, 1.0f));
+			//5‚Ì”{”‚ÅÔ‚­‚·‚é
+			if (player->GetChain() % 5 == 0) {
+				drawComp->SetDiffuse(Col4(1.0f, 0.9f, 0.0f, 1.0f));
+			}
 			drawComp->UpdateVertices(m_vertices[i]);	// ˆÊ’u‚Í•Ï‚¦‚¸‚Éƒ|ƒŠƒSƒ“‚Ì’†g‚¾‚¯•Ï‚¦‚é
+
 		}
 		OnDraw();
 		//auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
