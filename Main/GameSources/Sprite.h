@@ -12,6 +12,10 @@ namespace basecross {
 			: GameObject(stage), _key(key), _size(size), _rect(0, 0, size.x, size.y)
 		{
 		}
+		Sprite(const shared_ptr<Stage>& stagePtr)
+			: GameObject(stagePtr)
+		{
+		}
 
 		Sprite(const std::shared_ptr<Stage>& stage, const std::wstring& key, Vec2 size, const Rect2D<float>& rect)
 			:GameObject(stage), _key(key), _size(size), _rect(rect)
@@ -125,6 +129,30 @@ namespace basecross {
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
 		void ChangeNum(int num) { m_num = num; };
+	};
+
+	///---------------------------------------------------------------------------------
+	//チュートリアル画像を表示するスプライト
+	///---------------------------------------------------------------------------------
+	class TutorialSprite : public Sprite
+	{
+	public:
+		struct InitParam
+		{
+			Vec3 m_startPos;
+			wstring m_textureKey;
+		};
+	private:
+		InitParam m_initParam;
+		float m_timeCount = 0.0f;
+		float m_buttonEnableTime;
+	public:
+		TutorialSprite(const shared_ptr<Stage>& stagePtr, TutorialSprite::InitParam initParam);
+		virtual ~TutorialSprite();
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		virtual void OnEvent(const shared_ptr<Event>& event)override;
+		void Close();
 	};
 
 }

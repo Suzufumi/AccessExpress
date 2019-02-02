@@ -262,4 +262,37 @@ namespace basecross{
 			number->OnDraw();
 		}
 	}
+
+	///---------------------------------------------------------------------------------
+	//チュートリアルスプライト
+	///---------------------------------------------------------------------------------
+	TutorialSprite::TutorialSprite(const shared_ptr<Stage>& stagePtr, TutorialSprite::InitParam initParam)
+		: Sprite(stagePtr), m_initParam(initParam), m_buttonEnableTime(1.0f)
+	{
+	}
+
+	TutorialSprite::~TutorialSprite()
+	{}
+
+	void TutorialSprite::OnCreate()
+	{
+		Sprite::OnCreate();
+		auto drawComp = GetComponent<PTSpriteDraw>();
+		drawComp->SetTextureResource(m_initParam.m_textureKey);
+	}
+
+	void TutorialSprite::OnUpdate()
+	{
+
+	}
+
+	void TutorialSprite::OnEvent(const shared_ptr<Event>& event)
+	{
+
+	}
+
+	void TutorialSprite::Close()
+	{
+
+	}
 }
