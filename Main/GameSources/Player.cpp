@@ -316,7 +316,7 @@ namespace basecross {
 				Vec3 delta = origin - objTrans->GetWorldPosition();
 				float deltaLength = delta.length();
 				//近いときはロックオンしない
-				if (deltaLength <= 4.0f) {
+				if (deltaLength <= 8.0f) {
 					continue;
 				}
 				//Rayの範囲よりも遠い時は、判定上は当たっていても無視する

@@ -23,6 +23,7 @@
   <Wall Type="Wall" Pos="(84.5, 6.5, 92.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
   <Wall Type="Wall" Pos="(77.4, 4.5, 78.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
   <Wall Type="Wall" Pos="(58.5, 4.5, 69.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(50.5, 599.5, 36.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
   <Enemy Type="Enemy" DroneType="ClockWise" Pos="(50.5, 11.5, 36.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
   <Enemy Type="Enemy" DroneType="VerticalMotion" Pos="(31.5, 10.5, 90.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
   <RadioTower Type="RadioTower" Pos="(21.8, 9.1, 98.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
