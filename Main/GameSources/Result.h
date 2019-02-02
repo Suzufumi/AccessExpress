@@ -3,6 +3,7 @@
 
 namespace basecross {
 	class ResultStage : public Stage {
+		const int RANK_SSS = 100000;
 		const int RANK_SS = 60000;
 		const int RANK_S = 30000;
 		const int RANK_A = 15000;
@@ -49,14 +50,15 @@ namespace basecross {
 		Vec3 m_mailP0,m_maxChainP0,m_scoreP1;
 		float m_time = 1.2f;
 		bool m_isMailFly = false;
+		weak_ptr<FadeInOut> m_fade;
 		enum progress {
 			ANTENNA,
 			MAIL_UP,
 			START,
 			ADD_SCORE,
 			SCORE_COUNTUP,
-			END
-			//FADE
+			END,
+			FADE
 		};
 		progress m_progress = progress::ANTENNA;
 	public:

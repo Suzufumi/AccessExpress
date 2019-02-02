@@ -1,116 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <GameStage>
-  <Player Type="Player" Pos="(6.5, 13.8, 3.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Wall Type="Wall" Pos="(37.5, 7.5, 92.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(146.5, 7.5, 133.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(146.5, 7.5, 97.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(53.4, 4.5, 77.3)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(29.5, 4.5, 70.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(12.1, 4.5, 64.4)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(150.5, 4.5, 66.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(29.5, 4.5, 8.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(137.5, 4.5, 10.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(6.5, 4.5, 6.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(65.5, 4.5, 28.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(15.5, 4.5, 84.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(26.5, 6.5, 44.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(55.5, 7.5, 107.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(54.1, 6.5, 13.1)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(131.5, 4.5, 53.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(-14.5, 6.5, 51.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(72.5, 7.5, 89.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(25.5, 7.5, 133.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(37.5, 7.5, 113.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(152.2, 7.5, 41.7)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(-9.5, 4.5, 25.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(133.5, 7.5, 81.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(48.5, 6.5, 37.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(102.0, 4.5, 113.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(-7.1, 7.5, 74.0)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(17.5, 4.5, 106.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(3.0, 4.5, 131.0)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(70.5, 4.5, 70.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(13.5, 6.5, 23.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(-16.6, 4.5, 88.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(114.1, 4.5, 69.0)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(97.5, 4.5, 80.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(47.5, 4.5, 59.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(132.3, 7.5, 33.1)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(133.5, 7.5, 117.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(91.5, 7.5, 58.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(71.5, 7.5, 50.0)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(12.5, 4.5, 64.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(113.5, 7.5, 134.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(117.5, 4.5, 98.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(85.5, 7.5, 106.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(108.2, 4.5, 41.8)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(-13.5, 4.5, 108.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(101.5, 4.5, 14.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(52.5, 4.5, 126.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Wall Type="Wall" Pos="(7.5, 7.5, 49.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
-  <Wall Type="Wall" Pos="(83.5, 4.5, 33.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 8.0, 10.0)" />
-  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(11.5, -499.5, 14.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="1" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(83.5, 16.5, 83.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
-  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(0.5, 11.5, 115.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="7" />
-  <Enemy Type="Enemy" DroneType="Wave" Pos="(79.5, 17.5, 118.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
-  <Enemy Type="Enemy" DroneType="Wave" Pos="(73.5, 16.5, 127.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
-  <Enemy Type="Enemy" DroneType="Wave" Pos="(3.5, 14.5, 96.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="10" />
-  <Enemy Type="Enemy" DroneType="VerticalMotion" Pos="(130.5, 12.5, 60.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(89.5, 10.5, 30.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="4" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(69.5, 14.5, 77.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
-  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(132.5, 12.5, 21.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(130.5, 15.5, 105.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(34.5, 14.5, 20.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="2" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(33.5, 10.5, 57.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="4" />
-  <Enemy Type="Enemy" DroneType="VerticalMotion" Pos="(54.5, 12.5, 57.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="4" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(6.5, 14.5, 28.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="1" />
-  <Enemy Type="Enemy" DroneType="CounterClockwise" Pos="(52.5, 14.5, 24.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="8" />
-  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(16.5, 15.5, 53.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="3" />
-  <RadioTower Type="RadioTower" Pos="(14.5, 9.1, 84.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(66.5, 9.2, 27.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(90.5, 14.6, 57.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(133.5, 14.6, 117.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(150.5, 9.1, 67.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(109.5, 9.1, 41.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(48.5, 13.6, 37.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(-16.5, 9.1, 88.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(133.5, 14.6, 81.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(151.5, 14.6, 40.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(54.5, 9.1, 77.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(131.5, 14.6, 32.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(10.5, 9.1, 64.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(145.5, 14.6, 95.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(7.5, 14.6, 47.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(31.5, 9.1, 8.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(37.5, 14.7, 111.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(71.5, 8.6, 70.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(-7.5, 14.6, 73.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(118.5, 9.1, 99.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(115.5, 9.1, 69.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(27.5, 13.6, 44.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(97.5, 8.7, 80.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(55.5, 14.6, 105.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(24.5, 14.6, 133.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(84.5, 14.6, 107.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(70.5, 14.6, 48.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(-9.5, 9.0, 23.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <RadioTower Type="RadioTower" Pos="(13.5, 13.6, 22.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Goal Type="Goal" Pos="(30.3, 500.0, 70.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(16.5, 9.0, 106.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(72.5, 14.5, 87.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(50.5, 9.0, 125.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(1.5, 9.0, 130.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(83.5, 9.0, 32.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(47.5, 9.0, 58.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(30.5, 9.0, 70.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(102.5, 9.0, 112.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(132.5, 9.0, 52.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(53.5, 13.6, 12.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(113.8, 14.5, 135.7)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(37.5, 14.5, 92.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(-14.5, 13.5, 52.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(137.5, 9.0, 9.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(101.5, 9.0, 13.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(147.5, 14.5, 133.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
-  <Mails Type="Mail" Pos="(-13.5, 9.0, 108.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Player Type="Player" Pos="(14.5, 14.9, 8.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Wall Type="Wall" Pos="(13.5, 4.5, 58.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(84.5, 4.5, 53.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(13.5, 4.5, 32.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(58.5, 4.5, 34.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(35.3, 4.5, 42.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(54.5, 4.5, 13.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(93.5, 4.5, 70.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(52.3, 4.5, 85.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(36.5, 4.5, 66.8)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(12.5, 4.5, 81.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(14.5, 4.5, 12.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(14.5, 4.5, 12.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(58.5, 4.5, 52.9)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(40.7, 4.5, 101.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(34.5, 4.5, 17.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(81.8, 4.5, 34.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(73.5, 4.5, 14.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(21.8, 4.5, 99.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(71.2, 6.5, 104.3)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
+  <Wall Type="Wall" Pos="(84.5, 6.5, 92.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(10.0, 13.0, 10.0)" />
+  <Wall Type="Wall" Pos="(77.4, 4.5, 78.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Wall Type="Wall" Pos="(58.5, 4.5, 69.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(9.0, 8.0, 10.0)" />
+  <Enemy Type="Enemy" DroneType="ClockWise" Pos="(50.5, 11.5, 36.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
+  <Enemy Type="Enemy" DroneType="VerticalMotion" Pos="(31.5, 10.5, 90.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" Chain="0" />
+  <RadioTower Type="RadioTower" Pos="(21.8, 9.1, 98.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(34.5, 9.1, 17.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(13.6, 9.1, 57.3)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(58.5, 9.1, 52.9)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(36.5, 9.1, 66.8)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(13.5, 9.1, 31.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(58.5, 9.1, 33.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(82.8, 9.2, 33.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(84.5, 9.2, 53.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(51.5, 9.1, 84.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(85.5, 13.7, 91.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <RadioTower Type="RadioTower" Pos="(77.4, 9.1, 77.9)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(40.5, 9.0, 100.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(54.5, 9.1, 12.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(93.5, 9.1, 69.2)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(70.9, 13.6, 104.3)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(13.5, 9.0, 80.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(74.5, 9.1, 13.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(35.3, 9.0, 41.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
+  <Mails Type="Mail" Pos="(59.5, 9.0, 69.5)" Quat="(0.0, 0.0, 0.0, 1.0)" Scale="(1.0, 1.0, 1.0)" />
 </GameStage>

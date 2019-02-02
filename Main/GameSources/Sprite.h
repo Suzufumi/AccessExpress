@@ -12,6 +12,10 @@ namespace basecross {
 			: GameObject(stage), _key(key), _size(size), _rect(0, 0, size.x, size.y)
 		{
 		}
+		Sprite(const shared_ptr<Stage>& stagePtr)
+			: GameObject(stagePtr)
+		{
+		}
 
 		Sprite(const std::shared_ptr<Stage>& stage, const std::wstring& key, Vec2 size, const Rect2D<float>& rect)
 			:GameObject(stage), _key(key), _size(size), _rect(rect)
@@ -45,7 +49,7 @@ namespace basecross {
 		Vec2 m_startScale;
 		const float m_fadeSpeed = 0.01f;
 		float m_alpha;
-		bool m_isFadeIn;
+		bool m_isFadeIn = false;
 		bool m_isFadeOut = false;
 	public:
 		FadeInOut(const shared_ptr<Stage>& stagePtr, const Vec2& pos, const Vec2& scale);
@@ -66,18 +70,20 @@ namespace basecross {
 		{
 			m_isFadeOut = isFadeIn;
 		}
+		void SetAlpha(float alpha)
+		{ m_alpha = alpha;}
 	};
 
 	class AnimSprite : public GameObject
 	{
-		bool m_Trace;
-		Vec2 m_StartScale;
-		Vec2 m_StartPos;
-		wstring m_TextureKey;
+		bool m_trace;
+		Vec2 m_startScale;
+		Vec2 m_startPos;
+		wstring m_textureKey;
 		//トータル時間
-		float m_TotalTime;
+		float m_totalTime;
 		//選択されているかどうか
-		bool m_Selected;
+		bool m_selected;
 	public:
 		//--------------------------------------------------------------------------------------
 		/*!
@@ -89,8 +95,8 @@ namespace basecross {
 		@param[in]	StartPos	初期位置
 		*/
 		//--------------------------------------------------------------------------------------
-		AnimSprite(const shared_ptr<Stage>& StagePtr, const wstring& TextureKey, bool Trace,
-			const Vec2& StartScale, const Vec2& StartPos);
+		AnimSprite(const shared_ptr<Stage>& stagePtr, const wstring& textureKey, bool trace,
+			const Vec2& startScale, const Vec2& startPos);
 		//破棄
 		virtual ~AnimSprite();
 		//初期化
@@ -99,11 +105,11 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		//アクセサ
 		bool IsSelect() const {
-			return m_Selected;
+			return m_selected;
 		}
 		void SetSelect(bool b) {
-			m_Selected = b;
-			m_TotalTime = 0.0f;
+			m_selected = b;
+			m_totalTime = 0.0f;
 		}
 	};
 	///---------------------------------------------------------------------------------
@@ -123,6 +129,30 @@ namespace basecross {
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
 		void ChangeNum(int num) { m_num = num; };
+	};
+
+	///---------------------------------------------------------------------------------
+	//チュートリアル画像を表示するスプライト
+	///---------------------------------------------------------------------------------
+	class TutorialSprite : public Sprite
+	{
+	public:
+		struct InitParam
+		{
+			Vec3 m_startPos;
+			wstring m_textureKey;
+		};
+	private:
+		InitParam m_initParam;
+		float m_timeCount = 0.0f;
+		float m_buttonEnableTime;
+	public:
+		TutorialSprite(const shared_ptr<Stage>& stagePtr, TutorialSprite::InitParam initParam);
+		virtual ~TutorialSprite();
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
+		virtual void OnEvent(const shared_ptr<Event>& event)override;
+		void Close();
 	};
 
 }
