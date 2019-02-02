@@ -46,6 +46,18 @@ namespace basecross
 			m_angleY += -m_pad.fThumbRX * m_maxAngleSpeed * delta; // ƒJƒƒ‰‚ð‰ñ“]‚³‚¹‚é
 			m_angleX += -m_pad.fThumbRY * m_maxAngleSpeed * delta; // ƒJƒƒ‰‚ð¸~‚³‚¹‚é
 		}
+		//¶ƒXƒeƒBƒbƒN‚É’l‚ª“ü—Í‚³‚ê‚Ä‚¢‚½‚ç
+		if (m_pad.fThumbLX > 0.7f || m_pad.fThumbLX < -0.7f ||
+			m_pad.fThumbLY > 0.7f || m_pad.fThumbLY < -0.7f) {
+			m_angleY += -m_pad.fThumbLX * m_maxAngleSpeed * 2 * delta; // ƒJƒƒ‰‚ð‰ñ“]‚³‚¹‚é
+			m_angleX += -m_pad.fThumbLY * m_maxAngleSpeed * 2 * delta; // ƒJƒƒ‰‚ð¸~‚³‚¹‚é
+		}
+		else if (m_pad.fThumbLX > 0.2f || m_pad.fThumbLX < -0.2f ||
+			m_pad.fThumbLY > 0.2f || m_pad.fThumbLY < -0.2f) {
+			m_angleY += -m_pad.fThumbLX * m_maxAngleSpeed * delta; // ƒJƒƒ‰‚ð‰ñ“]‚³‚¹‚é
+			m_angleX += -m_pad.fThumbLY * m_maxAngleSpeed * delta; // ƒJƒƒ‰‚ð¸~‚³‚¹‚é
+		}
+
 		//YŽ²Šî€Šp“x‚ÌŠÛ‚ß(-360<360)
 		if (m_angleY > Deg2Rad(360.0f)) {
 			m_angleY = Deg2Rad(0.0f);

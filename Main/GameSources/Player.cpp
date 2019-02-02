@@ -1052,7 +1052,7 @@ namespace basecross {
 		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 
 		Obj->Forword();
-		Obj->Walk();
+		//Obj->Walk();
 		Obj->ResetGoLink();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
