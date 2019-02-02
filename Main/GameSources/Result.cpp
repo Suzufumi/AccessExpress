@@ -164,7 +164,7 @@ namespace basecross {
 		m_maxChainText = AddGameObject<Sprite>(L"MaxChainText_TX", Vec2(461, 230));
 		m_maxChainText.lock()->SetPosition(Vec2(345.0f, 400.0f));
 		//êîéö
-		m_maxChainNum = AddGameObject<NumberSprite>(2, GameManager::GetInstance().GetMaxChain());
+		m_maxChainNum = AddGameObject<NumberSprite>(3, GameManager::GetInstance().GetMaxChain());
 		m_maxChainNum.lock()->GetComponent<Transform>()->SetPosition(940, -320, 0);
 		m_maxChainP0 = m_maxChainNum.lock()->GetComponent<Transform>()->GetPosition();
 	};
