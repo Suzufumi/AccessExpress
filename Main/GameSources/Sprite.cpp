@@ -258,8 +258,25 @@ namespace basecross{
 		OnDraw();
 	}
 	void NumberSprite::OnDraw() {
+		int score = m_num;
+		int places = 0;
+		//何桁表示するかを算出する
+		while (score > 0) {
+			score /= 10;
+			places++;
+		}
+		//各桁の表示の切替
+		int count = 0;
 		for (auto number : m_numbers) {
-			number->OnDraw();
+			if (count < places || count < 2) {
+				number->OnDraw();
+
+				number->SetDrawActive(true);
+			}
+			else {
+				number->SetDrawActive(false);
+			}
+			count++;
 		}
 	}
 
