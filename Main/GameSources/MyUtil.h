@@ -1,7 +1,7 @@
 /*!
 @file MyUtil.h
 @brief BaseCrossにはないユーティリティ関数
-@author Kyohei Okawa
+@author Fumihiko Suzuki
 */
 
 #pragma once
@@ -15,7 +15,7 @@ namespace basecross
 		 *@brief wstringからfloatへ変換する
 		 *@param[in] wstr wstring
 		 *@return 変換されたfloat
-		 *@author Kyohei Okawa
+		 *@author Fumihiko Suzuki
 		*/
 		float wstrToFloat(wstring wstr);
 
@@ -23,7 +23,7 @@ namespace basecross
 		 *@brief wstringからintへ変換する
 		 *@param[in] wstr wstring
 		 *@return 変換されたint
-		 *@author Kyohei Okawa
+		 *@author Fumihiko Suzuki
 		*/
 		int wstrToInt(wstring wstr);
 
@@ -32,7 +32,7 @@ namespace basecross
 		 *@param[in] wstr wstring
 		 *@return 変換されたbool
 		 *@details 0の時はfalseに変換されそれ以外はtrueに変換される
-		 *@author Kyohei Okawa
+		 *@author Fumihiko Suzuki
 		*/
 		bool wstrToBool(wstring wstr);
 
@@ -42,7 +42,7 @@ namespace basecross
 		 *@param[in] maxVal 最大値
 		 *@param[in] value 変換する値
 		 *@return 変換後の値
-		 *@author Kyohei Okawa
+		 *@author Fumihiko Suzuki
 		*/
 		float clamp(float minVal, float maxVal, float value);
 
@@ -50,7 +50,7 @@ namespace basecross
 		 *@brief 桁数を数える
 		 *@param[in] number 対象の整数
 		 *@return numberの桁数
-		 *@author Kyohei Okawa
+		 *@author Fumihiko Suzuki
 		*/
 		int getDigit(int number);
 
@@ -60,7 +60,7 @@ namespace basecross
 		 *@param[in] digit numberの桁数
 		 *@return 一桁ずつの数字が入っているvector配列
 		 *@details 0番目には１の位の数字、1番目には10の位の数字...
-		 *@author Kyohei Okawa
+		 *@author Fumihiko Suzuki
 		*/
 		std::vector<int> extractTotalDigitsSpotCount(int number, int digit);
 

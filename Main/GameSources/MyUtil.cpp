@@ -1,7 +1,7 @@
 /*!
 @file MyUtil.cpp
 @brief BaseCrossにはないユーティリティ関数
-@author Kyohei Okawa
+@author Fumihiko Suzuki
 */
 
 #include "stdafx.h"

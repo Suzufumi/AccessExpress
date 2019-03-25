@@ -205,9 +205,6 @@ namespace basecross{
 
 			ResetActiveStage<ResultStage>();
 		}
-		else if (event->m_MsgStr == L"ToGameOverStage") {
-			ResetActiveStage<GameOverStage>();
-		}
 	}
 
 }

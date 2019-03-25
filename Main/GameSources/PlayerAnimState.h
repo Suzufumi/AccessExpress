@@ -5,6 +5,9 @@ namespace basecross
 {
 	class Player;
 
+	///------------------------------------------------------------------------------------------
+	// 通常アニメーション
+	///------------------------------------------------------------------------------------------
 	class PlayerDefaultAnim : public ObjState<Player>
 	{
 		PlayerDefaultAnim() {};
@@ -15,6 +18,9 @@ namespace basecross
 		virtual void Exit(const shared_ptr<Player>& Obj) override;
 	};
 
+	///------------------------------------------------------------------------------------------
+	// 移動アニメーション
+	///------------------------------------------------------------------------------------------
 	class PlayerMoveAnim : public ObjState<Player>
 	{
 		PlayerMoveAnim() {};
@@ -25,6 +31,9 @@ namespace basecross
 		virtual void Exit(const shared_ptr<Player>& Obj) override;
 	};
 
+	///------------------------------------------------------------------------------------------
+	// 電波移動アニメーション
+	///------------------------------------------------------------------------------------------
 	class PlayerFlyAnim : public ObjState<Player>
 	{
 		PlayerFlyAnim() {};
@@ -35,6 +44,9 @@ namespace basecross
 		virtual void Exit(const shared_ptr<Player>& Obj) override;
 	};
 
+	///------------------------------------------------------------------------------------------
+	// クリアアニメーション
+	///------------------------------------------------------------------------------------------
 	class PlayerClearAnim : public ObjState<Player>
 	{
 		PlayerClearAnim() {};
@@ -45,6 +57,9 @@ namespace basecross
 		virtual void Exit(const shared_ptr<Player>& Obj) override;
 	};
 
+	///------------------------------------------------------------------------------------------
+	// オーバーアニメーション
+	///------------------------------------------------------------------------------------------
 	class PlayerOverAnim : public ObjState<Player>
 	{
 		PlayerOverAnim() {};
