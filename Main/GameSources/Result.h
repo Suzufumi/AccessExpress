@@ -31,17 +31,29 @@ namespace basecross {
 		Vec3 mailP0, mailP1;
 		//プレイヤーの向く方向
 		Vec3 m_playerForward;
+		// プレイヤーのポインタ
 		weak_ptr<GameObject> m_player;
+		// ゲームクリアUIのポインタ
 		weak_ptr<Sprite> m_clearSprite;
+		// メールUIのポインタ
 		weak_ptr<Sprite> m_mailText;
+		// 集めたメール数のポインタ
 		weak_ptr<NumberSprite> m_mailNum;
+		// 最大チェインUIのポインタ
 		weak_ptr<Sprite> m_maxChainText;
+		// 最大チェイン数のポインタ
 		weak_ptr<NumberSprite> m_maxChainNum;
+		// スコアUIのポインタ
 		weak_ptr<Sprite> m_scoreText;
+		// スコアのポインタ
 		weak_ptr<ScoreUI> m_scoreNum;
+		// PushAnyButtonのポインタ
 		weak_ptr<Sprite> m_push;
+		// ランクUIのポインタ
 		weak_ptr<Sprite> m_rankText;
+		// ランクのvector配列
 		vector<weak_ptr<Sprite>> m_rankResult;
+		// ランクに応じた表情のvector配列
 		vector<weak_ptr<Sprite>> m_rankFace;
 		weak_ptr<SoundItem> m_audioPtr;
 		weak_ptr<GameObject> m_antenna;

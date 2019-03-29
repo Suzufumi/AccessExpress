@@ -79,7 +79,7 @@ namespace basecross {
 		int stageNum = ptrScene->GetStageNum();
 		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 		if (!m_CntrolLock) {
-			if (cntlVec[0].fThumbLX >= 0.8f) {
+			if (cntlVec[0].fThumbLX >= 0.5f) {
 				stageNum++;
 				if (stageNum > 2) {
 					stageNum = 2;
@@ -88,7 +88,7 @@ namespace basecross {
 				ptrScene->SetStageNum(stageNum);
 				ChangeSelect(stageNum);
 			}
-			else if (cntlVec[0].fThumbLX <= -0.8f) {
+			else if (cntlVec[0].fThumbLX <= -0.5f) {
 				stageNum--;
 				if (stageNum < 1) {
 					stageNum = 1;
