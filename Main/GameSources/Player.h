@@ -109,8 +109,6 @@ namespace basecross {
 		//押し出し処理
 		void Extrusion();
 
-		//XZ平面の移動処理
-		void Walk();
 		//落ちる処理
 		void Fall();
 		//左スティックの値でプレイヤーを回転させる
