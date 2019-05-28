@@ -222,8 +222,8 @@ namespace basecross {
 		virtual void Exit(const shared_ptr<Player>& Obj)override;
 	};
 	//--------------------------------------------------------------------------------------
-	//class DateState : public ObjState<Player>;
-	//用途: データ体状態
+	//class ClearState : public ObjState<Player>;
+	//用途: クリアアニメーション状態
 	//--------------------------------------------------------------------------------------
 	class ClearState : public ObjState<Player> {
 		ClearState() {}

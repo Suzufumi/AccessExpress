@@ -823,35 +823,6 @@ namespace basecross {
 	}
 
 
-	//---------------------------------------------------------------------------------------------
-	//î•ñ‚Ì•\¦
-	//---------------------------------------------------------------------------------------------
-	void Player::DrawStrings() {
-		// FPS‚Ìæ“¾
-		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
-		wstring strFps(L"FPS: ");
-		strFps += Util::UintToWStr(fps);
-		strFps += L"\n";
-		wstring checkNum(L"CheckPointNum : ");
-		//auto& gm = GameManager::GetInstance();
-		//checkNum += Util::IntToWStr(gm.GetCheckPointNum()) + L"\n";
-		wstring combo(L"Combo : ");
-		combo += Util::IntToWStr(m_chain) + L"\n";
-		wstring chainLimit(L"CHAIN_TIME : ");
-		chainLimit += Util::IntToWStr(m_chainTime) + L"\n";
-		wstring timeLimit(L"Limit : ");
-		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
-		wstring faceNum(L"FACE_NUM : ");
-		faceNum += Util::IntToWStr(m_faceNum) + L"\n";
-
-		//•¶š—ñ‚ğ‚Â‚¯‚é
-		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
-
-		wstring str = strFps + faceNum + checkNum;
-		auto ptrString = GetComponent<StringSprite>();
-		ptrString->SetText(str);
-	}
-
 	//--------------------------------------------------------------------------------------
 	//	class LinkState : public ObjState<Player>;
 	//	—p“r: ƒŠƒ“ƒNã‚ğ”ò‚ñ‚Å‚¢‚éó‘Ô
