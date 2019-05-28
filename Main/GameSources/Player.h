@@ -128,8 +128,6 @@ namespace basecross {
 		void LinkGo();
 		//ベジエ曲線でリンクへ飛ぶ処理
 		void DroneGo();
-		// ベジェ曲線でチェックポイントへ飛ぶ処理
-		void CheckPointGo();
 		// ベジェ曲線でメールに飛ぶ
 		void MailGo();
 		//ベジエ曲線の初期ポジション設定
@@ -147,13 +145,9 @@ namespace basecross {
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
 		//Rayとドローンが当たっているかを見る処理
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
-		//Rayと届け先が当たっているかを見る
-		void CheckPointsRayCheck(Vec3 origin, Vec3 originDir);
 		//Rayとメールが当たっているか
 		void MailRayCheck(Vec3 origin, Vec3 originDir);
 
-		// Yボタンが押された
-		bool CheckYButton();
 		// 表情の切り替え
 		void FaceChanger(FaceState beforeFace, FaceState afterFace);
 		// タイムアップ時にアニメーションを見せる
