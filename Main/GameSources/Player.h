@@ -176,13 +176,9 @@ namespace basecross {
 		void ResetTimeLim() { m_chainTime = 0; }
 		int GetComboChainLimit() const{ return m_comboChainLimit; }
 		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
-		//落下した際にリスポーン位置へワープする
-		void Response();
 		float GetRayRange() { return m_rayRange; }
 		void ResetGoLink() { m_isGoLink = false; }
 		Vec2 forwardAngle();
-
-		void DrawStrings();
 	};
 
 

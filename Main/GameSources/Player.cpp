@@ -217,14 +217,6 @@ namespace basecross {
 		ptrUtil->RotToHead(m_forward, 0.1f);
 	}
 	///-------------------------------------------------------------------------------
-	//設定高さ以下になったらリスポーン位置にワープさせる
-	///-------------------------------------------------------------------------------
-	void Player::Response() {
-		if (GetComponent<Transform>()->GetWorldPosition().y <= m_responseHeght) {
-			GetComponent<Transform>()->SetWorldPosition(m_response);
-		}
-	}
-	///-------------------------------------------------------------------------------
 	//Lボタンを押していないときに対象オブジェが照準の見ている先の近くだったらそっちを向く
 	///-------------------------------------------------------------------------------
 	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
