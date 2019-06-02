@@ -11,8 +11,6 @@
 #define Rad2Deg(rad) (float)((rad * 180.0f) / PI)
 
 
-#include "ProjectShader.h"
-#include "ProjectBehavior.h"
 #include "MyUtil.h"
 #include "Scene.h"
 #include "GameManager.h"
@@ -20,7 +18,6 @@
 #include "GameStage.h"
 #include "TitleStage.h"
 #include "StageSelect.h"
-#include "GameOver.h"
 #include "ProjectCamera.h"
 #include "FixedGameObject.h"
 #include "ShapeObject.h"
