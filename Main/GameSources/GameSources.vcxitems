@@ -19,7 +19,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)FixedGameObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameOver.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)LinkObject.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MainUi.h" />
@@ -28,9 +27,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerAnimState.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)PlayerSupport.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectCamera.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Result.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ShapeObject.h" />
@@ -43,7 +40,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Effect.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)FixedGameObject.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameOver.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)LinkObject.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MainUi.cpp" />
@@ -51,9 +47,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PlayerAnimState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)PlayerSupport.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectCamera.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Result.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ShapeObject.cpp" />
