@@ -25,7 +25,6 @@ namespace basecross {
 		int m_chainTime = 0;	// コンボとコンボの時間を図る時間
 		int m_comboChainLimit = 0; // コンボが進んでいくにつれて更新する制限時間
 		Vec3 m_response;				//落ちた時に復帰する場所
-		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
 		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
@@ -47,7 +46,6 @@ namespace basecross {
 		int m_checkPointNum = NULL;
 		int m_MailNum = NULL;
 		weak_ptr<GameObject> m_LockOnObj;		//ロックオンしているオブジェクト
-		//weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
