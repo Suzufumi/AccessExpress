@@ -25,7 +25,6 @@ namespace basecross {
 		int m_chainTime = 0;	// コンボとコンボの時間を図る時間
 		int m_comboChainLimit = 0; // コンボが進んでいくにつれて更新する制限時間
 		Vec3 m_response;				//落ちた時に復帰する場所
-		float m_responseHeght = 0.0f;	//リスポーンが実行される高さ
 		float m_BezierSpeedLeap;		//距離に応じた飛ぶ処理へのスピード補正
 		float m_BezierSpeed = 30.0f;	//飛ぶ際の基準スピード
 		bool m_islockon = false;		//リンクオブジェクトをロックオンしている際にtrue
@@ -47,7 +46,6 @@ namespace basecross {
 		int m_checkPointNum = NULL;
 		int m_MailNum = NULL;
 		weak_ptr<GameObject> m_LockOnObj;		//ロックオンしているオブジェクト
-		//weak_ptr<ActionLine> m_ActionLine;		//Rayの可視化
 
 		Vec3 m_padDir;							//左スティックの向きを入れる
 		Vec3 m_forward;							//カメラの方向を踏まえたプレイヤーの向いている方向
@@ -109,8 +107,6 @@ namespace basecross {
 		//押し出し処理
 		void Extrusion();
 
-		//XZ平面の移動処理
-		void Walk();
 		//落ちる処理
 		void Fall();
 		//左スティックの値でプレイヤーを回転させる
@@ -128,8 +124,6 @@ namespace basecross {
 		void LinkGo();
 		//ベジエ曲線でリンクへ飛ぶ処理
 		void DroneGo();
-		// ベジェ曲線でチェックポイントへ飛ぶ処理
-		void CheckPointGo();
 		// ベジェ曲線でメールに飛ぶ
 		void MailGo();
 		//ベジエ曲線の初期ポジション設定
@@ -147,13 +141,9 @@ namespace basecross {
 		void LinkRayCheck(Vec3 origin,Vec3 originDir);
 		//Rayとドローンが当たっているかを見る処理
 		void DroneRayCheck(Vec3 origin, Vec3 originDir);
-		//Rayと届け先が当たっているかを見る
-		void CheckPointsRayCheck(Vec3 origin, Vec3 originDir);
 		//Rayとメールが当たっているか
 		void MailRayCheck(Vec3 origin, Vec3 originDir);
 
-		// Yボタンが押された
-		bool CheckYButton();
 		// 表情の切り替え
 		void FaceChanger(FaceState beforeFace, FaceState afterFace);
 		// タイムアップ時にアニメーションを見せる
@@ -184,13 +174,9 @@ namespace basecross {
 		void ResetTimeLim() { m_chainTime = 0; }
 		int GetComboChainLimit() const{ return m_comboChainLimit; }
 		void SetComboChainLimit(int chainLim) { m_comboChainLimit = chainLim; }
-		//落下した際にリスポーン位置へワープする
-		void Response();
 		float GetRayRange() { return m_rayRange; }
 		void ResetGoLink() { m_isGoLink = false; }
 		Vec2 forwardAngle();
-
-		void DrawStrings();
 	};
 
 
@@ -228,8 +214,8 @@ namespace basecross {
 		virtual void Exit(const shared_ptr<Player>& Obj)override;
 	};
 	//--------------------------------------------------------------------------------------
-	//class DateState : public ObjState<Player>;
-	//用途: データ体状態
+	//class ClearState : public ObjState<Player>;
+	//用途: クリアアニメーション状態
 	//--------------------------------------------------------------------------------------
 	class ClearState : public ObjState<Player> {
 		ClearState() {}
