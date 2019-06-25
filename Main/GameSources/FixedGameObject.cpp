@@ -42,12 +42,8 @@ namespace basecross {
 		drawComp->SetMeshResource(L"BUILDING_MODEL");
 		drawComp->SetTextureResource(L"Building_TX");
 		drawComp->SetLightingEnabled(false);
-		//drawComp->SetOwnShadowActive(false);
 		SetAlphaActive(true);
-		//drawComp->SetBlendState(BlendState::AlphaBlend);
 		drawComp->SetMeshToTransformMatrix(spanMat);
-		//Col4 Color(0.4f, 0.4f, 0.4f, 1.0f);
-		//drawComp->SetDiffuse(Color);
 		SetDrawLayer(-2);
 	}
 	///-----------------------------------------------------------------------------------
