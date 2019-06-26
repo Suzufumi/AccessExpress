@@ -268,15 +268,12 @@ namespace basecross {
 		RockonObject(sightPos, dir, L"Mails", 4.0f);
 		//ロックオン対象を向く
 		RockOn();
-		//RBボタンが押されていたら飛べるかの判定も行う
-		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-			//リンクオブジェクトとの判定
-			LinkRayCheck(sightPos, dir);
-			//メールとの判定
-			MailRayCheck(sightPos, dir);
-			//ドローンとの判定
-			DroneRayCheck(sightPos, dir);
-		}
+		//リンクオブジェクトとの判定
+		LinkRayCheck(sightPos, dir);
+		//メールとの判定
+		MailRayCheck(sightPos, dir);
+		//ドローンとの判定
+		DroneRayCheck(sightPos, dir);
 	}
 	///-------------------------------------------------------------------------------
 	//RayとOBBの判定
@@ -315,21 +312,24 @@ namespace basecross {
 				auto sightingDevice = m_SightingDevice.lock();
 				//照準に当たっていることを教える
 				sightingDevice->SetCaptureLink(true);
-				Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkObj->GetComponent<Transform>()->GetWorldPosition();
-				dir.y = 0;
-				//オブジェクトに被らないように方向を加味してずらした値を渡す
-				SetBezierPoint(linkObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
-				//経過をリセット
-				m_Lerp = 0;
-				//飛ぶの確定
-				m_isGoLink = true;
-				//スローの経過時間をリセット
-				GameManager::GetInstance().ResetSloawPassage();
-				//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-				m_DroneNo = NULL;
-				m_StateMachine->ChangeState(LinkState::Instance());
-				m_target = Target::LINK;
-				return;
+				//RBボタンが押されていたら飛べるかの判定も行う
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkObj->GetComponent<Transform>()->GetWorldPosition();
+					dir.y = 0;
+					//オブジェクトに被らないように方向を加味してずらした値を渡す
+					SetBezierPoint(linkObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
+					//経過をリセット
+					m_Lerp = 0;
+					//飛ぶの確定
+					m_isGoLink = true;
+					//スローの経過時間をリセット
+					GameManager::GetInstance().ResetSloawPassage();
+					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+					m_DroneNo = NULL;
+					m_StateMachine->ChangeState(LinkState::Instance());
+					m_target = Target::LINK;
+					return;
+				}
 			}
 		}
 	}
@@ -352,17 +352,20 @@ namespace basecross {
 				auto sightingDevice = m_SightingDevice.lock();
 				//照準に当たっていることを教える
 				sightingDevice->SetCaptureLink(true);
-				SetBezierPoint(droneObj->GetComponent<Transform>()->GetWorldPosition());
-				m_DroneNo = count;
-				//経過をリセット
-				m_Lerp = 0;
-				//飛ぶの確定
-				m_isGoLink = true;
-				//スローの経過時間をリセット
-				GameManager::GetInstance().ResetSloawPassage();
-				m_StateMachine->ChangeState(LinkState::Instance());
-				m_target = Target::DRONE;
-				return;
+				//RBボタンが押されていたら飛べるかの判定も行う
+				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+					SetBezierPoint(droneObj->GetComponent<Transform>()->GetWorldPosition());
+					m_DroneNo = count;
+					//経過をリセット
+					m_Lerp = 0;
+					//飛ぶの確定
+					m_isGoLink = true;
+					//スローの経過時間をリセット
+					GameManager::GetInstance().ResetSloawPassage();
+					m_StateMachine->ChangeState(LinkState::Instance());
+					m_target = Target::DRONE;
+					return;
+				}
 			}
 			count++;
 		}
