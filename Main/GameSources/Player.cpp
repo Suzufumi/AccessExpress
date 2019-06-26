@@ -198,76 +198,214 @@ namespace basecross {
 		ptrUtil->RotToHead(m_forward, 0.1f);
 	}
 	///-------------------------------------------------------------------------------
-	//Lボタンを押していないときに対象オブジェが照準の見ている先の近くだったらそっちを向く
+	//ベジエ曲線の制御点設定
 	///-------------------------------------------------------------------------------
-	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
-		//Lボタンを押し続けているとき
-		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
-			m_islockon = false;
-		}
-		//Lボタンを押していないとき
-		else {
-			if (!m_islockon) {
-				RockonObject(origin, originDir, groupName, correction);
-			}
-		}
-		//ロックオンしているとき
-		if (m_islockon) {
-			auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
-			auto lockOnPos = m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
+	void Player::SetBezierPoint(Vec3 point) {
 
-			auto camera = GetStage()->GetView()->GetTargetCamera();
-			auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
-			//ロックオンオブジェを対象にカメラの処理
-			tpsCamera->RockonCameraMove(sightPos, lockOnPos);
-			//ロックオン対象が近くにいる場合はロックオンを解除
-			Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - lockOnPos;
-			if (delta.length() <= 4.0f) {
-				m_islockon = false;
-			}
+		p0 = GetComponent<Transform>()->GetWorldPosition();
+		p2 = point + Vec3(0, 1.0f, 0);
+		//飛ぶ先までの距離に応じて飛ぶ際のスピードを変える
+		m_BezierSpeedLeap = Vec3(p2 - p0).length();
+		//飛ぶ先までの距離に応じて飛ぶ際の放物線の形を変える
+		if (m_BezierSpeedLeap >= 20.0f) {
+			p1 = point + Vec3(0, 6, 0);
+		}
+		else if (m_BezierSpeedLeap >= 10.0f) {
+			p1 = point + Vec3(0, 3, 0);
+		}
+		else if (m_BezierSpeedLeap < 10.0f) {
+			p1 = point - ((point - p0) / 2);
+		}
+		//カメラの追従する動きを設定する
+		auto camera = GetStage()->GetView()->GetTargetCamera();
+		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
+		//次のリンクに移るのでスローを解く
+		GameManager::GetInstance().SetOnSlow(false);
+		//プレイヤーの正面向き飛ぶ方向にする
+		m_forward = Vec3(p2 - p0).normalize();
+		//リンクオブジェのロックオンを解除
+		m_islockon = false;
+	}
+	///-------------------------------------------------------------------------------
+	//照準の位置をカメラとプレイヤーの位置から求め変更する
+	///-------------------------------------------------------------------------------
+	void Player::SightingDeviceChangePosition() {
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
+		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+		//playerとカメラの位置から照準がある方向を求める
+		//playerの少し上のほうに置くためplayerのpositionに調整を入れる
+		auto dir = (pos + Vec3(0.0f, 5.0f, 0.0f)) - m_cameraPos;
+		dir = dir.normalize();
+
+		auto sightingDevice = m_SightingDevice.lock();
+		//playerの頭辺りに、被らないようカメラからの方向を加味して置く
+		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)));
+
+		float syahen = hypotf(dir.x, dir.z);
+		Quat rot;
+		rot.rotationRollPitchYawFromVector(Vec3(-atan2f(dir.y, syahen), atan2f(dir.x, dir.z), 0.0f));
+
+		sightingDevice->GetComponent<Transform>()->SetQuaternion(rot);
+	}
+	///-------------------------------------------------------------------------------
+	//Rayを飛ばす
+	///-------------------------------------------------------------------------------
+	void Player::RayShot() {
+		auto sightingDevice = m_SightingDevice.lock();
+		//Rayが当たったフラグをfalseに戻す
+		sightingDevice->ResetCaptureLink();
+		//Rayの射程を設定、コンボ数で伸びる
+		m_rayRange = m_rayRangeDefolt + (m_chain * 0.5f);
+
+		auto sightPos = sightingDevice->GetComponent<Transform>()->GetWorldPosition();
+		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+		//照準とカメラの位置から飛ばす方向を求める
+		auto dir = sightPos - m_cameraPos;
+		dir = dir.normalize();
+		//ロックオンの処理
+		RockonObject(sightPos, dir, L"Drone", 1.0f);
+		RockonObject(sightPos, dir, L"Link", 4.0f);
+		RockonObject(sightPos, dir, L"Mails", 4.0f);
+		//ロックオン対象を向く
+		RockOn();
+		//RBボタンが押されていたら飛べるかの判定も行う
+		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+			//リンクオブジェクトとの判定
+			LinkRayCheck(sightPos, dir);
+			//メールとの判定
+			MailRayCheck(sightPos, dir);
+			//ドローンとの判定
+			DroneRayCheck(sightPos, dir);
 		}
 	}
-	///---------------------------------------------------------------------------------------------
-	//ロックオンするオブジェクトを設定
-	///---------------------------------------------------------------------------------------------
-	void Player::RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction)
-	{
-		//オブジェクトの入っているグループを持ってくる
-		auto& objectsGroup = GetStage()->GetSharedObjectGroup(groupName);
+	///-------------------------------------------------------------------------------
+	//RayとOBBの判定
+	///-------------------------------------------------------------------------------
+	bool Player::RayOBBHit(Vec3 origin, Vec3 originDir, shared_ptr<GameObject> obj) {
+		auto trans = obj->GetComponent<Transform>();
+		//オブジェクトのOBBを作る
+		OBB obb(trans->GetScale() * 3.0f, trans->GetWorldMatrix());
+		//プレイヤーからでるRayとOBBで判定
+		bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+		//Rayの範囲内にあるオブジェクトかを見る
+		if ((origin - trans->GetWorldPosition()).length() <= m_rayRange + 1.0f) {
+			//1つ前にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
+			if (hit && p2 + Vec3(0, -1, 0) != trans->GetWorldPosition()) {
+				//それは飛べるもの
+				return true;
+			}
+		}
+		return false;
+	}
+	///-------------------------------------------------------------------------------
+	//RayとLinkオブジェクトが当たっているかを調べる
+	///-------------------------------------------------------------------------------
+	void Player::LinkRayCheck(Vec3 origin, Vec3 originDir) {
+		//すでに他のものに飛んでいたら
+		if (m_isGoLink) {
+			return;
+		}
+		//リンクオブジェクトの入っているグループを持ってくる
+		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
 		//一つずつ取り出す
-		for (auto& object : objectsGroup->GetGroupVector()) {
-			auto lockonObj = object.lock();
-			auto mail = dynamic_pointer_cast<MailObject>(lockonObj);
-			//メールが取得状態だったらスルーする
-			if (mail) {
-				if (mail->GetIsArrive()) {
-					continue;
-				}
-			}
-			auto objTrans = lockonObj->GetComponent<Transform>();
-			//リンクオブジェクトのOBBを作る
-			OBB obb(objTrans->GetScale() * correction, objTrans->GetWorldMatrix());
-			//照準からでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
-			if (hit) {
-				Vec3 delta = origin - objTrans->GetWorldPosition();
-				float deltaLength = delta.length();
-				//近いときはロックオンしない
-				if (deltaLength <= 8.0f) {
-					continue;
-				}
-				//Rayの範囲よりも遠い時は、判定上は当たっていても無視する
-				if (deltaLength >= m_rayRange + 1) {
-					continue;
-				}
-				m_LockOnObj = lockonObj;
-				m_islockon = true;
-				break;
+		for (auto& link : linkGroup->GetGroupVector()) {
+			auto linkObj = link.lock();
+			//レイと今見ているオブジェクトが当たっているか判定
+			if (RayOBBHit(origin, originDir, linkObj)) {
+				auto sightingDevice = m_SightingDevice.lock();
+				//照準に当たっていることを教える
+				sightingDevice->SetCaptureLink(true);
+				Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkObj->GetComponent<Transform>()->GetWorldPosition();
+				dir.y = 0;
+				//オブジェクトに被らないように方向を加味してずらした値を渡す
+				SetBezierPoint(linkObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
+				//経過をリセット
+				m_Lerp = 0;
+				//飛ぶの確定
+				m_isGoLink = true;
+				//スローの経過時間をリセット
+				GameManager::GetInstance().ResetSloawPassage();
+				//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+				m_DroneNo = NULL;
+				m_StateMachine->ChangeState(LinkState::Instance());
+				m_target = Target::LINK;
+				return;
 			}
 		}
-
 	}
-
+	///-------------------------------------------------------------------------------
+	//RayとDroneオブジェクトが当たっているかを調べる
+	///-------------------------------------------------------------------------------
+	void Player::DroneRayCheck(Vec3 origin, Vec3 originDir) {
+		//すでに他のものに飛んでいたら
+		if (m_isGoLink) {
+			return;
+		}
+		//ドローンオブジェクトの入っているグループを持ってくる
+		auto& droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
+		//何番目のDroneか数える
+		int count = 0;
+		//一つずつ取り出す
+		for (auto& drone : droneGroup->GetGroupVector()) {
+			auto droneObj = drone.lock();
+			if (RayOBBHit(origin, originDir, droneObj)) {
+				auto sightingDevice = m_SightingDevice.lock();
+				//照準に当たっていることを教える
+				sightingDevice->SetCaptureLink(true);
+				SetBezierPoint(droneObj->GetComponent<Transform>()->GetWorldPosition());
+				m_DroneNo = count;
+				//経過をリセット
+				m_Lerp = 0;
+				//飛ぶの確定
+				m_isGoLink = true;
+				//スローの経過時間をリセット
+				GameManager::GetInstance().ResetSloawPassage();
+				m_StateMachine->ChangeState(LinkState::Instance());
+				m_target = Target::DRONE;
+				return;
+			}
+			count++;
+		}
+	}
+	///-------------------------------------------------------------------------------
+	//RayとMailオブジェクトが当たっているかを調べる
+	///-------------------------------------------------------------------------------
+	void Player::MailRayCheck(Vec3 origin, Vec3 originDir) {
+		//すでに他のものに飛んでいたら
+		if (m_isGoLink) {
+			return;
+		}
+		auto& mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
+		int count = 0;
+		for (auto& mail : mailGroup->GetGroupVector()) {
+			auto mailObj = mail.lock();
+			//今見ているメールが取得されていないメールか確認
+			if (dynamic_pointer_cast<MailObject>(mailObj)->GetIsArrive() != true) {
+				if (RayOBBHit(origin, originDir, mailObj)) {
+					auto sightingDevice = m_SightingDevice.lock();
+					//照準に当たっていることを教える
+					sightingDevice->SetCaptureLink(true);
+					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailObj->GetComponent<Transform>()->GetWorldPosition();
+						dir.y = 0;
+						//オブジェクトに被らないように方向を加味してずらした値を渡す
+						SetBezierPoint(mailObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
+						//何番のメールにアクセスしているか保存
+						m_MailNum = count;
+						m_Lerp = 0;
+						//飛ぶの確定
+						m_isGoLink = true;
+						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+						m_DroneNo = NULL;
+						m_StateMachine->ChangeState(LinkState::Instance());
+						m_target = Target::MAIL;
+						return;
+					}
+				}
+			}
+			count++;
+		}
+	}
 	///-------------------------------------------------------------------------------
 	//リンクへ飛ぶ処理
 	///-------------------------------------------------------------------------------
@@ -416,213 +554,74 @@ namespace basecross {
 
 	}
 	///-------------------------------------------------------------------------------
-	//ベジエ曲線の制御点設定
+	//ロックオン対象がいたら、そちらを向く
 	///-------------------------------------------------------------------------------
-	void Player::SetBezierPoint(Vec3 point) {
+	void Player::RockOn() {
+		//ロックオンしているとき
+		if (m_islockon) {
+			auto sightPos = m_SightingDevice.lock()->GetComponent<Transform>()->GetWorldPosition();
+			auto lockOnPos = m_LockOnObj.lock()->GetComponent<Transform>()->GetWorldPosition();
 
-		p0 = GetComponent<Transform>()->GetWorldPosition();
-		p2 = point + Vec3(0, 1.0f, 0);
-		//飛ぶ先までの距離に応じて飛ぶ際のスピードを変える
-		m_BezierSpeedLeap = Vec3(p2 - p0).length();
-		//飛ぶ先までの距離に応じて飛ぶ際の放物線の形を変える
-		if (m_BezierSpeedLeap >= 20.0f) {
-			p1 = point + Vec3(0, 6, 0);
-		}
-		else if (m_BezierSpeedLeap >= 10.0f) {
-			p1 = point + Vec3(0, 3, 0);
-		}
-		else if (m_BezierSpeedLeap < 10.0f) {
-			p1 = point - ((point - p0) / 2);
-		}
-		//カメラの追従する動きを設定する
-		auto camera = GetStage()->GetView()->GetTargetCamera();
-		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
-		//次のリンクに移るのでスローを解く
-		GameManager::GetInstance().SetOnSlow(false);
-		//プレイヤーの正面向き飛ぶ方向にする
-		m_forward = Vec3(p2 - p0).normalize();
-		//リンクオブジェのロックオンを解除
-		m_islockon = false;
-	}
-	///-------------------------------------------------------------------------------
-	//照準の位置をカメラとプレイヤーの位置から求め変更する
-	///-------------------------------------------------------------------------------
-	void Player::SightingDeviceChangePosition() {
-		auto pos = GetComponent<Transform>()->GetWorldPosition();
-		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
-		//playerとカメラの位置から照準がある方向を求める
-		//playerの少し上のほうに置くためplayerのpositionに調整を入れる
-		auto dir = (pos + Vec3(0.0f, 5.0f, 0.0f)) - m_cameraPos;
-		dir = dir.normalize();
-
-		auto sightingDevice = m_SightingDevice.lock();
-		//playerの頭辺りに、被らないようカメラからの方向を加味して置く
-		sightingDevice->GetComponent<Transform>()->SetWorldPosition((pos + Vec3(0.0f, m_cameraLookUp, 0.0f)));
-
-		float syahen = hypotf(dir.x, dir.z);
-		Quat rot;
-		rot.rotationRollPitchYawFromVector(Vec3(-atan2f(dir.y, syahen), atan2f(dir.x, dir.z), 0.0f));
-
-		sightingDevice->GetComponent<Transform>()->SetQuaternion(rot);
-	}
-	///-------------------------------------------------------------------------------
-	//Rayを飛ばす
-	///-------------------------------------------------------------------------------
-	void Player::RayShot() {
-		auto sightingDevice = m_SightingDevice.lock();
-		//Rayが当たったフラグをfalseに戻す
-		sightingDevice->ResetCaptureLink();
-		//Rayの射程を設定、コンボ数で伸びる
-		m_rayRange = m_rayRangeDefolt + (m_chain * 0.5f);
-
-		auto sightPos = sightingDevice->GetComponent<Transform>()->GetWorldPosition();
-		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
-		//照準とカメラの位置から飛ばす方向を求める
-		auto dir = sightPos - m_cameraPos;
-		dir = dir.normalize();
-		//ロックオンの処理
-		Rock(sightPos, dir, L"Drone", 1.0f);
-		Rock(sightPos, dir, L"Link", 4.0f);
-		Rock(sightPos, dir, L"Mails", 4.0f);
-		//RBボタンが押されていたら飛べるかの判定も行う
-		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-			//リンクオブジェクトとの判定
-			LinkRayCheck(sightPos, dir);
-			//メールとの判定
-			MailRayCheck(sightPos, dir);
-			//ドローンとの判定
-			DroneRayCheck(sightPos, dir);
-		}
-	}
-	///-------------------------------------------------------------------------------
-	//RayとOBBの判定
-	///-------------------------------------------------------------------------------
-	bool Player::RayOBBHit(Vec3 origin, Vec3 originDir, shared_ptr<GameObject> obj) {
-		auto trans = obj->GetComponent<Transform>();
-		//オブジェクトのOBBを作る
-		OBB obb(trans->GetScale() * 3.0f, trans->GetWorldMatrix());
-		//プレイヤーからでるRayとOBBで判定
-		bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
-		//Rayの範囲内にあるオブジェクトかを見る
-		if ((origin - trans->GetWorldPosition()).length() <= m_rayRange + 1.0f) {
-			//1つ前にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
-			if (hit && p2 + Vec3(0, -1, 0) != trans->GetWorldPosition()) {
-				//それは飛べるもの
-				return true;
+			auto camera = GetStage()->GetView()->GetTargetCamera();
+			auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
+			//ロックオンオブジェを対象にカメラの処理
+			tpsCamera->RockonCameraMove(sightPos, lockOnPos);
+			//ロックオン対象が近くにいる場合はロックオンを解除
+			Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - lockOnPos;
+			if (delta.length() <= 4.0f) {
+				m_islockon = false;
 			}
 		}
-		return false;
 	}
-	///-------------------------------------------------------------------------------
-	//RayとLinkオブジェクトが当たっているかを調べる
-	///-------------------------------------------------------------------------------
-	void Player::LinkRayCheck(Vec3 origin, Vec3 originDir) {
-		//すでに他のものに飛んでいたら
-		if (m_isGoLink) {
+	///---------------------------------------------------------------------------------------------
+	//ロックオンするオブジェクトを設定
+	///---------------------------------------------------------------------------------------------
+	void Player::RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction){
+		//Lボタンを押し続けているとき
+		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
+			m_islockon = false;
 			return;
 		}
-		//リンクオブジェクトの入っているグループを持ってくる
-		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
+		//もうすでにロックオンしている対象がいる
+		else if(m_islockon){
+			return;
+		}
+
+		//オブジェクトの入っているグループを持ってくる
+		auto& objectsGroup = GetStage()->GetSharedObjectGroup(groupName);
 		//一つずつ取り出す
-		for (auto& link : linkGroup->GetGroupVector()) {
-			auto linkObj = link.lock();
-			//レイと今見ているオブジェクトが当たっているか判定
-			if (RayOBBHit(origin, originDir, linkObj)) {
-				auto sightingDevice = m_SightingDevice.lock();
-				//照準に当たっていることを教える
-				sightingDevice->SetCaptureLink(true);
-				Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkObj->GetComponent<Transform>()->GetWorldPosition();
-				dir.y = 0;
-				//オブジェクトに被らないように方向を加味してずらした値を渡す
-				SetBezierPoint(linkObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
-				//経過をリセット
-				m_Lerp = 0;
-				//飛ぶの確定
-				m_isGoLink = true;
-				//スローの経過時間をリセット
-				GameManager::GetInstance().ResetSloawPassage();
-				//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-				m_DroneNo = NULL;
-				m_StateMachine->ChangeState(LinkState::Instance());
-				m_target = Target::LINK;
-				return;
-			}
-		}
-	}
-	///-------------------------------------------------------------------------------
-	//RayとDroneオブジェクトが当たっているかを調べる
-	///-------------------------------------------------------------------------------
-	void Player::DroneRayCheck(Vec3 origin, Vec3 originDir) {
-		//すでに他のものに飛んでいたら
-		if (m_isGoLink) {
-			return;
-		}
-		//ドローンオブジェクトの入っているグループを持ってくる
-		auto& droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
-		//何番目のDroneか数える
-		int count = 0;
-		//一つずつ取り出す
-		for (auto& drone : droneGroup->GetGroupVector()) {
-			auto droneObj = drone.lock();
-			if (RayOBBHit(origin, originDir, droneObj)) {
-				auto sightingDevice = m_SightingDevice.lock();
-				//照準に当たっていることを教える
-				sightingDevice->SetCaptureLink(true);
-				SetBezierPoint(droneObj->GetComponent<Transform>()->GetWorldPosition());
-				m_DroneNo = count;
-				//経過をリセット
-				m_Lerp = 0;
-				//飛ぶの確定
-				m_isGoLink = true;
-				//スローの経過時間をリセット
-				GameManager::GetInstance().ResetSloawPassage();
-				m_StateMachine->ChangeState(LinkState::Instance());
-				m_target = Target::DRONE;
-				return;
-			}
-			count++;
-		}
-	}
-	///-------------------------------------------------------------------------------
-	//RayとMailオブジェクトが当たっているかを調べる
-	///-------------------------------------------------------------------------------
-	void Player::MailRayCheck(Vec3 origin, Vec3 originDir) {
-		//すでに他のものに飛んでいたら
-		if (m_isGoLink) {
-			return;
-		}
-		auto& mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
-		int count = 0;
-		for (auto& mail : mailGroup->GetGroupVector()) {
-			auto mailObj = mail.lock();
-			//今見ているメールが取得されていないメールか確認
-			if (dynamic_pointer_cast<MailObject>(mailObj)->GetIsArrive() != true) {
-				if (RayOBBHit(origin, originDir, mailObj)) {
-					auto sightingDevice = m_SightingDevice.lock();
-					//照準に当たっていることを教える
-					sightingDevice->SetCaptureLink(true);
-					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailObj->GetComponent<Transform>()->GetWorldPosition();
-						dir.y = 0;
-						//オブジェクトに被らないように方向を加味してずらした値を渡す
-						SetBezierPoint(mailObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
-						//何番のメールにアクセスしているか保存
-						m_MailNum = count;
-						m_Lerp = 0;
-						//飛ぶの確定
-						m_isGoLink = true;
-						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-						m_DroneNo = NULL;
-						m_StateMachine->ChangeState(LinkState::Instance());
-						m_target = Target::MAIL;
-						return;
-					}
+		for (auto& object : objectsGroup->GetGroupVector()) {
+			auto lockonObj = object.lock();
+			auto mail = dynamic_pointer_cast<MailObject>(lockonObj);
+			//メールが取得状態だったらスルーする
+			if (mail) {
+				if (mail->GetIsArrive()) {
+					continue;
 				}
 			}
-			count++;
+			auto objTrans = lockonObj->GetComponent<Transform>();
+			//リンクオブジェクトのOBBを作る
+			OBB obb(objTrans->GetScale() * correction, objTrans->GetWorldMatrix());
+			//照準からでるRayとOBBで判定
+			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+			if (hit) {
+				Vec3 delta = origin - objTrans->GetWorldPosition();
+				float deltaLength = delta.length();
+				//近いときはロックオンしない
+				if (deltaLength <= 8.0f) {
+					continue;
+				}
+				//Rayの範囲よりも遠い時は、判定上は当たっていても無視する
+				if (deltaLength >= m_rayRange + 1) {
+					continue;
+				}
+				m_LockOnObj = lockonObj;
+				m_islockon = true;
+				break;
+			}
 		}
-	}
 
+	}
 	///-------------------------------------------------------------------------------
 	//押し出しが必要か判定する
 	///-------------------------------------------------------------------------------
