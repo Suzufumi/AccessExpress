@@ -86,11 +86,12 @@ namespace basecross {
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		//衝突している
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
+		//角度の向きを考慮したスティックの角度を算出する
+		void Forword();
 		//落ちる処理
 		void Fall();
 		//左スティックの値でプレイヤーを回転させる
 		void PlayerRoll();
-		void Forword();
 
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
@@ -119,7 +120,7 @@ namespace basecross {
 		//ロックオン対象がいたら、そちらを向く
 		void RockOn();
 		// ロックオンするオブジェクトを設定
-		void RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
+		void RockOnObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
 		//押し出し判定
 		void ExtrusionJudgment(const weak_ptr<GameObject>& Other);
 		//押し出し処理

@@ -263,9 +263,9 @@ namespace basecross {
 		auto dir = sightPos - m_cameraPos;
 		dir = dir.normalize();
 		//ロックオンの処理
-		RockonObject(sightPos, dir, L"Drone", 1.0f);
-		RockonObject(sightPos, dir, L"Link", 4.0f);
-		RockonObject(sightPos, dir, L"Mails", 4.0f);
+		RockOnObject(sightPos, dir, L"Drone", 1.0f);
+		RockOnObject(sightPos, dir, L"Link", 4.0f);
+		RockOnObject(sightPos, dir, L"Mails", 4.0f);
 		//ロックオン対象を向く
 		RockOn();
 		//リンクオブジェクトとの判定
@@ -579,7 +579,7 @@ namespace basecross {
 	///---------------------------------------------------------------------------------------------
 	//ロックオンするオブジェクトを設定
 	///---------------------------------------------------------------------------------------------
-	void Player::RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction){
+	void Player::RockOnObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction){
 		//Lボタンを押し続けているとき
 		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
 			m_islockon = false;
