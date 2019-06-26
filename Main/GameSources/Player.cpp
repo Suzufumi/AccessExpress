@@ -139,10 +139,6 @@ namespace basecross {
 			m_isFall = false;
 		}
 
-		auto checkPoint = dynamic_pointer_cast<CheckPoint>(Other);
-		if (checkPoint) {
-			checkPoint->ArriveCheckPoint();
-		}
 		//最初のおりてくる演出、着地したらゲームを開始して操作できるようにする
 		if (!GameManager::GetInstance().GetGameStart()) {
 			GameManager::GetInstance().SetGameStart(true);
@@ -487,7 +483,6 @@ namespace basecross {
 		//ロックオンの処理
 		Rock(sightPos, dir, L"Drone", 1.0f);
 		Rock(sightPos, dir, L"Link", 4.0f);
-		Rock(sightPos, dir, L"CheckPoints", 2.0f);
 		Rock(sightPos, dir, L"Mails", 4.0f);
 		//RBボタンが押されていたら飛べるかの判定も行う
 		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {

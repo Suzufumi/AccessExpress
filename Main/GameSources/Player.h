@@ -53,7 +53,6 @@ namespace basecross {
 		enum Target {
 			LINK,
 			DRONE,
-			CHECKPOINT,
 			MAIL
 		};
 		enum FaceState

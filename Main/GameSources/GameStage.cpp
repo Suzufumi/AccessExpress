@@ -99,12 +99,6 @@ namespace basecross {
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Enemy");
 	}
 
-	void GameStage::CreateGoal()
-	{
-		GameObjecttXMLBuilder builder;
-		builder.Register<CheckPoint>(L"Goal");
-		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Goal");
-	}
 	void GameStage::CreateMail()
 	{
 		GameObjecttXMLBuilder builder;
@@ -157,7 +151,6 @@ namespace basecross {
 			gm.ResetMaxMail();
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
-			CreateSharedObjectGroup(L"CheckPoints");
 			CreateSharedObjectGroup(L"Mails");
 			//ï®óùåvéZóLå¯
 			SetPhysicsActive(true);
@@ -182,7 +175,6 @@ namespace basecross {
 			auto score = AddGameObject<ScoreUI>();
 			score->GetComponent<Transform>()->SetPosition(1280 - 64 * 6, 0, 0);
 
-			CreateGoal();
 			AddGameObject<SkyBox>();
 			auto scoreSprite = AddGameObject<Sprite>(L"SCORE_TX", Vec2(100, 40));
 			scoreSprite->SetPosition(Vec2(1120, 30));
