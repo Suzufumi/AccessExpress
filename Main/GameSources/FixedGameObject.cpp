@@ -86,8 +86,6 @@ namespace basecross {
 
 	void CheckPoint::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		//auto col = AddComponent<CollisionObb>();
-		//col->SetAfterCollision(AfterCollision::None);
 		ptrTrans->SetWorldPosition(m_position);
 		ptrTrans->SetQuaternion(m_qt);
 		ptrTrans->SetScale(m_scale);
@@ -106,12 +104,7 @@ namespace basecross {
 		SetDrawLayer(-1);
 		drawComp->SetMeshResource(L"CHECKPOINT_MODEL");
 		drawComp->SetMeshToTransformMatrix(spanMat);
-		//drawComp->SetLightingEnabled(false);
-		//Col4 Color(1.0f, 1.0f, 1.0f, 0.5f);
-		//drawComp->SetDiffuse(Color);
 		SetAlphaActive(true);
-
-		//GetStage()->GetSharedObjectGroup(L"CheckPoints")->IntoGroup(GetThis<GameObject>());
 	}
 	void CheckPoint::OnUpdate() {
 

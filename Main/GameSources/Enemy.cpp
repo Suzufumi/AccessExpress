@@ -40,7 +40,6 @@ namespace basecross {
 
 	}
 	void Drone::OnCreate() {
-
 		if (m_roopDir >= ClockWise && m_roopDir <= CounterClockwise) {
 			//時計回り,逆時計回り
 			SetBezierClock();
@@ -67,7 +66,6 @@ namespace basecross {
 			Vec3(0.0f, 0.0f, 0.0f)
 		);
 
-
 		auto drawComp = AddComponent<PNTStaticDraw>();
 		drawComp->SetMeshResource(L"ENEMY_MODEL");
 		drawComp->SetTextureResource(L"ENEMY_TX");
@@ -76,42 +74,59 @@ namespace basecross {
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());
 		SetDrawLayer(-1);
 	}
+	//-------------------------------------------------------------------------------
+	// アップデート
+	//-------------------------------------------------------------------------------
 	void Drone::OnUpdate() {
-		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
+		LeapUpdate();
+		BezierMove();
 
+		auto sparkPtr = GetStage()->GetSharedGameObject<SparkEffect>(L"SparkEffect", false);
+		if (sparkPtr){
+			sparkPtr->InsertSpark(GetComponent<Transform>()->GetWorldPosition());
+		}
+	}
+	//-------------------------------------------------------------------------------
+	//ベジエ曲線の経過を更新する
+	//-------------------------------------------------------------------------------
+	void Drone::LeapUpdate() {
+		auto& gameManager = GameManager::GetInstance();
+		auto addLerp = App::GetApp()->GetElapsedTime() / 2.0f;
+		//スロー状態か取得
+		if (gameManager.GetOnSlow()) {
+			//スローにする
+			m_Lerp += addLerp / gameManager.GetSlowSpeed();
+		}
+		else {
+			m_Lerp += addLerp;
+		}
+		//今の動きを100%まで動いたら次の動きに移行する
+		if (m_Lerp >= 1.0f) {
+			m_Lerp = 0.0f;
+			m_joinNum += 1;
+			//最後の動きを終えたら最初の動きに戻る
+			if (m_joinNum >= m_joinNumMax) {
+				m_joinNum = 0;
+			}
+		}
+	}
+	//-------------------------------------------------------------------------------
+	//動く
+	//-------------------------------------------------------------------------------
+	void Drone::BezierMove() {
+		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
+		//位置の更新
 		pos.x = (1 - m_Lerp) * (1 - m_Lerp) * m_roop[m_joinNum].p0.x +
 			2 * (1 - m_Lerp) * m_Lerp * m_roop[m_joinNum].p1.x + m_Lerp * m_Lerp * m_roop[m_joinNum].p2.x;
 		pos.y = (1 - m_Lerp) * (1 - m_Lerp) * m_roop[m_joinNum].p0.y +
 			2 * (1 - m_Lerp) * m_Lerp * m_roop[m_joinNum].p1.y + m_Lerp * m_Lerp * m_roop[m_joinNum].p2.y;
 		pos.z = (1 - m_Lerp) * (1 - m_Lerp) * m_roop[m_joinNum].p0.z +
 			2 * (1 - m_Lerp) * m_Lerp * m_roop[m_joinNum].p1.z + m_Lerp * m_Lerp * m_roop[m_joinNum].p2.z;
-
-		auto& gameManager = GameManager::GetInstance();
-		auto addLerp = App::GetApp()->GetElapsedTime() / 2.0f;
-		if (gameManager.GetOnSlow()) {
-			m_Lerp += addLerp / gameManager.GetSlowSpeed();
-		}
-		else {
-			m_Lerp += addLerp;
-		}
-		if (m_Lerp >= 1.0f) {
-			m_Lerp = 0.0f;
-			m_joinNum += 1;
-			if (m_joinNum >= m_joinNumMax) {
-				m_joinNum = 0;
-			}
-		}
 		GetComponent<Transform>()->SetWorldPosition(pos);
-
-
-		auto sparkPtr = GetStage()->GetSharedGameObject<SparkEffect>(L"SparkEffect", false);
-		if (sparkPtr)
-		{
-			sparkPtr->InsertSpark(GetComponent<Transform>()->GetWorldPosition());
-		}
-
-
 	}
+	//-------------------------------------------------------------------------------
+	//時計回りの動きのベジエ曲線の制御点を作る
+	//-------------------------------------------------------------------------------
 	void Drone::SetBezierClock() {
 		m_joinNumMax = 4;
 		//半径
@@ -140,12 +155,18 @@ namespace basecross {
 			m_roop[i].p2 = centerPos + Vec3(radius * cosf(deg90*(i + 1)), 0, radius * sinf(deg90*(i + 1)));
 		}
 	}
+	//-------------------------------------------------------------------------------
+	//上下運動のベジエ曲線の制御点を作る
+	//-------------------------------------------------------------------------------
 	void Drone::SetVerticalMotion() {
 		m_joinNumMax = 1;
 		m_roop[0].p0 = m_position;
 		m_roop[0].p1 = m_position + Vec3(0.0f, 15.0f, 0.0f);
 		m_roop[0].p2 = m_position;
 	}
+	//-------------------------------------------------------------------------------
+	//波の動きのベジエ曲線の制御点を作る
+	//-------------------------------------------------------------------------------
 	void Drone::SetWaveMotion() {
 		m_joinNumMax = 8;
 		auto halfJoinNum = m_joinNumMax / 2;

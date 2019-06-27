@@ -53,7 +53,6 @@ namespace basecross {
 		enum Target {
 			LINK,
 			DRONE,
-			CHECKPOINT,
 			MAIL
 		};
 		enum FaceState
@@ -87,46 +86,45 @@ namespace basecross {
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		//衝突している
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
-		//押し出し判定
-		void ExtrusionJudgment(const weak_ptr<GameObject>& Other);
-		//押し出し処理
-		void Extrusion();
-
+		//角度の向きを考慮したスティックの角度を算出する
+		void Forword();
 		//落ちる処理
 		void Fall();
 		//左スティックの値でプレイヤーを回転させる
 		void PlayerRoll();
-		void Forword();
 
 		//照準のオブジェクトを管理する
 		void SetSightingDevice(weak_ptr<SightingDevice> dev) {
 			m_SightingDevice = dev;
 			SightingDeviceDrawActive(true);
 		}
+		//ベジエ曲線の初期ポジション設定
+		void SetBezierPoint(Vec3 point);
 		//照準の位置を変える
 		void SightingDeviceChangePosition();
+		//Rayを飛ばす
+		void RayShot();
+		bool RayOBBHit(Vec3 origin, Vec3 originDir, shared_ptr<GameObject> obj);
+		//Rayとリンクオブジェクトが当たっているかを見る処理
+		void LinkRayCheck(Vec3 origin, Vec3 originDir);
+		//Rayとドローンが当たっているかを見る処理
+		void DroneRayCheck(Vec3 origin, Vec3 originDir);
+		//Rayとメールが当たっているか
+		void MailRayCheck(Vec3 origin, Vec3 originDir);
 		//ベジエ曲線でリンクへ飛ぶ処理
 		void LinkGo();
 		//ベジエ曲線でドローンへ飛ぶ処理
 		void DroneGo();
 		// ベジェ曲線でメールに飛ぶ
 		void MailGo();
-		//ベジエ曲線の初期ポジション設定
-		void SetBezierPoint(Vec3 point);
-		//Rayを飛ばす
-		void RayShot();
-		//レイが修正範囲内に入っていてLボタンを押していたら修正する
-		void Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
+		//ロックオン対象がいたら、そちらを向く
+		void RockOn();
 		// ロックオンするオブジェクトを設定
-		void RockonObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
-
-		bool RayOBBHit(Vec3 origin, Vec3 originDir,shared_ptr<GameObject> obj);
-		//Rayとリンクオブジェクトが当たっているかを見る処理
-		void LinkRayCheck(Vec3 origin,Vec3 originDir);
-		//Rayとドローンが当たっているかを見る処理
-		void DroneRayCheck(Vec3 origin, Vec3 originDir);
-		//Rayとメールが当たっているか
-		void MailRayCheck(Vec3 origin, Vec3 originDir);
+		void RockOnObject(Vec3 origin, Vec3 originDir, wstring groupName, float correction);
+		//押し出し判定
+		void ExtrusionJudgment(const weak_ptr<GameObject>& Other);
+		//押し出し処理
+		void Extrusion();
 
 		// 表情の切り替え
 		void FaceChanger(FaceState beforeFace, FaceState afterFace);

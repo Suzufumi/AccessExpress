@@ -31,6 +31,10 @@ namespace basecross {
 		virtual ~Drone() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		//経過を更新する
+		void LeapUpdate();
+		//動く
+		void BezierMove();
 		//時計回りの動きのベジエ曲線の制御点を作る
 		void SetBezierClock();
 		//上下運動のベジエ曲線の制御点を作る
