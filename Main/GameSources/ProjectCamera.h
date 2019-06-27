@@ -28,14 +28,16 @@ namespace basecross
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		//
+		//カメラの角度を変更する
 		void CameraControll();
+		//照準の方を向きながら値に従い移動する
 		void CameraRoll(Vec3 sightPos);
-		// 引数で入ってきたトランスフォームを取得
-		void SetTarget(const shared_ptr<Transform>& target);
+		//飛んでいるときに後ろから追う動きを設定
 		void SetBezier(weak_ptr<GameObject> playerPtr,Vec3 p2Player);
+		//設定した動きで動く
 		void BezierMove(float leap,Vec3 playerPos);
-		void TpsCamera::SetGoingAround(float aroundEndAngleX, float aroundEndAngleY) ;
+		//タイムアップしたときの回り込む処理の準備
+		void SetGoingAround(float aroundEndAngleX, float aroundEndAngleY) ;
 		//回り込む
 		bool GoingAround();
 		//ロックオンしている対象がいる際のカメラ処理
