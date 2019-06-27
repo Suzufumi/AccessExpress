@@ -43,7 +43,7 @@ namespace basecross{
 		//--------------------------------------------------------------------------------------
 		virtual void OnEvent(const shared_ptr<Event>& event) override;
 		
-		void CreateResources();
+		void CreateResources(wstring mediaDir);
 		void CreateMusicResources();
 		//void MusicOnceStart(wstring key,float volume);
 		shared_ptr<SoundItem> MusicOnceStart(wstring key, float volume);

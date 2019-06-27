@@ -24,7 +24,6 @@ namespace basecross {
 		 bool m_isFade = true;		// フェード中かどうか
 		 int m_maxMailNum;
 		 int m_mailNum;
-		 //float m_controlGageSpeed = 1.0f;	// チェインゲージの進行スピードの管理
 		 int m_bouns = 0;			//何回ボーナスをもらったか
 	public:
 		static GameManager& GetInstance() {
@@ -167,21 +166,6 @@ namespace basecross {
 
 		void DecreaseMail() { m_mailNum--; }
 
-		////----------------------------------------------------------------------------------
-		////ゲージスピードを設定
-		////----------------------------------------------------------------------------------
-		//void SetControlGageSpeed(float gageSpeed)
-		//{ m_controlGageSpeed = gageSpeed;}
-		////----------------------------------------------------------------------------------
-		////ゲージスピードを取得
-		////----------------------------------------------------------------------------------
-		//float GetControlGageSpeed()
-		//{ return m_controlGageSpeed;}
-		////----------------------------------------------------------------------------------
-		////ゲージスピードをリセット(チェインが途切れた時)
-		////----------------------------------------------------------------------------------
-		//void ResetControlGageSpeed()
-		//{ m_controlGageSpeed = 1.0f; }
 		int GetBouns() { return m_bouns; }
 		void ResetBouns() { m_bouns = 0; }
 		void AddBouns() { m_bouns++; }

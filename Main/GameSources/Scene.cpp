@@ -14,7 +14,9 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	void Scene::OnCreate(){
 		try {
-			CreateResources();
+			wstring dataDir;
+			App::GetApp()->GetDataDirectory(dataDir);
+			CreateResources(dataDir);
 			CreateMusicResources();
 			//クリアする色を設定
 			Col4 Col;
@@ -31,10 +33,12 @@ namespace basecross{
 	Scene::~Scene() {
 	}
 
-	void Scene::CreateResources(){
+	void Scene::CreateResources(wstring mediaDir){
 		wstring dataDir;
 		// mediaディレクトリを取得
 		App::GetApp()->GetDataDirectory(dataDir);
+
+		mediaDir += L"Textures\\";
 
 		struct InitializedParam
 		{
@@ -85,17 +89,11 @@ namespace basecross{
 			{ L"sippai.png", L"sippai_TX"},
 			{ L"normal.png", L"NORMAL_TX"},
 			{ L"hard.png", L"HARD_TX"},
-			{ L"tutorialback.png", L"TUTORIAL_TX"},
-			{ L"tutorial1.png", L"TUTO1_TX"},
-			{ L"tutorial2.png", L"TUTO2_TX"},
-			{ L"tutorial3.png", L"TUTO3_TX"},
-			{ L"tutorial4.png", L"TUTO4_TX"},
-			{ L"tutorial5.png", L"TUTO5_TX"}
 		};
 
 		for (auto texture : textures)
 		{
-			wstring strTexture = dataDir + L"Textures\\" + texture.m_texName;
+			wstring strTexture = mediaDir + texture.m_texName;
 			App::GetApp()->RegisterTexture(texture.m_texKey, strTexture);
 
 		}

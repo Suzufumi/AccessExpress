@@ -19,8 +19,6 @@ namespace basecross {
 		auto multiEfkPtr = AddGameObject<ResultEffect>();
 		SetSharedGameObject(L"ResultEfk", multiEfkPtr);
 		m_fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
-		//auto obb = AddGameObject<OBBObject>(Vec3(0, 0, 0), Vec3(10, 8, 1));
-		//obb->GetComponent<PNTStaticDraw>()->SetTextureResource(L"ResultStage_TX");
 	}
 
 	void ResultStage::OnUpdate() {

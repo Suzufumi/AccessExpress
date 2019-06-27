@@ -71,6 +71,17 @@ namespace basecross{
 	//スコアUI更新
 	//------------------------------------------------------------------------------------
 	void ScoreUI::OnUpdate() {
+		//カウントアップ処理
+		CountUp();
+		//表示スコアの設定
+		ViewScore();
+		//表示
+		OnDraw();
+	}
+	//------------------------------------------------------------------------
+	//スコアをカウントアップする
+	//------------------------------------------------------------------------
+	void ScoreUI::CountUp() {
 		auto& gameManager = GameManager::GetInstance();
 		//内部スコアの値まで表示スコアをカウントアップする
 		if (gameManager.GetScore() != m_displayScore) {
@@ -78,7 +89,11 @@ namespace basecross{
 			//表示スコアが内部スコアに追い付いていない際に加速する
 			m_displayScore += ((gameManager.GetScore() - m_displayScore) / 50);
 		}
-
+	}
+	//------------------------------------------------------------------------
+	//画面に表示するスコアを設定する
+	//------------------------------------------------------------------------
+	void ScoreUI::ViewScore() {
 		int score = m_displayScore;
 		for (int i = 0; i < m_places; i++) {
 			int num = score % 10;	// 一の位を抜き出す
@@ -97,9 +112,10 @@ namespace basecross{
 			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
 			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
 		}
-		OnDraw();
 	}
-
+	//------------------------------------------------------------------------
+	//設定させたスコアを表示する
+	//------------------------------------------------------------------------
 	void ScoreUI::OnDraw() {
 		int score = m_displayScore;
 		int places = 0;
