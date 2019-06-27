@@ -287,14 +287,6 @@ namespace basecross {
 	void ResultStage::ShowRank(int resultScore)
 	{
 		m_rankText.lock()->SetDrawActive(true);
-		//if (resultScore >= RANK_SS)
-		//{
-		//	m_rankResult[0].lock()->SetDrawActive(true);
-		//	m_rankResult[0].lock()->SetScale(Vec2(154, 154));
-		//	//m_rankResult[0].lock()->SetDrawActive(true);
-		//	//m_rankResult[0].lock()->SetScale(Vec2(154, 154));
-
-		//}
 		if (resultScore >= RANK_S)
 		{
 			m_rankResult[0].lock()->SetDrawActive(true);
@@ -395,7 +387,6 @@ namespace basecross {
 	void ResultStage::FadeProcess()
 	{
 		auto& gm = GameManager::GetInstance();
-		//MessageBox(NULL, L"", L"", MB_OK);
 		//フェード中かどうか
 		if (!m_fade.lock()->GetIsFadeOut())
 		{

@@ -492,9 +492,6 @@ namespace basecross {
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
-		////カメラを追尾させる
-		//auto camera = GetStage()->GetView()->GetTargetCamera();
-		//dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 	}
 	///-------------------------------------------------------------------------------
 	//メールへ飛ぶ処理
@@ -549,12 +546,6 @@ namespace basecross {
 		//ベジエ曲線の計算
 		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
 		GetComponent<Transform>()->SetWorldPosition(pos);
-		//if (!gameManager.GetOnSlow()) {
-		//	//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
-		//	auto camera = GetStage()->GetView()->GetTargetCamera();
-		//	dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
-		//}
-
 	}
 	///-------------------------------------------------------------------------------
 	//ロックオン対象がいたら、そちらを向く

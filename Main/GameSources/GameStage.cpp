@@ -13,20 +13,11 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
 		auto ptrView = CreateView<SingleView>();
-
-		//auto ptrCamera = ObjectFactory::Create<Camera>();
-		// デバッグ用アングル(ステージ全体を見る)
-		//ptrView->SetCamera(ptrCamera);
-		//ptrCamera->SetEye(Vec3(0.0f, 60.0f, -100.0f));
-		//ptrCamera->SetAt(Vec3(0.0f, -30.0f, 50.0f));
-
 		//ビューのカメラの設定
 		auto ptrCamera = ObjectFactory::Create<TpsCamera>();
 		ptrView->SetCamera(ptrCamera);
 		//カメラが判定を持てないので、個別に判定を作成
 		AddGameObject<TpsCameraJudgment>();
-		//ptrCamera->SetEye(Vec3(0.0f, 10.0f, -5.0f));
-		//ptrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 		//マルチライトの作成
 		auto ptrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定x
@@ -81,35 +72,43 @@ namespace basecross {
 	void GameStage::CreateBill()
 	{
 		GameObjecttXMLBuilder builder;
+		// WallをXmlに登録
 		builder.Register<Wall>(L"Wall");
+		// XmlファイルからWallを探す
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Wall");
 	}
 
 	void GameStage::CreateLinkObject()
 	{
 		GameObjecttXMLBuilder builder;
+		// LinkObjectをXmlに登録
 		builder.Register<LinkObject>(L"RadioTower");
+		// XmlファイルからRadioTowerを探す
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/RadioTower");
 	}
 
 	void GameStage::CreateDrone()
 	{
 		GameObjecttXMLBuilder builder;
+		// EnemyをXmlに登録
 		builder.Register<Drone>(L"Enemy");
+		// XmlファイルからEnemyを探す
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Enemy");
 	}
 
 	void GameStage::CreateMail()
 	{
 		GameObjecttXMLBuilder builder;
+		// MainをXmlに登録
 		builder.Register<MailObject>(L"Mail");
+		// XmlファイルからMailsを探す
 		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Mails");
 	}
 
 	void GameStage::CreateEffect()
 	{
 		auto multiEfkPtr = AddGameObject<GetEffect>();
-		//共有オブジェクトに炎を登録
+		//共有オブジェクトにエフェクトを登録
 		SetSharedGameObject(L"GetEffect", multiEfkPtr);
 		auto bonusEfkPtr = AddGameObject<BonusEffect>();
 		SetSharedGameObject(L"BonusEffect", bonusEfkPtr);
@@ -157,7 +156,6 @@ namespace basecross {
 			//ビューとライトの作成
 			CreateViewLight();
 			//床
-			//CreateFloor();
 			//プレイヤー関係
 			CreatePlayerRelationship();
 			// 建物の配置
@@ -185,7 +183,6 @@ namespace basecross {
 			timeOverTx->SetDrawActive(false);
 			timeOverTx->SetPosition(Vec2(640, 240));
 			SetSharedGameObject(L"timeUp", timeOverTx);
-			//m_fade = AddGameObject<FadeInOut>(Vec2(640, 400), Vec2(1280, 800));
 		}
 		catch (...) {
 			throw;
@@ -206,18 +203,6 @@ namespace basecross {
 				timeOverTx->SetDrawActive(false);
 			}
 		}
-
-		//スタートボタンを押すことでリザルトに行く
-		//if (GameManager::GetInstance().GetPad().wPressedButtons & XINPUT_GAMEPAD_START){
-		//	PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
-		//	//auto fade = AddGameObject<FadeInOut>(Vec2(1.0f, 1.0f));
-		//	//fade->SetIsAction(true);
-		//}
-
-		//if (GameManager::GetInstance().GetTimeUp() && !m_fade.lock()->GetIsFadeOut())
-		//{
-		//	m_fade.lock()->SetIsFadeOut(true);
-		//}
 	}
 }
 //end basecross
