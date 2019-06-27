@@ -25,7 +25,6 @@ namespace basecross {
 		void CreateBill();
 		void CreateLinkObject();
 		void CreateDrone();
-		void CreateGoal();
 		void CreateMail();
 		void CreateEffect();
 
