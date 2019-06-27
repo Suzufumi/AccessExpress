@@ -8,9 +8,9 @@
 
 
 namespace basecross {
-	//------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//playerのコンストラクタ
-	//------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	Player::Player(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
 		:GameObject(StagePtr)
 	{
@@ -31,9 +31,9 @@ namespace basecross {
 		//m_cameraDistance = m_tpsCamera.lock()->GetCameraDistance();
 		m_cameraLookUp = m_tpsCamera.lock()->GetCameraLookUp();
 	}
-	//-------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//初期化
-	//-------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 
@@ -43,16 +43,10 @@ namespace basecross {
 
 		//四角形の当たり判定をセット
 		auto col = AddComponent<CollisionObb>();
-		//col->SetDrawActive(true);
 		//コリジョンの判定をしない
 		col->SetAfterCollision(AfterCollision::None);
 		//playerに持たせて使うものには衝突しない
 		col->AddExcludeCollisionTag(L"PlayerUse");
-
-		//文字列をつける
-		auto ptrString = AddComponent<StringSprite>();
-		ptrString->SetText(L"");
-		ptrString->SetTextRect(Rect2D<float>(16.0f, 120.0f, 640.0f, 480.0f));
 
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
@@ -81,9 +75,6 @@ namespace basecross {
 		drawComp->AddAnimation(L"Fly", 310, 30, false, 17.0f);
 		drawComp->AddAnimation(L"Over", 350, 40, true, 30.0f);
 		drawComp->AddAnimation(L"Clear", 400, 100, false, 30.0f);
-		//Col4 Color(1.0f, 0.2f, 1.0f, 0.7f);
-		//drawComp->SetDiffuse(Color);
-		//drawComp->SetColorAndAlpha(Color);
 		// レイヤーの調整
 		SetDrawLayer(-10);
 
@@ -98,9 +89,9 @@ namespace basecross {
 		m_animStateMachine.reset(new StateMachine<Player>(GetThis<Player>()));
 		m_animStateMachine->ChangeState(PlayerDefaultAnim::Instance());
 	}
-	//-------------------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//Update
-	//-------------------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::OnUpdate() {
 		// アプリケーション取得
 		auto& app = App::GetApp();
@@ -135,14 +126,10 @@ namespace basecross {
 	//-------------------------------------------------------------------------------------------------------------------
 	void Player::OnUpdate2() {
 		Extrusion();
-
-		// デバッグ文字の表示
-		DrawStrings();
-		CheckYButton();
 	}
-	//--------------------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//衝突したとき
-	//--------------------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto trans = GetComponent<Transform>();
 		auto otherTrans = Other->GetComponent<Transform>();
@@ -161,9 +148,9 @@ namespace basecross {
 			GameManager::GetInstance().SetGameStart(true);
 		}
 	}
-	//--------------------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//衝突し続けているとき
-	//--------------------------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other) {
 		auto trans = GetComponent<Transform>();
 		auto otherTrans = Other->GetComponent<Transform>();
@@ -175,22 +162,10 @@ namespace basecross {
 		ExtrusionJudgment(Other);
 
 	}
-	//--------------------------------------------------------------------------------------------------------------
-	//衝突が解除されたとき
-	//-------------------------------------------------------------------------------------------------------------
-	void Player::OnCollisionExit(shared_ptr<GameObject>& Other) {
-		auto wall = dynamic_pointer_cast<Wall>(Other);
-		if (wall) {
-			auto trans = GetComponent<Transform>();
-			auto wallTrans = wall->GetComponent<Transform>();
-			//playerの下面と衝突した物体の上面が当たっていたら
-			if (((wallTrans->GetWorldPosition().y + wallTrans->GetScale().y / 2) - (trans->GetWorldPosition().y - trans->GetScale().y / 2)) < 0.5f) {
-				m_response = wallTrans->GetWorldPosition() + Vec3(0.0f, 5.0f, 0.0f);
-				m_response.y += wallTrans->GetScale().y / 2;
-			}
-		}
-	}
-	void Player::Forword(){		
+	///-------------------------------------------------------------------------------
+	//角度の向きを考慮したスティックの角度を算出する
+	///-------------------------------------------------------------------------------
+	void Player::Forword() {
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 		// スティックの傾きを角度に変換する
@@ -206,35 +181,9 @@ namespace basecross {
 		}
 	}
 
-	//--------------------------------------------------------------------------------------------
-	//XZ平面の移動処理
-	//--------------------------------------------------------------------------------------------
-	void Player::Walk() {
-		auto playerTrans = GetComponent<Transform>();
-		auto playerPos = playerTrans->GetWorldPosition();
-		//左スティックに値が入力されていたら
-		if (m_padDir.x > 0.4f || m_padDir.x < -0.4f ||
-			m_padDir.z > 0.4f || m_padDir.z < -0.4f) {
-			//方向と移動スピードを掛け算してpositonを変更する
-			playerPos.x += m_nowWalkSpeed * m_forward.x * App::GetApp()->GetElapsedTime();
-			playerPos.z += m_nowWalkSpeed * m_forward.z * App::GetApp()->GetElapsedTime();
-			// 現在のアニムステートがDefaultだったら
-			if (GetAnimStateMachine()->GetCurrentState() == PlayerDefaultAnim::Instance())
-			{
-				GetAnimStateMachine()->ChangeState(PlayerMoveAnim::Instance());
-			}
-		}
-		// padが入力されてないかつ現在のアニムステートがMoveだったら
-		else if (m_padDir.x == 0.0f && m_padDir.z == 0.0f &&
-			GetAnimStateMachine()->GetCurrentState() == PlayerMoveAnim::Instance())
-		{
-			GetAnimStateMachine()->ChangeState(PlayerDefaultAnim::Instance());
-		}
-		playerTrans->SetWorldPosition(playerPos);
-	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//Y方向の移動処理
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::Fall() {
 		if (m_isFall) {
 			auto playerTrans = GetComponent<Transform>();
@@ -245,24 +194,16 @@ namespace basecross {
 		m_isFall = true;
 
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//プレイヤーを向かう方向に回転させる
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::PlayerRoll() {
 		auto ptrUtil = GetBehavior<UtilBehavior>();
 		ptrUtil->RotToHead(m_forward, 0.1f);
 	}
-	//--------------------------------------------------------------------------------------------
-	//設定高さ以下になったらリスポーン位置にワープさせる
-	//--------------------------------------------------------------------------------------------
-	void Player::Response() {
-		if (GetComponent<Transform>()->GetWorldPosition().y <= m_responseHeght) {
-			GetComponent<Transform>()->SetWorldPosition(m_response);
-		}
-	}
-	//---------------------------------------------------------------------------------------------
-	//Lボタンを押しているときに対象オブジェが照準の見ている先の近くだったらそっちを向く
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
+	//Lボタンを押していないときに対象オブジェが照準の見ている先の近くだったらそっちを向く
+	///-------------------------------------------------------------------------------
 	void Player::Rock(Vec3 origin, Vec3 originDir, wstring groupName, float correction) {
 		//Lボタンを押し続けているとき
 		if (GameManager::GetInstance().GetPad().wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
@@ -282,7 +223,7 @@ namespace basecross {
 			auto camera = GetStage()->GetView()->GetTargetCamera();
 			auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 			//ロックオンオブジェを対象にカメラの処理
-			tpsCamera->RockonCameraMove(sightPos,lockOnPos);
+			tpsCamera->RockonCameraMove(sightPos, lockOnPos);
 			//ロックオン対象が近くにいる場合はロックオンを解除
 			Vec3 delta = GetComponent<Transform>()->GetWorldPosition() - lockOnPos;
 			if (delta.length() <= 4.0f) {
@@ -301,7 +242,7 @@ namespace basecross {
 		for (auto& object : objectsGroup->GetGroupVector()) {
 			auto lockonObj = object.lock();
 			auto mail = dynamic_pointer_cast<MailObject>(lockonObj);
-			//メールとの判定をしていて、メールが取得状態だったらスルーする
+			//メールが取得状態だったらスルーする
 			if (mail) {
 				if (mail->GetIsArrive()) {
 					continue;
@@ -320,7 +261,7 @@ namespace basecross {
 					continue;
 				}
 				//Rayの範囲よりも遠い時は、判定上は当たっていても無視する
-				if (deltaLength >= m_rayRange+1) {
+				if (deltaLength >= m_rayRange + 1) {
 					continue;
 				}
 				m_LockOnObj = lockonObj;
@@ -331,9 +272,9 @@ namespace basecross {
 
 	}
 
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//リンクへ飛ぶ処理
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::LinkGo() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto& gameManager = GameManager::GetInstance();
@@ -384,9 +325,9 @@ namespace basecross {
 			//dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//ドローンへ飛ぶ処理
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::DroneGo() {
 		auto& gameManager = GameManager::GetInstance();
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -418,67 +359,9 @@ namespace basecross {
 		//auto camera = GetStage()->GetView()->GetTargetCamera();
 		//dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
 	}
-	//---------------------------------------------------------------------------------------------
-	//チェックポイントへ飛ぶ処理
-	//---------------------------------------------------------------------------------------------
-	void Player::CheckPointGo()
-	{
-		auto& gameManager = GameManager::GetInstance();
-		auto pos = GetComponent<Transform>()->GetWorldPosition();
-		auto checkPointGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
-		auto checkPoint = dynamic_pointer_cast<CheckPoint>(checkPointGroup->at(m_checkPointNum));
-		//計算のための時間加算
-		//移動の経過にチェイン数による加速をいれた
-		auto addLerp = (App::GetApp()->GetElapsedTime() * (m_BezierSpeed + m_chain)) / (m_BezierSpeedLeap);
-		//スロー状態かどうかで処理
-		if (gameManager.GetOnSlow()) {
-			//マネージャーにスローの経過を伝える
-			gameManager.AddSlowPassage((addLerp * 10 / gameManager.GetSlowSpeed()));
-			if (gameManager.GetSlowPassage() >= 1.0f) {
-				//スローを終わる
-				gameManager.SetOnSlow(false);
-				//向かっているドローンの初期化
-				m_checkPointNum = NULL;
-				//次の目標へ飛べなかったのでコンボリセット
-				ChainFailure();
-				//スロー時間が終了したためステートをデータ体にする
-				m_StateMachine->ChangeState(DataState::Instance());
-			}
-		}
-		else {
-			//経過に加算
-			m_Lerp += addLerp;
-			//動いているので終点の位置を更新する
-			p2 = checkPoint->GetComponent<Transform>()->GetWorldPosition();
-		}
-		//飛ぶ処理が終わったあとで、スロー状態でなければ
-		if (m_Lerp >= 1.0f && gameManager.GetOnSlow() == false && m_checkPointNum != NULL) {
-			m_Lerp = 1.0f;
-			// 対象のチェックポイントがfalseだったら
-			//演出でチェイン数を飛ばす
-			auto flyingChain = GetStage()->AddGameObject<FlyingChain>();
-			//演出でチェイン数を飛ばすために値を与える
-			flyingChain->FlySet(GetChain());
-			// フラグを立てる
-			checkPoint->ArriveCheckPoint();
-			//スローの経過時間をリセット
-			gameManager.ResetSloawPassage();
-			//スローにする
-			gameManager.SetOnSlow(true);
-		}
-		//ベジエ曲線の計算
-		pos = (1 - m_Lerp) * (1 - m_Lerp) * p0 + 2 * (1 - m_Lerp) * m_Lerp * p1 + m_Lerp * m_Lerp * p2;
-		GetComponent<Transform>()->SetWorldPosition(pos);
-		if (!gameManager.GetOnSlow()) {
-			//プレイヤーと一緒に動くためにプレイヤーのLeapでカメラを動かす
-			auto camera = GetStage()->GetView()->GetTargetCamera();
-			dynamic_pointer_cast<TpsCamera>(camera)->BezierMove(m_Lerp, pos);
-		}
-
-	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//メールへ飛ぶ処理
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::MailGo() {
 		auto& gameManager = GameManager::GetInstance();
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -536,9 +419,9 @@ namespace basecross {
 		//}
 
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//ベジエ曲線の制御点設定
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::SetBezierPoint(Vec3 point) {
 
 		p0 = GetComponent<Transform>()->GetWorldPosition();
@@ -555,8 +438,6 @@ namespace basecross {
 		else if (m_BezierSpeedLeap < 10.0f) {
 			p1 = point - ((point - p0) / 2);
 		}
-		//飛んだ際にリスポーン位置の更新も行う
-		m_response = p2;
 		//カメラの追従する動きを設定する
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		dynamic_pointer_cast<TpsCamera>(camera)->SetBezier(GetThis<Player>(), p2);
@@ -567,9 +448,9 @@ namespace basecross {
 		//リンクオブジェのロックオンを解除
 		m_islockon = false;
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//照準の位置をカメラとプレイヤーの位置から求め変更する
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::SightingDeviceChangePosition() {
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		auto m_cameraPos = GetStage()->GetView()->GetTargetCamera()->GetEye();
@@ -588,9 +469,9 @@ namespace basecross {
 
 		sightingDevice->GetComponent<Transform>()->SetQuaternion(rot);
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//Rayを飛ばす
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::RayShot() {
 		auto sightingDevice = m_SightingDevice.lock();
 		//Rayが当たったフラグをfalseに戻す
@@ -603,75 +484,84 @@ namespace basecross {
 		//照準とカメラの位置から飛ばす方向を求める
 		auto dir = sightPos - m_cameraPos;
 		dir = dir.normalize();
-		//少し大きめの判定をとって、Lを押して当たっていた場合リンクオブジェにカメラが向く
+		//ロックオンの処理
 		Rock(sightPos, dir, L"Drone", 1.0f);
 		Rock(sightPos, dir, L"Link", 4.0f);
 		Rock(sightPos, dir, L"CheckPoints", 2.0f);
 		Rock(sightPos, dir, L"Mails", 4.0f);
-		//リンクオブジェクトとの判定
-		LinkRayCheck(sightPos, dir);
-		// チェックポイントとの判定
-		CheckPointsRayCheck(sightPos, dir);
-		//メールとの判定
-		MailRayCheck(sightPos, dir);
-		//ドローンとの判定
-		DroneRayCheck(sightPos, dir);
+		//RBボタンが押されていたら飛べるかの判定も行う
+		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+			//リンクオブジェクトとの判定
+			LinkRayCheck(sightPos, dir);
+			//メールとの判定
+			MailRayCheck(sightPos, dir);
+			//ドローンとの判定
+			DroneRayCheck(sightPos, dir);
+		}
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
+	//RayとOBBの判定
+	///-------------------------------------------------------------------------------
+	bool Player::RayOBBHit(Vec3 origin, Vec3 originDir, shared_ptr<GameObject> obj) {
+		auto trans = obj->GetComponent<Transform>();
+		//オブジェクトのOBBを作る
+		OBB obb(trans->GetScale() * 3.0f, trans->GetWorldMatrix());
+		//プレイヤーからでるRayとOBBで判定
+		bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
+		//Rayの範囲内にあるオブジェクトかを見る
+		if ((origin - trans->GetWorldPosition()).length() <= m_rayRange + 1.0f) {
+			//1つ前にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
+			if (hit && p2 + Vec3(0, -1, 0) != trans->GetWorldPosition()) {
+				//それは飛べるもの
+				return true;
+			}
+		}
+		return false;
+	}
+	///-------------------------------------------------------------------------------
 	//RayとLinkオブジェクトが当たっているかを調べる
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::LinkRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
 		if (m_isGoLink) {
 			return;
 		}
-		auto sightingDevice = m_SightingDevice.lock();
 		//リンクオブジェクトの入っているグループを持ってくる
 		auto& linkGroup = GetStage()->GetSharedObjectGroup(L"Link");
 		//一つずつ取り出す
 		for (auto& link : linkGroup->GetGroupVector()) {
 			auto linkObj = link.lock();
-			auto linkTrans = linkObj->GetComponent<Transform>();
-			//リンクオブジェクトのOBBを作る
-			OBB obb(linkTrans->GetScale() * 3.0f, linkTrans->GetWorldMatrix());
-			//プレイヤーからでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
-			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
-			if (hit && p2 + Vec3(0, -1, 0) != linkTrans->GetWorldPosition()) {
-				//Rayの範囲内にあるオブジェクトかを見る
-				if ((origin - linkTrans->GetWorldPosition()).length() <= m_rayRange+1.0f) {
-					//照準に当たっていることを教える
-					sightingDevice->SetCaptureLink(true);
-					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkTrans->GetWorldPosition();
-						dir.y = 0;
-						//オブジェクトに被らないように方向を加味してずらした値を渡す
-						SetBezierPoint(linkTrans->GetWorldPosition() + dir.normalize());
-						//経過をリセット
-						m_Lerp = 0;
-						//飛ぶの確定
-						m_isGoLink = true;
-						//スローの経過時間をリセット
-						GameManager::GetInstance().ResetSloawPassage();
-						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-						m_DroneNo = NULL;
-						m_StateMachine->ChangeState(LinkState::Instance());
-						m_target = Target::LINK;
-						break;
-					}
-				}
+			//レイと今見ているオブジェクトが当たっているか判定
+			if (RayOBBHit(origin, originDir, linkObj)) {
+				auto sightingDevice = m_SightingDevice.lock();
+				//照準に当たっていることを教える
+				sightingDevice->SetCaptureLink(true);
+				Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - linkObj->GetComponent<Transform>()->GetWorldPosition();
+				dir.y = 0;
+				//オブジェクトに被らないように方向を加味してずらした値を渡す
+				SetBezierPoint(linkObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
+				//経過をリセット
+				m_Lerp = 0;
+				//飛ぶの確定
+				m_isGoLink = true;
+				//スローの経過時間をリセット
+				GameManager::GetInstance().ResetSloawPassage();
+				//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+				m_DroneNo = NULL;
+				m_StateMachine->ChangeState(LinkState::Instance());
+				m_target = Target::LINK;
+				return;
 			}
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//RayとDroneオブジェクトが当たっているかを調べる
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::DroneRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
 		if (m_isGoLink) {
 			return;
 		}
-		auto sightingDevice = m_SightingDevice.lock();
 		//ドローンオブジェクトの入っているグループを持ってくる
 		auto& droneGroup = GetStage()->GetSharedObjectGroup(L"Drone");
 		//何番目のDroneか数える
@@ -679,113 +569,58 @@ namespace basecross {
 		//一つずつ取り出す
 		for (auto& drone : droneGroup->GetGroupVector()) {
 			auto droneObj = drone.lock();
-			auto droneTrans = droneObj->GetComponent<Transform>();
-			//ドローンオブジェクトのOBBを作る
-			OBB obb(droneTrans->GetScale() * 3, droneTrans->GetWorldMatrix());
-			//プレイヤーからでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * 30.0f, obb);
-			//最後にベジエ曲線で飛んだオブジェクトじゃないものに当たっていたら
-			if (hit && p2 + Vec3(0, -1, 0) != droneTrans->GetWorldPosition()) {
-				//Rayの範囲内にあるオブジェクトかを見る
-				if ((origin - droneTrans->GetWorldPosition()).length() <= m_rayRange+1.0f) {
-					//照準に当たっていることを教える
-					sightingDevice->SetCaptureLink(true);
-					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-						SetBezierPoint(droneTrans->GetWorldPosition());
-						m_DroneNo = count;
-						//経過をリセット
-						m_Lerp = 0;
-						//飛ぶの確定
-						m_isGoLink = true;
-						//スローの経過時間をリセット
-						GameManager::GetInstance().ResetSloawPassage();
-						m_StateMachine->ChangeState(LinkState::Instance());
-						m_target = Target::DRONE;
-						break;
-					}
-				}
-			}
-			count++;
-		}
-	}
-	//---------------------------------------------------------------------------------------------
-	//RayとCheckPointオブジェクトが当たっているかを調べる
-	//---------------------------------------------------------------------------------------------
-	void Player::CheckPointsRayCheck(Vec3 origin, Vec3 originDir) {
-		//すでに他のものに飛んでいたら
-		//if (m_target != Target::NOTHING) {
-		//	return;
-		//}
-		auto sightingDevice = m_SightingDevice.lock();
-		auto& checkPointsGroup = GetStage()->GetSharedObjectGroup(L"CheckPoints");
-		int count = 0;
-		for (auto& checkPoint : checkPointsGroup->GetGroupVector()) {
-			auto pointObj = checkPoint.lock();
-			auto pointTrans = pointObj->GetComponent<Transform>();
-			OBB obb(pointTrans->GetScale() * 2.0f, pointTrans->GetWorldMatrix());
-			//プレイヤーからでるRayとOBBで判定
-			bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
-			//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
-			if (hit && p2 + Vec3(0, -1, 0) != pointTrans->GetWorldPosition()) {
+			if (RayOBBHit(origin, originDir, droneObj)) {
+				auto sightingDevice = m_SightingDevice.lock();
 				//照準に当たっていることを教える
 				sightingDevice->SetCaptureLink(true);
-				if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-					Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - pointTrans->GetWorldPosition();
-					dir.y = 0;
-					//オブジェクトに被らないように方向を加味してずらした値を渡す
-					SetBezierPoint(pointTrans->GetWorldPosition() + dir.normalize());
-					m_checkPointNum = count;
-					m_Lerp = 0;
-					//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-					m_DroneNo = NULL;
-					m_StateMachine->ChangeState(LinkState::Instance());
-					m_target = Target::CHECKPOINT;
-					break;
-				}
+				SetBezierPoint(droneObj->GetComponent<Transform>()->GetWorldPosition());
+				m_DroneNo = count;
+				//経過をリセット
+				m_Lerp = 0;
+				//飛ぶの確定
+				m_isGoLink = true;
+				//スローの経過時間をリセット
+				GameManager::GetInstance().ResetSloawPassage();
+				m_StateMachine->ChangeState(LinkState::Instance());
+				m_target = Target::DRONE;
+				return;
 			}
 			count++;
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//RayとMailオブジェクトが当たっているかを調べる
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::MailRayCheck(Vec3 origin, Vec3 originDir) {
 		//すでに他のものに飛んでいたら
 		if (m_isGoLink) {
 			return;
 		}
-		auto sightingDevice = m_SightingDevice.lock();
 		auto& mailGroup = GetStage()->GetSharedObjectGroup(L"Mails");
 		int count = 0;
 		for (auto& mail : mailGroup->GetGroupVector()) {
 			auto mailObj = mail.lock();
+			//今見ているメールが取得されていないメールか確認
 			if (dynamic_pointer_cast<MailObject>(mailObj)->GetIsArrive() != true) {
-				auto mailTrans = mailObj->GetComponent<Transform>();
-				OBB obb(mailTrans->GetScale() * 3.0f, mailTrans->GetWorldMatrix());
-				//プレイヤーからでるRayとOBBで判定
-				bool hit = HitTest::SEGMENT_OBB(origin, origin + originDir * m_rayRange, obb);
-				//最後にベジエ曲線で飛んだリンクオブジェクトじゃないものに当たっていたら
-				if (hit && (p2 + Vec3(0, -1, 0)) != mailTrans->GetWorldPosition()) {
-					//Rayの範囲内にあるオブジェクトかを見る
-					if ((origin - mailTrans->GetWorldPosition()).length() <= m_rayRange+1.0f) {
-						//照準に当たっていることを教える
-						sightingDevice->SetCaptureLink(true);
-						if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-							Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailTrans->GetWorldPosition();
-							dir.y = 0;
-							//オブジェクトに被らないように方向を加味してずらした値を渡す
-							SetBezierPoint(mailTrans->GetWorldPosition() + dir.normalize());
-							//何番のメールにアクセスしているか保存
-							m_MailNum = count;
-							m_Lerp = 0;
-							//飛ぶの確定
-							m_isGoLink = true;
-							//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
-							m_DroneNo = NULL;
-							m_StateMachine->ChangeState(LinkState::Instance());
-							m_target = Target::MAIL;
-							break;
-						}
+				if (RayOBBHit(origin, originDir, mailObj)) {
+					auto sightingDevice = m_SightingDevice.lock();
+					//照準に当たっていることを教える
+					sightingDevice->SetCaptureLink(true);
+					if (m_pad.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+						Vec3 dir = GetComponent<Transform>()->GetWorldPosition() - mailObj->GetComponent<Transform>()->GetWorldPosition();
+						dir.y = 0;
+						//オブジェクトに被らないように方向を加味してずらした値を渡す
+						SetBezierPoint(mailObj->GetComponent<Transform>()->GetWorldPosition() + dir.normalize());
+						//何番のメールにアクセスしているか保存
+						m_MailNum = count;
+						m_Lerp = 0;
+						//飛ぶの確定
+						m_isGoLink = true;
+						//ドローンが入ったままだとそちらのほうに向かってしまうのでNULLにする
+						m_DroneNo = NULL;
+						m_StateMachine->ChangeState(LinkState::Instance());
+						m_target = Target::MAIL;
+						return;
 					}
 				}
 			}
@@ -793,9 +628,9 @@ namespace basecross {
 		}
 	}
 
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//押し出しが必要か判定する
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::ExtrusionJudgment(const weak_ptr<GameObject>& Other) {
 		//playerの情報
 		auto trans = GetComponent<Transform>();
@@ -829,9 +664,9 @@ namespace basecross {
 			m_nestingMin = min;
 		}
 	}
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	//押し出しをする
-	//---------------------------------------------------------------------------------------------
+	///-------------------------------------------------------------------------------
 	void Player::Extrusion() {
 		Vec3 pos = GetComponent<Transform>()->GetWorldPosition();
 		// 最小になっている方向に対して押し出しを行う
@@ -861,17 +696,6 @@ namespace basecross {
 		m_nesting = NULL;
 	}
 
-	// Yボタンが押されたかどうかを返す
-	bool Player::CheckYButton()
-	{
-		if (m_pad.wPressedButtons & XINPUT_GAMEPAD_Y)
-		{
-			FaceChanger(m_faceNum, FaceState::Smile);
-			return true;
-		}
-		return false;
-	}
-
 	void Player::FaceChanger(FaceState beforeFace, FaceState afterFace)
 	{
 		auto drawComp = GetComponent<PNTBoneModelDraw>();
@@ -879,11 +703,15 @@ namespace basecross {
 		drawComp->SetMultiMeshIsDraw(afterFace, true);
 		m_faceNum = afterFace;
 	}
+	///-------------------------------------------------------------------------------
 	// タイムアップ時にアニメーションを見せる
+	///-------------------------------------------------------------------------------
 	void Player::ShowTimeUpAnime() {
 		GetAnimStateMachine()->ChangeState(PlayerClearAnim::Instance());
 	}
+	///-------------------------------------------------------------------------------
 	//タイムアップアニメーションが終わったらリザルトにいく
+	///-------------------------------------------------------------------------------
 	void Player::TimeUpAnimeFinishToResult() {
 		if (GetComponent<PNTBoneModelDraw>()->IsTargetAnimeEnd() && GameManager::GetInstance().GetTimeUp()) {
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToResultStage");
@@ -906,22 +734,26 @@ namespace basecross {
 
 		return forwardAngle;
 	};
-
+	///-------------------------------------------------------------------------------
+	// チェイン数を増やす
+	///-------------------------------------------------------------------------------
 	void Player::AddChain()
 	{
 		m_chain++;
 		auto& gm = GameManager::GetInstance();
+		//現在チェイン数が最大チェイン数を上回ったら更新する
 		if (gm.GetMaxChain() < m_chain) {
 			gm.SetMaxChain(m_chain);
 		}
 
 		if (m_chain % BONUS_CHAIN == 0)
 		{
-			//gm.SetControlGageSpeed(m_chain * App::GetApp()->GetElapsedTime());
 			gm.AddBouns();
 		}
 	}
+	///-------------------------------------------------------------------------------
 	// チェイン失敗時に色々リセットする
+	///-------------------------------------------------------------------------------
 	void Player::ChainFailure() {
 		m_chain = 0;
 		m_rayRange = m_rayRangeDefolt;
@@ -942,47 +774,14 @@ namespace basecross {
 	}
 
 
-	//---------------------------------------------------------------------------------------------
-	//情報の表示
-	//---------------------------------------------------------------------------------------------
-	void Player::DrawStrings() {
-		// FPSの取得
-		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
-		wstring strFps(L"FPS: ");
-		strFps += Util::UintToWStr(fps);
-		strFps += L"\n";
-		wstring checkNum(L"CheckPointNum : ");
-		//auto& gm = GameManager::GetInstance();
-		//checkNum += Util::IntToWStr(gm.GetCheckPointNum()) + L"\n";
-		wstring combo(L"Combo : ");
-		combo += Util::IntToWStr(m_chain) + L"\n";
-		wstring chainLimit(L"CHAIN_TIME : ");
-		chainLimit += Util::IntToWStr(m_chainTime) + L"\n";
-		wstring timeLimit(L"Limit : ");
-		timeLimit += Util::IntToWStr(m_comboChainLimit) + L"\n";
-		wstring faceNum(L"FACE_NUM : ");
-		faceNum += Util::IntToWStr(m_faceNum) + L"\n";
-
-		//文字列をつける
-		//wstring str = strFps + cameraStr + energy + combo + timeLimit;
-
-		wstring str = strFps + faceNum + checkNum;
-		auto ptrString = GetComponent<StringSprite>();
-		ptrString->SetText(str);
-	}
-
 	//--------------------------------------------------------------------------------------
 	//	class LinkState : public ObjState<Player>;
 	//	用途: リンク上を飛んでいる状態
 	//--------------------------------------------------------------------------------------
-	//ステートのインスタンス取得
 	shared_ptr<LinkState> LinkState::Instance() {
 		static shared_ptr<LinkState> instance(new LinkState);
 		return instance;
 	}
-
-
-	//ステートに入ったときに呼ばれる関数
 	void LinkState::Enter(const shared_ptr<Player>& Obj) {
 		Obj->FaceChanger(Obj->m_faceNum, Player::FaceState::Smile);
 		auto scenePtr = App::GetApp()->GetScene<Scene>();
@@ -994,7 +793,6 @@ namespace basecross {
 		Obj->AddChain();
 
 	}
-	//ステート実行中に毎ターン呼ばれる関数
 	void LinkState::Execute(const shared_ptr<Player>& Obj) {
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
@@ -1020,16 +818,11 @@ namespace basecross {
 		if (Obj->GetTarget() == Obj->DRONE) {
 			Obj->DroneGo();
 		}
-		if (Obj->GetTarget() == Obj->CHECKPOINT) {
-			Obj->CheckPointGo();
-			//Obj->CheckPointArrived();
-		}
 		if (Obj->GetTarget() == Obj->MAIL) {
 			Obj->MailGo();
 		}
 		Obj->SightingDeviceChangePosition();
 	}
-	//ステートにから抜けるときに呼ばれる関数
 	void LinkState::Exit(const shared_ptr<Player>& Obj) {
 		Obj->FaceChanger(Obj->m_faceNum, Player::FaceState::Default);
 	}
@@ -1037,22 +830,18 @@ namespace basecross {
 	//	class DataState : public ObjState<Player>;
 	//	用途: データ体状態
 	//--------------------------------------------------------------------------------------
-	//ステートのインスタンス取得
 	shared_ptr<DataState> DataState::Instance() {
 		static shared_ptr<DataState> instance(new DataState);
 		return instance;
 	}
-	//ステートに入ったときに呼ばれる関数
 	void DataState::Enter(const shared_ptr<Player>& Obj) {
 
 	}
-	//ステート実行中に毎ターン呼ばれる関数
 	void DataState::Execute(const shared_ptr<Player>& Obj) {
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 
 		Obj->Forword();
-		//Obj->Walk();
 		Obj->ResetGoLink();
 		Obj->RayShot();
 		Obj->SightingDeviceChangePosition();
@@ -1067,7 +856,6 @@ namespace basecross {
 			Obj->GetStateMachine()->ChangeState(ClearState::Instance());
 		}
 	}
-	//ステートにから抜けるときに呼ばれる関数
 	void DataState::Exit(const shared_ptr<Player>& Obj) {
 		Obj->ResetTimeLim();
 	}
@@ -1079,26 +867,25 @@ namespace basecross {
 		static shared_ptr<ClearState> instance(new ClearState);
 		return instance;
 	}
-	//ステートに入ったときに呼ばれる関数
 	void ClearState::Enter(const shared_ptr<Player>& Obj) {
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 		tpsCamera->SetGoingAround(Obj->forwardAngle().x, Obj->forwardAngle().y);
 	}
-	//ステート実行中に毎ターン呼ばれる関数
 	void ClearState::Execute(const shared_ptr<Player>& Obj) {
 		auto camera = Obj->GetStage()->GetView()->GetTargetCamera();
 		auto tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
 		Obj->SightingDeviceChangePosition();
 
+		//カメラのプレイヤーの正面に回る処理を呼ぶ
 		if (!tpsCamera->GoingAround()) {
-				Obj->ShowTimeUpAnime();
+			//正面に回ったらクリアアニメーション
+			Obj->ShowTimeUpAnime();
 		}
 		tpsCamera->CameraRoll(Obj->GetSightPos());
 
 		Obj->TimeUpAnimeFinishToResult();
 	}
-	//ステートにから抜けるときに呼ばれる関数
 	void ClearState::Exit(const shared_ptr<Player>& Obj){
 	}
 }

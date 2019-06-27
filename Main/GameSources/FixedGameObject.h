@@ -31,20 +31,6 @@ namespace basecross {
 		virtual void OnUpdate();
 		void ArriveCheckPoint();
 	};
-	//-------------------------------------------------------------------------------------------------------------
-	//電波を発するオブジェクト、近づくとplayerのスピードが変わる
-	//-------------------------------------------------------------------------------------------------------------
-	class RadioTower : public GameObject {
-		Vec3 m_position;
-		Vec3 m_scale;
-		float m_acceleration;
-	public:
-		RadioTower(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale, float acceleration);
-		virtual ~RadioTower() { };
-		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
-		float GetAcceleration();
-	};
 	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
 	//--------------------------------------------------------------------------------------------------------------
