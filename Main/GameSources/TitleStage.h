@@ -10,7 +10,7 @@ namespace basecross {
 		void CreateCharacter();
 		// タイトルロゴ等の作成
 		void CreateTitleResources();
-		// 
+		// フェードの再生
 		void FadePlay();
 	public:
 		virtual ~TitleStage() {};

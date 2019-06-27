@@ -5,12 +5,15 @@ namespace basecross {
 	Wall::Wall(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
 		: GameObject(StagePtr)
 	{
+		// XmlからPos,Scaleを取得する
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
 		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
 
+		// wstringのデータをVec3に変換する
 		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
 		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 
+		// Vec3に変換した値を代入する
 		m_position = pos;
 		m_scale = scale;
 
@@ -21,7 +24,7 @@ namespace basecross {
 	void Wall::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 		auto col = AddComponent<CollisionObb>();
-		//col->SetDrawActive(true);
+		// コリジョンの衝突応答をNoneにする
 		col->SetAfterCollision(AfterCollision::None);
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
@@ -50,9 +53,14 @@ namespace basecross {
 	// 更新処理
 	///-----------------------------------------------------------------------------------
 	void Wall::OnUpdate() {
+		// Wallの見える範囲
+		const float VisibleRange = 80.0f;
+		// Playerのポインタの取得
 		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
+		// Wallの座標を取得
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
-		if (80.0f >= (pos - player->GetComponent<Transform>()->GetWorldPosition()).length()) {
+		// Playerの座標がWallの見える範囲を超えたら
+		if (VisibleRange >= (pos - player->GetComponent<Transform>()->GetWorldPosition()).length()) {
 			SetDrawActive(true);
 		}
 		else {
@@ -66,14 +74,17 @@ namespace basecross {
 	CheckPoint::CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
 		: GameObject(stagePtr)
 	{
+		// XmlからPos,Quat,Scaleを取得する
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
 		auto quatStr = XmlDocReader::GetAttribute(pNode, L"Quat");
 		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-
+		
+		// wstringのデータをVec3に変換する
 		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
 		auto quat = MyUtil::unityVec3StrToBCVec3(quatStr);
 		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 
+		// Vec3に変換した値を代入する
 		m_position = pos;
 		m_qt = quat;
 		m_scale = scale;
@@ -134,15 +145,17 @@ namespace basecross {
 
 	void SkyBox::OnCreate()
 	{
+		const float VertexPosition = 0.5f;
 		auto& app = App::GetApp();
 
 		// スカイボックス用のテクスチャが入っているフォルダを指定する
 		auto texturePath = app->GetDataDirWString() + L"textures/SkyBox/";
 		vector <wstring> textureKeys;
-		textureKeys.push_back(L"SkyBox_Back_TX");
-		textureKeys.push_back(L"SkyBox_Back_TX");
-		textureKeys.push_back(L"SkyBox_Back_TX");
-		textureKeys.push_back(L"SkyBox_Back_TX");
+		const int SkyBoxBack_Size = 4;	// スカイボックスの背景サイズ
+		for (int i = 0; i < SkyBoxBack_Size; i++)
+		{
+			textureKeys.push_back(L"SkyBox_Back_TX");
+		}
 		textureKeys.push_back(L"SkyBox_TX");
 		textureKeys.push_back(L"SkyBox_Plane_TX");
 
@@ -151,15 +164,15 @@ namespace basecross {
 
 		// ボックスの「角」にあたる頂点の座標だけをまとめておく
 		const vector<Vec3> positions{
-			{ -0.5f, +0.5f, +0.5f },	// 0
-			{ +0.5f, +0.5f, +0.5f },	// 1
-			{ -0.5f, -0.5f, +0.5f },	// 2
-			{ +0.5f, -0.5f, +0.5f },	// 3
+			{ -VertexPosition, +VertexPosition, +VertexPosition },	// 0
+			{ +VertexPosition, +VertexPosition, +VertexPosition },	// 1
+			{ -VertexPosition, -VertexPosition, +VertexPosition },	// 2
+			{ +VertexPosition, -VertexPosition, +VertexPosition },	// 3
 
-			{ -0.5f, +0.5f, -0.5f },	// 4
-			{ +0.5f, +0.5f, -0.5f },	// 5
-			{ -0.5f, -0.5f, -0.5f },	// 6
-			{ +0.5f, -0.5f, -0.5f }		// 7
+			{ -VertexPosition, +VertexPosition, -VertexPosition },	// 4
+			{ +VertexPosition, +VertexPosition, -VertexPosition },	// 5
+			{ -VertexPosition, -VertexPosition, -VertexPosition },	// 6
+			{ +VertexPosition, -VertexPosition, -VertexPosition }	// 7
 		};
 
 		// 頂点の座標を並べて「面」を作る
@@ -199,8 +212,8 @@ namespace basecross {
 
 			// スカイボックスは可能な限り大きくする
 			auto transComp = plane->GetComponent<Transform>();
-			const float scale = 200.0f;
-			transComp->SetScale(scale, scale, scale);
+			const float SphereScale = 200.0f;
+			transComp->SetScale(Vec3(SphereScale));
 
 			m_planes.push_back(plane);
 
@@ -260,8 +273,6 @@ namespace basecross {
 
 	void MailObject::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
-		//auto col = AddComponent<CollisionObb>();
-		//col->SetAfterCollision(AfterCollision::None);
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
 		ptrTrans->SetWorldPosition(m_position);
@@ -284,8 +295,6 @@ namespace basecross {
 		drawComp->SetTextureResource(L"MAIL_TX");
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		drawComp->SetLightingEnabled(false);
-		//Col4 Color(1.0f, 1.0f, 0.0f, 1.0f);
-		//drawComp->SetDiffuse(Color);
 
 		GetStage()->GetSharedObjectGroup(L"Mails")->IntoGroup(GetThis<GameObject>());
 	}
@@ -298,17 +307,19 @@ namespace basecross {
 				m_passageTime = 0;
 			}
 		}
+		// メールの回転処理
 		RotateMail();
 	}
 	void MailObject::ArriveMail() {
+		// SEの定数定義
+		const float SE_Volume = 1.0f;
 		auto& gm = GameManager::GetInstance();
 		gm.AddMail();
 		m_isArrive = true;
 		SetDrawActive(false);
-		App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"Mail_SE", 1.0f);
+		App::GetApp()->GetScene<Scene>()->MusicOnceStart(L"Mail_SE", SE_Volume);
 		// 獲得エフェクトを表示
 		auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
-		//MessageBox(NULL, L"", L"", MB_OK);
 		if (ptrEffect) {
 			ptrEffect->InsertGetEffect(GetComponent<Transform>()->GetWorldPosition());
 		}
@@ -316,12 +327,15 @@ namespace basecross {
 
 	void MailObject::RotateMail()
 	{
+		// 最大回転数を定義
+		const float MaxRotation = 360.0f;
 		m_rot += m_rotateSpeed;
-		if (m_rot >= 360.0f)
+		if (m_rot >= MaxRotation)
 		{
 			m_rot = 0.0f;
 		}
 		Quat Qt;
+		// Vectorからクォータニオンに変換
 		Qt.rotationRollPitchYawFromVector(Vec3(0, Deg2Rad(m_rot), 0));
 		auto transComp = GetComponent<Transform>();
 		transComp->SetQuaternion(Qt);
