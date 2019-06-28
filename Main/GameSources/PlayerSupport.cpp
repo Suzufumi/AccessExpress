@@ -15,8 +15,6 @@ namespace basecross {
 
 		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		drawComp->SetMeshResource(L"DEFAULT_SPHERE");
-		//Col4 Color(0.4f, 1.0f, 0.7f, 0.1f);
-		//drawComp->SetDiffuse(Color);
 		drawComp->SetRasterizerState(RasterizerState::CullFront);
 		drawComp->SetTextureResource(L"RayRange_TX");
 		SetAlphaActive(true);
@@ -112,15 +110,29 @@ namespace basecross {
 		m_gage.lock()->SetDrawLayer(1);
 	}
 	void ViewChainLetter::OnUpdate() {
+		//ゲージの位置、大きさが変動する
+		GageAct();
+		//ゲージの表示非表示を制御する
+		ViewGage();
+	}
+	//-------------------------------------------------------------------------------------------------
+	//ゲージの位置、大きさが変動する
+	//-------------------------------------------------------------------------------------------------
+	void ViewChainLetter::GageAct() {
 		auto& manager = GameManager::GetInstance();
 		auto gageMaxLength = m_gageDefaltLength + (m_gageBounsLength * manager.GetBouns());
-		float remainingGage = gageMaxLength * (1.0f - manager.GetSlowPassage()); 
+		float remainingGage = gageMaxLength * (1.0f - manager.GetSlowPassage());
 		//ゲージバーを変動
 		m_gage.lock()->GetComponent<Transform>()->SetScale(remainingGage, 1.0f, 1.0f);
 		m_gage.lock()->SetPosition(Vec2(720 + (80.0f * remainingGage) + (10.0f * (gageMaxLength - remainingGage)), 640.0f));
 		//ゲージ枠を変動
 		m_gageFram.lock()->GetComponent<Transform>()->SetScale(gageMaxLength, 1.0f, 1.0f);
 		m_gageFram.lock()->SetPosition(Vec2(720.0f + (((160.0f * gageMaxLength) / 2.0f)), 640));
+	}
+	//-------------------------------------------------------------------------------------------------
+	//ゲージの表示非表示を制御する
+	//-------------------------------------------------------------------------------------------------
+	void ViewChainLetter::ViewGage() {
 		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
 			SetDrawActive(true);
 			m_gage.lock()->SetDrawActive(true);
@@ -179,8 +191,17 @@ namespace basecross {
 		}
 
 	}
-
+	//------------------------------------------------------------------------------------
+	//アップデート
+	//------------------------------------------------------------------------------------
 	void ViewChainNum::OnUpdate() {
+		ViewNum();
+		OnDraw();
+	}
+	//------------------------------------------------------------------------------------
+	//画面に表示する数字を設定する
+	//------------------------------------------------------------------------------------
+	void ViewChainNum::ViewNum() {
 		auto player = GetStage()->GetSharedGameObject<Player>(L"Player");
 		int chain = player->GetChain();
 
@@ -205,18 +226,13 @@ namespace basecross {
 			if (player->GetChain() % 5 == 0) {
 				drawComp->SetDiffuse(Col4(1.0f, 0.9f, 0.0f, 1.0f));
 			}
-			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
-
+			// 位置は変えずにポリゴンの中身だけ変える
+			drawComp->UpdateVertices(m_vertices[i]);
 		}
-		OnDraw();
-		//auto ptrEffect = GetStage()->GetSharedGameObject<GetEffect>(L"GetEffect", false);
-		//if (ptrEffect)
-		//{
-		//	ptrEffect->InsertGetEffect(Vec3(GetComponent<Transform>()->GetPosition()));
-		//}
-
 	}
-
+	//------------------------------------------------------------------------------------
+	//表示する
+	//------------------------------------------------------------------------------------
 	void ViewChainNum::OnDraw() {
 		if (GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain() > 0) {
 			int chain = GetStage()->GetSharedGameObject<Player>(L"Player")->GetChain();
@@ -289,10 +305,19 @@ namespace basecross {
 			m_numbers.push_back(number);
 		}
 	}
-
+	//------------------------------------------------------------------------------------
+	//アップデート
+	//------------------------------------------------------------------------------------
 	void FlyingChain::OnUpdate() {
+		ViewNum();
+		Fly();
+		OnDraw();
+	}
+	//------------------------------------------------------------------------------------
+	//画面に表示する数字を設定する
+	//------------------------------------------------------------------------------------
+	void FlyingChain::ViewNum() {
 		int chain = m_score;
-
 		//数字を並べる
 		for (int i = 0; i < m_places; i++) {
 			int num = chain % 10;	// 一の位を抜き出す
@@ -311,27 +336,10 @@ namespace basecross {
 			auto drawComp = m_numbers[i]->GetComponent<PTSpriteDraw>();
 			drawComp->UpdateVertices(m_vertices[i]);	// 位置は変えずにポリゴンの中身だけ変える
 		}
-		//飛んでいる状態での処理
-		if (m_isFly) {
-			m_wait += App::GetApp()->GetElapsedTime();
-			if (m_wait >= 0.5f) {
-				m_leap += App::GetApp()->GetElapsedTime() * 2.0f;
-			}
-			auto pos = (1 - m_leap)*(1 - m_leap)*p0 + 2 * (1 - m_leap)*m_leap*p1 + m_leap * m_leap*p2;
-			GetComponent<Transform>()->SetPosition(pos);
-			if (m_leap >= 1.0f) {
-				//スコアについたのでスコアの値を増加させる
-				GameManager::GetInstance().AddScore(m_score);
-				m_leap = 0;
-				m_isFly = false;
-				m_wait = 0;
-				GetStage()->RemoveGameObject<FlyingChain>(GetThis<FlyingChain>());
-			}
-		}
-
-		OnDraw();
 	}
-
+	//------------------------------------------------------------------------------------
+	//表示
+	//------------------------------------------------------------------------------------
 	void FlyingChain::OnDraw() {
 		if (m_isFly) {
 			int score = m_score;
@@ -356,6 +364,31 @@ namespace basecross {
 			}
 		}
 	}
+	//------------------------------------------------------------------------------------
+	//右上のスコアのところへ飛んでいく
+	//------------------------------------------------------------------------------------
+	void FlyingChain::Fly() {
+		//飛んでいる状態での処理
+		if (m_isFly) {
+			m_wait += App::GetApp()->GetElapsedTime();
+			if (m_wait >= 0.5f) {
+				m_leap += App::GetApp()->GetElapsedTime() * 2.0f;
+			}
+			auto pos = (1 - m_leap)*(1 - m_leap)*p0 + 2 * (1 - m_leap)*m_leap*p1 + m_leap * m_leap*p2;
+			GetComponent<Transform>()->SetPosition(pos);
+			if (m_leap >= 1.0f) {
+				//スコアについたのでスコアの値を増加させる
+				GameManager::GetInstance().AddScore(m_score);
+				m_leap = 0;
+				m_isFly = false;
+				m_wait = 0;
+				GetStage()->RemoveGameObject<FlyingChain>(GetThis<FlyingChain>());
+			}
+		}
+	}
+	//------------------------------------------------------------------------------------
+	//スコアをセットして飛ぶフラグをオンにする
+	//------------------------------------------------------------------------------------
 	void FlyingChain::FlySet(int chain) {
 		m_score = (chain * 30) + (chain * 10);
 		m_isFly = true;

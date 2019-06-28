@@ -15,19 +15,14 @@ namespace basecross
 	TpsCamera::~TpsCamera()
 	{}
 
-	void TpsCamera::OnCreate()
-	{
+	void TpsCamera::OnCreate(){
 		
 	}
 
-	void TpsCamera::OnUpdate()
-	{
+	void TpsCamera::OnUpdate(){
 
 	}
 
-	void TpsCamera::SetTarget(const shared_ptr<Transform>& target)
-	{
-	}
 	//--------------------------------------------------------------------------------------------
 	//カメラの値変更
 	//--------------------------------------------------------------------------------------------
@@ -85,15 +80,6 @@ namespace basecross
 		SetEye(eye);
 	}
 	//--------------------------------------------------------------------------------------------
-	//ベジェ曲線で飛ばす(playerと一緒に動くためにplayerの現在Leapをもらってくる)
-	//--------------------------------------------------------------------------------------------
-	void TpsCamera::BezierMove(float leap,Vec3 playerPos) {
-		Vec3 pos;
-		pos = (1 - leap)*(1 - leap)*p0 + 2 * (1 - leap)*leap*p1 + leap * leap*p2;
-		SetEye(pos);
-		SetAt(playerPos + Vec3(0.0f,3.0f,0.0f));
-	}
-	//--------------------------------------------------------------------------------------------
 	//制御点の設定
 	//--------------------------------------------------------------------------------------------
 	void TpsCamera::SetBezier(weak_ptr<GameObject> playerPtr,Vec3 p2Player) {
@@ -104,6 +90,15 @@ namespace basecross
 		p2 = p2Player - a;	//終点
 		//始点と終点の中点からaの方向にずらして与える
 		p1 = (p2 - ((p2 - p0) / 2)) - a.normalize() * Vec3(p2 - p0).length();
+	}
+	//--------------------------------------------------------------------------------------------
+	//ベジェ曲線で飛ばす(playerと一緒に動くためにplayerの現在Leapをもらってくる)
+	//--------------------------------------------------------------------------------------------
+	void TpsCamera::BezierMove(float leap, Vec3 playerPos) {
+		Vec3 pos;
+		pos = (1 - leap)*(1 - leap)*p0 + 2 * (1 - leap)*leap*p1 + leap * leap*p2;
+		SetEye(pos);
+		SetAt(playerPos + Vec3(0.0f, 3.0f, 0.0f));
 	}
 	//--------------------------------------------------------------------------------------------
 	//回り込む処理の前準備（in：デグリー角）

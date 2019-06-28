@@ -43,6 +43,10 @@ namespace basecross {
 			virtual ~ViewChainLetter() {};
 			virtual void OnCreate() override;
 			virtual void OnUpdate() override;
+			//ゲージの位置、大きさが変動する
+			void GageAct();
+			//ゲージの表示非表示を制御する
+			void ViewGage();
 	};
 	//--------------------------------------------------------------------------------------
 	//チェインの数字
@@ -59,6 +63,7 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
+		void ViewNum();
 	};
 	//--------------------------------------------------------------------------------------
 	//スコアに飛んでいくチェインの数字
@@ -83,6 +88,8 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
+		void ViewNum();
+		void Fly();
 		void FlySet(int chain);
 	};
 }

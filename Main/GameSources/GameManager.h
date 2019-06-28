@@ -24,7 +24,6 @@ namespace basecross {
 		 bool m_isFade = true;		// フェード中かどうか
 		 int m_maxMailNum;
 		 int m_mailNum;
-		 //float m_controlGageSpeed = 1.0f;	// チェインゲージの進行スピードの管理
 		 int m_bouns = 0;			//何回ボーナスをもらったか
 	public:
 		static GameManager& GetInstance() {

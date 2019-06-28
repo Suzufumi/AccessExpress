@@ -31,6 +31,10 @@ namespace basecross
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		virtual void OnDraw() override;
+		//カウントアップの処理
+		void CountUp();
+		//画面に出すスコアの値を設定する
+		void ViewScore();
 		//カウントアップが終わっているか返す
 		bool GetFinishCountUp() {
 			if (GameManager::GetInstance().GetScore() == m_displayScore) {
