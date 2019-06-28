@@ -15,7 +15,6 @@ namespace basecross
 		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 
 		m_position = pos;
-		//m_position += Vec3(2.8f, 3.7f, -9.5f);
 		m_quat = quat;
 		m_scale = scale;
 

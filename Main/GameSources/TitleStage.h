@@ -6,7 +6,12 @@ namespace basecross {
 		weak_ptr<GameObject> m_player;
 		//ビューの作成
 		void CreateViewLight();
-		void CreatePlayer();
+		// プレイヤーの作成
+		void CreateCharacter();
+		// タイトルロゴ等の作成
+		void CreateTitleResources();
+		// フェードの再生
+		void FadePlay();
 	public:
 		virtual ~TitleStage() {};
 		virtual void OnCreate()override;
