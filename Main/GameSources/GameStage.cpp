@@ -26,32 +26,6 @@ namespace basecross {
 
 	}
 
-
-	//----------------------------------------------------------------
-	//床の作成
-	//----------------------------------------------------------------
-	void GameStage::CreateFloor() {
-		auto ptr = AddGameObject<GameObject>();
-		auto ptrTrans = ptr->GetComponent<Transform>();
-		//四角形のコリジョンセット
-		auto col = ptr->AddComponent<CollisionObb>();
-		//動かないようにする
-		col->SetAfterCollision(AfterCollision::None);
-		Quat Qt;
-		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
-		ptrTrans->SetScale(100.0f, 0.5f, 100.0f);
-		ptrTrans->SetQuaternion(Qt);
-		ptrTrans->SetWorldPosition(Vec3(0.0f, -0.25f, 0.0f));
-		//描画コンポーネントの追加
-		auto drawComp = ptr->AddComponent<BcPNTStaticDraw>();
-		//描画コンポーネントに形状（メッシュ）を設定
-		drawComp->SetMeshResource(L"DEFAULT_CUBE");
-		drawComp->SetFogEnabled(true);
-		//自分に影が映りこむようにする
-		drawComp->SetOwnShadowActive(false);
-		Col4 Color(1.0f, 1.0f, 1.0f, 0.7f);
-		drawComp->SetColorAndAlpha(Color);
-	}
 	//----------------------------------------------------------------
 	//プレイヤー関係の作成
 	//----------------------------------------------------------------
