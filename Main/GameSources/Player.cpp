@@ -14,21 +14,23 @@ namespace basecross {
 	Player::Player(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
 		:GameObject(StagePtr)
 	{
+		// XmlからPos,Quat,Scaleを取得する
 		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
 		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
 		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
 
+		// wstringのデータをVec3に変換する
 		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
 		auto quat = MyUtil::unityQuatStrToBCQuat(rotStr);
 		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 
+		// Vec3に変換した値を代入する
 		m_position = pos;
 		m_quaternion = quat;
 		m_scale = scale;
 
 		auto camera = GetStage()->GetView()->GetTargetCamera();
 		m_tpsCamera = dynamic_pointer_cast<TpsCamera>(camera);
-		//m_cameraDistance = m_tpsCamera.lock()->GetCameraDistance();
 		m_cameraLookUp = m_tpsCamera.lock()->GetCameraLookUp();
 	}
 	///-------------------------------------------------------------------------------
