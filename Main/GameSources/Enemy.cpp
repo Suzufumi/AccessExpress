@@ -10,7 +10,7 @@ namespace basecross {
 		if (stage)
 		{
 			// Xml‚©‚çEnemy‚Ìƒpƒ‰ƒ[ƒ^‚ðŽæ“¾
-			stage->LoadXmlParam(pNode,m_pos, m_quat, m_scale);
+			stage->LoadXmlParam(pNode, m_position, m_quat, m_scale);
 		}
 
 		auto type = XmlDocReader::GetAttribute(pNode, L"DroneType");
@@ -31,8 +31,6 @@ namespace basecross {
 			m_roopDir = Wave;
 		}
 
-		auto chainStr = XmlDocReader::GetAttribute(pNode, L"Chain");
-
 	}
 	void Drone::OnCreate() {
 		if (m_roopDir >= ClockWise && m_roopDir <= CounterClockwise) {
@@ -49,7 +47,7 @@ namespace basecross {
 		}
 
 		auto transComp = GetComponent<Transform>();
-		transComp->SetWorldPosition(m_pos);
+		transComp->SetWorldPosition(m_position);
 		transComp->SetQuaternion(m_quat);
 		transComp->SetScale(m_scale);
 

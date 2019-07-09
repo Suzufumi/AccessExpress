@@ -5,7 +5,6 @@
 
 namespace basecross {
 	class Drone : public GameObject {
-		Vec3 m_pos;
 		Quat m_quat;
 		Vec3 m_scale;
 		struct BezierPoint {

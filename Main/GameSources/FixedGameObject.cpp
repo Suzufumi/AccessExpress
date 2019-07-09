@@ -87,10 +87,13 @@ namespace basecross {
 	void Antenna::OnDraw()
 	{
 		const Vec3 Position = Vec3(0.0f, -0.7f, 0.0f);
-		auto stage = GetTypeStage<GameStage>();
-		// モデルの変換行列設定
-		auto spanMat = stage->SetModelMatrix(Vec3(1.0f), Vec3(0.0f), Vec3(0.0f), Position);
-
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(1.0f),
+			Vec3(0.0f),
+			Vec3(0.0f),
+			Position
+		);
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
