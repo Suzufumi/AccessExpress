@@ -36,6 +36,8 @@ namespace basecross {
 		//初期化
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		// Xmlファイルからデータを読み込む
+		void LoadXmlParam(IXMLDOMNodePtr pNode, Vec3& pos, Quat& quat, Vec3& scale);
 	};
 
 

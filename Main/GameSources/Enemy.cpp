@@ -3,20 +3,15 @@
 #include "Enemy.h"
 
 namespace basecross {
-	Drone::Drone(const shared_ptr<Stage>& stage, IXMLDOMNodePtr pNode)
-		: GameObject(stage)
+	Drone::Drone(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
+		:GameObject(stagePtr)
 	{
-		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
-		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
-		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-
-		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
-		auto quat = MyUtil::unityQuatStrToBCQuat(rotStr);
-		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
-
-		m_position = pos;
-		m_quat = quat;
-		m_scale = scale;
+		auto stage = GetTypeStage<GameStage>();
+		if (stage)
+		{
+			// Xml‚©‚çEnemy‚Ìƒpƒ‰ƒ[ƒ^‚ðŽæ“¾
+			stage->LoadXmlParam(pNode,m_pos, m_quat, m_scale);
+		}
 
 		auto type = XmlDocReader::GetAttribute(pNode, L"DroneType");
 		if (type == L"ClockWise")

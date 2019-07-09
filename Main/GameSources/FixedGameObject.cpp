@@ -5,17 +5,12 @@ namespace basecross {
 	Wall::Wall(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)
 		: GameObject(StagePtr)
 	{
-		// XmlからPos,Scaleを取得する
-		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
-		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-
-		// wstringのデータをVec3に変換する
-		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
-		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
-
-		// Vec3に変換した値を代入する
-		m_position = pos;
-		m_scale = scale;
+		auto stage = GetTypeStage<GameStage>();
+		if (stage)
+		{
+			// XmlからWallのパラメータを取得
+			stage->LoadXmlParam(pNode, m_position, m_quat, m_scale);
+		}
 
 	}
 	//--------------------------------------------------------------------------------------
@@ -29,7 +24,7 @@ namespace basecross {
 		Quat Qt;
 		Qt.rotationRollPitchYawFromVector(Vec3(0, 0, 0));
 		ptrTrans->SetWorldPosition(m_position);
-		ptrTrans->SetQuaternion(Qt);
+		ptrTrans->SetQuaternion(m_quat);
 		ptrTrans->SetScale(m_scale);
 		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
 		spanMat.affineTransformation(
@@ -68,34 +63,14 @@ namespace basecross {
 		}
 	}
 	///-----------------------------------------------------------------------------------
-	// CheckPoint
+	// アンテナ
 	///-----------------------------------------------------------------------------------
-
-	CheckPoint::CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
-		: GameObject(stagePtr)
-	{
-		// XmlからPos,Quat,Scaleを取得する
-		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
-		auto quatStr = XmlDocReader::GetAttribute(pNode, L"Quat");
-		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-		
-		// wstringのデータをVec3に変換する
-		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
-		auto quat = MyUtil::unityVec3StrToBCVec3(quatStr);
-		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
-
-		// Vec3に変換した値を代入する
-		m_position = pos;
-		m_qt = quat;
-		m_scale = scale;
-
-	}
-	CheckPoint::CheckPoint(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale)
+	Antenna::Antenna(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale)
 		:GameObject(stagePtr),m_position(pos),m_qt(quat),m_scale(scale)
 	{
 	}
 
-	void CheckPoint::OnCreate() {
+	void Antenna::OnCreate() {
 		auto ptrTrans = GetComponent<Transform>();
 		ptrTrans->SetWorldPosition(m_position);
 		ptrTrans->SetQuaternion(m_qt);
@@ -117,23 +92,6 @@ namespace basecross {
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		SetAlphaActive(true);
 	}
-	void CheckPoint::OnUpdate() {
-
-	}
-	void CheckPoint::ArriveCheckPoint() {
-		auto& gm = GameManager::GetInstance();
-		int count = 0;
-		while (gm.GetMail() > 0)
-		{
-			gm.DecreaseMail();
-			count++;
-		}
-		gm.AddMaxMail(count);
-		Col4 col(0.4f, 1.0f, 0.4f, 1.0f);
-		auto drawComp = GetComponent<BcPNTStaticDraw>();
-		drawComp->SetDiffuse(col);
-	}
-
 
 	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
@@ -255,15 +213,12 @@ namespace basecross {
 	MailObject::MailObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
 		: GameObject(stagePtr)
 	{
-		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
-		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-
-		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
-		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
-
-		m_position = pos;
-		m_scale = scale;
-
+		auto stage = GetTypeStage<GameStage>();
+		if (stage)
+		{
+			// Xmlからメールを取得
+			stage->LoadXmlParam(pNode, m_position, m_quat, m_scale);
+		}
 	}
 	MailObject::MailObject(const shared_ptr<Stage>& stagePtr, Vec3 pos, Vec3 scale)
 		:GameObject(stagePtr), m_position(pos), m_scale(scale)

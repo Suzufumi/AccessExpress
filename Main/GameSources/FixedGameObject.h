@@ -17,19 +17,16 @@ namespace basecross {
 		virtual void OnUpdate();
 	};
 	//--------------------------------------------------------------------------------------------------------------
-	//ゴール
+	// アンテナ
 	//--------------------------------------------------------------------------------------------------------------
-	class CheckPoint : public GameObject {
+	class Antenna : public GameObject {
 		Vec3 m_position;
 		Vec3 m_scale;
 		Quat m_qt;
 	public:
-		CheckPoint(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
-		CheckPoint(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale);
-		virtual ~CheckPoint() {};
+		Antenna(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale);
+		virtual ~Antenna() {};
 		virtual void OnCreate();
-		virtual void OnUpdate();
-		void ArriveCheckPoint();
 	};
 	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
@@ -51,6 +48,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------------------------------
 	class MailObject : public GameObject {
 		Vec3 m_position;
+		Quat m_quat;
 		Vec3 m_scale;
 		// 取得されたらtrue
 		bool m_isArrive = false;
