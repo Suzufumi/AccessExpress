@@ -65,6 +65,7 @@ namespace basecross {
 		SetAlphaActive(true);
 		drawComp->SetMeshToTransformMatrix(spanMat);
 
+		GameObject::OnDraw();
 	}
 	///-----------------------------------------------------------------------------------
 	// ƒAƒ“ƒeƒi
@@ -97,6 +98,7 @@ namespace basecross {
 		drawComp->SetMeshResource(L"CHECKPOINT_MODEL");
 		drawComp->SetMeshToTransformMatrix(spanMat);
 
+		GameObject::OnDraw();
 	}
 
 	//--------------------------------------------------------------------------------------------------------------
@@ -268,6 +270,8 @@ namespace basecross {
 		drawComp->SetTextureResource(L"MAIL_TX");
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		drawComp->SetLightingEnabled(false);
+
+		GameObject::OnDraw();
 
 	}
 

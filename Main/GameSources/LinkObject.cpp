@@ -56,6 +56,7 @@ namespace basecross
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
 
+		GameObject::OnDraw();
 	}
 
 

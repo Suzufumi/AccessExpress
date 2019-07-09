@@ -82,7 +82,7 @@ namespace basecross {
 		drawComp->SetTextureResource(L"ENEMY_TX");
 		drawComp->SetMeshToTransformMatrix(spanMat);
 
-
+		GameObject::OnDraw();
 	}
 	//-------------------------------------------------------------------------------
 	//ベジエ曲線の経過を更新する
