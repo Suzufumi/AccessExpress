@@ -81,13 +81,13 @@ namespace basecross {
 
 	void GameStage::CreateEffect()
 	{
-		auto multiEfkPtr = AddGameObject<GetEffect>();
-		//共有オブジェクトにエフェクトを登録
-		SetSharedGameObject(L"GetEffect", multiEfkPtr);
-		auto bonusEfkPtr = AddGameObject<BonusEffect>();
-		SetSharedGameObject(L"BonusEffect", bonusEfkPtr);
-		auto multiSparkPtr = AddGameObject<SparkEffect>();
-		SetSharedGameObject(L"SparkEffect", multiSparkPtr);
+	auto multiEfkPtr = AddGameObject<GetEffect>();
+	//共有オブジェクトにエフェクトを登録
+	SetSharedGameObject(L"GetEffect", multiEfkPtr);
+	auto bonusEfkPtr = AddGameObject<BonusEffect>();
+	SetSharedGameObject(L"BonusEffect", bonusEfkPtr);
+	auto multiSparkPtr = AddGameObject<SparkEffect>();
+	SetSharedGameObject(L"SparkEffect", multiSparkPtr);
 	}
 
 
@@ -177,6 +177,19 @@ namespace basecross {
 				timeOverTx->SetDrawActive(false);
 			}
 		}
+	}
+
+	void GameStage::LoadXmlParam(IXMLDOMNodePtr pNode, Vec3& pos, Quat& quat, Vec3& scale)
+	{
+		// XmlからPos,Quat,Scaleを取得する
+		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
+		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+
+		// wstringのデータをVec3に変換する
+		pos = MyUtil::unityVec3StrToBCVec3(posStr);
+		quat = MyUtil::unityQuatStrToBCQuat(rotStr);
+		scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 	}
 }
 //end basecross

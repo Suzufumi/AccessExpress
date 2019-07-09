@@ -6,17 +6,12 @@ namespace basecross
 	LinkObject::LinkObject(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode)
 		: AccessObject(stagePtr)
 	{
-		auto posStr = XmlDocReader::GetAttribute(pNode, L"Pos");
-		auto rotStr = XmlDocReader::GetAttribute(pNode, L"Quat");
-		auto scaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-
-		auto pos = MyUtil::unityVec3StrToBCVec3(posStr);
-		auto quat = MyUtil::unityQuatStrToBCQuat(rotStr);
-		auto scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
-
-		m_position = pos;
-		m_quat = quat;
-		m_scale = scale;
+		auto stage = GetTypeStage<GameStage>();
+		if (stage)
+		{
+			// LinkObject‚Ìî•ñ‚ðŽæ“¾
+			stage->LoadXmlParam(pNode, m_position, m_quat, m_scale);
+		}
 
 	}
 

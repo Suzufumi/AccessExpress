@@ -108,6 +108,12 @@ namespace basecross {
 	
 		auto& gm = GameManager::GetInstance();
 		auto CntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		// フェード中かどうか
+		if (!gm.GetIsFade())
+		{
+			gm.SetIsFade(true);
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToStageSelect");
+		}
 		// ボタンが押されたら
 		if (CntlVec[0].wPressedButtons) {
 			auto scenePtr = App::GetApp()->GetScene<Scene>();
@@ -120,12 +126,5 @@ namespace basecross {
 		{
 			return;
 		}
-		// フェード中かどうか
-		if (!gm.GetIsFade())
-		{
-			gm.SetIsFade(true);
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToStageSelect");
-		}
-
 	}
 }

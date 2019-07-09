@@ -27,7 +27,7 @@ namespace basecross {
 		};
 		DroneMotion m_roopDir;
 
-		Drone(const shared_ptr<Stage>& stage, IXMLDOMNodePtr pNode);
+		Drone(const shared_ptr<Stage>& stagePtr, IXMLDOMNodePtr pNode);
 		virtual ~Drone() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
