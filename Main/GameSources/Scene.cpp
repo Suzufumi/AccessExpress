@@ -101,7 +101,6 @@ namespace basecross{
 		auto modelDir = dataDir + L"Model\\";
 
 		auto playerModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
-		//auto playerModelMesh = MeshResource::CreateStaticModelMesh(modelDir + L"Player\\", L"PlayerChara.bmf");
 		App::GetApp()->RegisterResource(L"PLAYER_MODEL", playerModelMesh);
 		auto modelTex = modelDir + L"Player\\" + L"UV_Player.png";
 		App::GetApp()->RegisterTexture(L"PLAYER_TX", modelTex);

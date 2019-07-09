@@ -131,28 +131,4 @@ namespace basecross {
 		void ChangeNum(int num) { m_num = num; };
 	};
 
-	///---------------------------------------------------------------------------------
-	//チュートリアル画像を表示するスプライト
-	///---------------------------------------------------------------------------------
-	class TutorialSprite : public Sprite
-	{
-	public:
-		struct InitParam
-		{
-			Vec3 m_startPos;
-			wstring m_textureKey;
-		};
-	private:
-		InitParam m_initParam;
-		float m_timeCount = 0.0f;
-		float m_buttonEnableTime;
-	public:
-		TutorialSprite(const shared_ptr<Stage>& stagePtr, TutorialSprite::InitParam initParam);
-		virtual ~TutorialSprite();
-		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
-		virtual void OnEvent(const shared_ptr<Event>& event)override;
-		void Close();
-	};
-
 }

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross{
+namespace basecross {
 	void Sprite::OnCreate() {
 		float sprite_w = _rect.right - _rect.left;
 		float sprite_h = _rect.bottom - _rect.top;
@@ -149,21 +149,21 @@ namespace basecross{
 		float HelfSize = 0.5f;
 		//頂点配列(縦横5個ずつ表示)
 		vector<VertexPositionColorTexture> vertex = {
-			{ VertexPositionColorTexture(Vec3(-HelfSize, HelfSize, 0),Col4(1.0f,1.0f,1.0f,1.0f), Vec2(0.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(HelfSize, HelfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(-HelfSize, -HelfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)) },
-			{ VertexPositionColorTexture(Vec3(HelfSize, -HelfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 1.0f)) },
+			{ VertexPositionColorTexture(Vec3(-HelfSize, HelfSize, 0),Col4(1.0f), Vec2(0.0f, 0.0f)) },
+			{ VertexPositionColorTexture(Vec3(HelfSize, HelfSize, 0), Col4(1.0f), Vec2(1.0f, 0.0f)) },
+			{ VertexPositionColorTexture(Vec3(-HelfSize, -HelfSize, 0), Col4(1.0f), Vec2(0.0f, 1.0f)) },
+			{ VertexPositionColorTexture(Vec3(HelfSize, -HelfSize, 0), Col4(1.0f), Vec2(1.0f, 1.0f)) },
 		};
 		//インデックス配列
 		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
 		SetAlphaActive(m_trace);
-		auto PtrTransform = GetComponent<Transform>();
-		PtrTransform->SetScale(m_startScale.x, m_startScale.y, 1.0f);
-		PtrTransform->SetPosition(m_startPos.x, m_startPos.y, 0.0f);
+		auto transComp = GetComponent<Transform>();
+		transComp->SetScale(m_startScale.x, m_startScale.y, 1.0f);
+		transComp->SetPosition(m_startPos.x, m_startPos.y, 0.0f);
 		//頂点とインデックスを指定してスプライト作成
-		auto PtrDraw = AddComponent<PCTSpriteDraw>(vertex, indices);
-		PtrDraw->SetSamplerState(SamplerState::LinearWrap);
-		PtrDraw->SetTextureResource(m_textureKey);
+		auto drawComp = AddComponent<PCTSpriteDraw>(vertex, indices);
+		drawComp->SetSamplerState(SamplerState::LinearWrap);
+		drawComp->SetTextureResource(m_textureKey);
 	}
 
 	void AnimSprite::OnUpdate() {
@@ -175,21 +175,21 @@ namespace basecross{
 				m_totalTime = 0;
 			}
 			auto drawComp = GetComponent<PCTSpriteDraw>();
-			Col4 col(1.0, 1.0, 1.0, 1.0);
+			Col4 col(1.0);
 			col.w = sin(m_totalTime) * 0.7f + 0.6f;
 			drawComp->SetDiffuse(col);
 		}
 		else
 		{
 			auto drawComp = GetComponent<PCTSpriteDraw>();
-			Col4 col(1.0, 1.0, 1.0, 1.0);
+			Col4 col(1.0);
 			drawComp->SetDiffuse(col);
 		}
 	}
 	///------------------------------------------------------------------------------------
 	//数字のスプライト
 	///------------------------------------------------------------------------------------
-	NumberSprite::NumberSprite(const shared_ptr<Stage>& stagePtr,int places,int num)
+	NumberSprite::NumberSprite(const shared_ptr<Stage>& stagePtr, int places, int num)
 		: GameObject(stagePtr), m_places(places), m_num(num)
 	{
 	}
@@ -280,36 +280,4 @@ namespace basecross{
 		}
 	}
 
-	///---------------------------------------------------------------------------------
-	//チュートリアルスプライト
-	///---------------------------------------------------------------------------------
-	TutorialSprite::TutorialSprite(const shared_ptr<Stage>& stagePtr, TutorialSprite::InitParam initParam)
-		: Sprite(stagePtr), m_initParam(initParam), m_buttonEnableTime(1.0f)
-	{
-	}
-
-	TutorialSprite::~TutorialSprite()
-	{}
-
-	void TutorialSprite::OnCreate()
-	{
-		Sprite::OnCreate();
-		auto drawComp = GetComponent<PTSpriteDraw>();
-		drawComp->SetTextureResource(m_initParam.m_textureKey);
-	}
-
-	void TutorialSprite::OnUpdate()
-	{
-
-	}
-
-	void TutorialSprite::OnEvent(const shared_ptr<Event>& event)
-	{
-
-	}
-
-	void TutorialSprite::Close()
-	{
-
-	}
 }
