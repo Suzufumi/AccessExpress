@@ -9,7 +9,7 @@ namespace basecross {
 		auto resultBack = AddGameObject<Sprite>(L"ClearBack_TX", Vec2(1441, 811));
 		resultBack->SetPosition(Vec2(640, 400));
 		resultBack->SetDrawLayer(-3);
-		m_antenna = AddGameObject<CheckPoint>(
+		m_antenna = AddGameObject<Antenna>(
 			Vec3(0.0f, -5.0f, -3.0f), Quat(0,Deg2Rad(-30), 0, 1), Vec3(2.0f, 2.0f, 2.0f));
 		m_antenna.lock()->SetDrawLayer(-1);
 		CreatePlayer();
