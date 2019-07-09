@@ -191,5 +191,20 @@ namespace basecross {
 		quat = MyUtil::unityQuatStrToBCQuat(rotStr);
 		scale = MyUtil::unityVec3StrToBCVec3(scaleStr);
 	}
+
+	// モデルの行列設定
+	Mat4x4 GameStage::SetModelMatrix(const Vec3& scale, const Vec3& rotOrigin, const Vec3& rot, const Vec3& pos)
+	{
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(scale),	// 大きさ
+			Vec3(rotOrigin),	// 回転の原点
+			Vec3(rot),	// 回転
+			Vec3(pos)	// 位置
+		);
+
+		return spanMat;
+	}
+
 }
 //end basecross

@@ -27,16 +27,25 @@ namespace basecross
 		col->SetDrawActive(false);
 		col->SetAfterCollision(AfterCollision::None);
 
-		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
-		spanMat.affineTransformation(
-			Vec3(0.9f, 0.9f, 0.9f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -0.5f, 0.0f)
-		);
-
+		SetAlphaActive(true);
+		SetDrawLayer(-2);
+		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
 		//プレイヤーとぶつからないようにする
 		AddTag(L"PlayerUse");
+
+	}
+
+	void LinkObject::OnUpdate()
+	{
+
+	}
+
+	void LinkObject::OnDraw()
+	{
+		auto stage = GetTypeStage<GameStage>();
+		// モデルの変換行列
+		auto spanMat = stage->SetModelMatrix(Vec3(0.9f), Vec3(0.0f), Vec3(0.0f), Vec3(0.0f, -0.5f, 0.0f));
+
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
@@ -46,14 +55,6 @@ namespace basecross
 		drawComp->SetLightingEnabled(false);
 		drawComp->SetMeshToTransformMatrix(spanMat);
 		drawComp->SetSamplerState(SamplerState::LinearClamp);
-		SetAlphaActive(true);
-		SetDrawLayer(-2);
-		GetStage()->GetSharedObjectGroup(L"Link")->IntoGroup(GetThis<GameObject>());
-
-	}
-
-	void LinkObject::OnUpdate()
-	{
 
 	}
 

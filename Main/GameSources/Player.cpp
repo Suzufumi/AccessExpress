@@ -42,13 +42,11 @@ namespace basecross {
 		//playerに持たせて使うものには衝突しない
 		col->AddExcludeCollisionTag(L"PlayerUse");
 
-		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
-		spanMat.affineTransformation(
-			Vec3(0.8f, 0.8f, 0.8f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, Deg2Rad(180), 0.0f),
-			Vec3(0.0f, -0.5f, 0.0f)
-		);
+		const Vec3 RotOrigin = Vec3(0.0f, XM_PI, 0.0f);
+		const Vec3 Position = Vec3(0.0f, -0.5f, 0.0f);
+		auto stage = GetTypeStage<GameStage>();
+		// モデルの変換行列設定
+		auto spanMat = stage->SetModelMatrix(Vec3(0.8f), Vec3(0.0f), RotOrigin, Position);
 
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<PNTBoneModelDraw>();

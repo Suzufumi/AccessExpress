@@ -53,19 +53,6 @@ namespace basecross {
 		transComp->SetQuaternion(m_quat);
 		transComp->SetScale(m_scale);
 
-		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
-		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f)
-		);
-
-		auto drawComp = AddComponent<PNTStaticDraw>();
-		drawComp->SetMeshResource(L"ENEMY_MODEL");
-		drawComp->SetTextureResource(L"ENEMY_TX");
-		drawComp->SetMeshToTransformMatrix(spanMat);
-
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());
 		SetDrawLayer(-1);
 	}
@@ -80,6 +67,22 @@ namespace basecross {
 		if (sparkPtr){
 			sparkPtr->InsertSpark(GetComponent<Transform>()->GetWorldPosition());
 		}
+	}
+	//-------------------------------------------------------------------------------
+	// 描画
+	//-------------------------------------------------------------------------------
+	void Drone::OnDraw()
+	{
+		auto stage = GetTypeStage<GameStage>();
+		// モデルの変換行列を設定
+		auto spanMat = stage->SetModelMatrix(Vec3(1.0f), Vec3(0.0f), Vec3(0.0f), Vec3(0.0f));
+
+		auto drawComp = AddComponent<PNTStaticDraw>();
+		drawComp->SetMeshResource(L"ENEMY_MODEL");
+		drawComp->SetTextureResource(L"ENEMY_TX");
+		drawComp->SetMeshToTransformMatrix(spanMat);
+
+
 	}
 	//-------------------------------------------------------------------------------
 	//ベジエ曲線の経過を更新する

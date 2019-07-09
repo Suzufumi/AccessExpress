@@ -15,6 +15,7 @@ namespace basecross
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		virtual void OnDraw() override;
 		void Access() override {};
 		Vec3 GetGoPosition() { return m_goPosition; }
 		void SetGoPosition(Vec3 pos) { m_goPosition = pos; }

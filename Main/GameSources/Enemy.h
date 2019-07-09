@@ -31,6 +31,7 @@ namespace basecross {
 		virtual ~Drone() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		virtual void OnDraw() override;
 		//Œo‰ß‚ğXV‚·‚é
 		void LeapUpdate();
 		//“®‚­
