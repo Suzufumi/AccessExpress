@@ -5,7 +5,6 @@
 
 namespace basecross {
 	class Drone : public GameObject {
-		Vec3 m_pos;
 		Quat m_quat;
 		Vec3 m_scale;
 		struct BezierPoint {
@@ -31,6 +30,7 @@ namespace basecross {
 		virtual ~Drone() {};
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		virtual void OnDraw() override;
 		//Œo‰ß‚ğXV‚·‚é
 		void LeapUpdate();
 		//“®‚­

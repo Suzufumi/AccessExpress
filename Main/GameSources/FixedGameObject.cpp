@@ -26,22 +26,6 @@ namespace basecross {
 		ptrTrans->SetWorldPosition(m_position);
 		ptrTrans->SetQuaternion(m_quat);
 		ptrTrans->SetScale(m_scale);
-		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
-		spanMat.affineTransformation(
-			Vec3(0.5f, 0.5f, 0.5f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -1.4f, 0.0f)
-		);
-
-		//描画コンポーネントの追加
-		auto drawComp = AddComponent<BcPNTStaticDraw>();
-		//描画コンポーネントに形状（メッシュ）を設定
-		drawComp->SetMeshResource(L"BUILDING_MODEL");
-		drawComp->SetTextureResource(L"Building_TX");
-		drawComp->SetLightingEnabled(false);
-		SetAlphaActive(true);
-		drawComp->SetMeshToTransformMatrix(spanMat);
 		SetDrawLayer(-2);
 	}
 	///-----------------------------------------------------------------------------------
@@ -63,6 +47,27 @@ namespace basecross {
 		}
 	}
 	///-----------------------------------------------------------------------------------
+	// 描画処理
+	///-----------------------------------------------------------------------------------
+	void Wall::OnDraw()
+	{
+		const Vec3 Position = Vec3(0.0f, -1.4f, 0.0f);
+		auto stage = GetTypeStage<GameStage>();
+		// モデルの変換行列設定
+		auto spanMat = stage->SetModelMatrix(Vec3(0.5f), Vec3(0.0f), Vec3(0.0f), Position);
+
+		//描画コンポーネントの追加
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
+		//描画コンポーネントに形状（メッシュ）を設定
+		drawComp->SetMeshResource(L"BUILDING_MODEL");
+		drawComp->SetTextureResource(L"Building_TX");
+		drawComp->SetLightingEnabled(false);
+		SetAlphaActive(true);
+		drawComp->SetMeshToTransformMatrix(spanMat);
+
+		GameObject::OnDraw();
+	}
+	///-----------------------------------------------------------------------------------
 	// アンテナ
 	///-----------------------------------------------------------------------------------
 	Antenna::Antenna(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale)
@@ -76,21 +81,27 @@ namespace basecross {
 		ptrTrans->SetQuaternion(m_qt);
 		ptrTrans->SetScale(m_scale);
 
-		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
-		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, -0.7f, 0.0f)
-		);
+		SetAlphaActive(true);
+	}
 
+	void Antenna::OnDraw()
+	{
+		const Vec3 Position = Vec3(0.0f, -0.7f, 0.0f);
+		Mat4x4 spanMat;
+		spanMat.affineTransformation(
+			Vec3(1.0f),
+			Vec3(0.0f),
+			Vec3(0.0f),
+			Position
+		);
 		//描画コンポーネントの追加
 		auto drawComp = AddComponent<BcPNTStaticDraw>();
 		//描画コンポーネントに形状（メッシュ）を設定
 		SetDrawLayer(-1);
 		drawComp->SetMeshResource(L"CHECKPOINT_MODEL");
 		drawComp->SetMeshToTransformMatrix(spanMat);
-		SetAlphaActive(true);
+
+		GameObject::OnDraw();
 	}
 
 	//--------------------------------------------------------------------------------------------------------------
@@ -234,23 +245,6 @@ namespace basecross {
 		ptrTrans->SetQuaternion(Qt);
 		ptrTrans->SetScale(m_scale);
 
-		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
-		spanMat.affineTransformation(
-			Vec3(1.5f, 1.5f, 1.5f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f)
-		);
-
-		//描画コンポーネントの追加
-		auto drawComp = AddComponent<BcPNTStaticDraw>();
-		//描画コンポーネントに形状（メッシュ）を設定
-		SetDrawLayer(-1);
-		drawComp->SetMeshResource(L"MAIL_MODEL");
-		drawComp->SetTextureResource(L"MAIL_TX");
-		drawComp->SetMeshToTransformMatrix(spanMat);
-		drawComp->SetLightingEnabled(false);
-
 		GetStage()->GetSharedObjectGroup(L"Mails")->IntoGroup(GetThis<GameObject>());
 	}
 	void MailObject::OnUpdate() {
@@ -265,6 +259,25 @@ namespace basecross {
 		// メールの回転処理
 		RotateMail();
 	}
+	void MailObject::OnDraw()
+	{
+		auto stage = GetTypeStage<GameStage>();
+		// モデルの変換行列設定
+		auto spanMat = stage->SetModelMatrix(Vec3(1.5f), Vec3(0.0f), Vec3(0.0f), Vec3(0.0f));
+
+		//描画コンポーネントの追加
+		auto drawComp = AddComponent<BcPNTStaticDraw>();
+		//描画コンポーネントに形状（メッシュ）を設定
+		SetDrawLayer(-1);
+		drawComp->SetMeshResource(L"MAIL_MODEL");
+		drawComp->SetTextureResource(L"MAIL_TX");
+		drawComp->SetMeshToTransformMatrix(spanMat);
+		drawComp->SetLightingEnabled(false);
+
+		GameObject::OnDraw();
+
+	}
+
 	void MailObject::ArriveMail() {
 		// SEの定数定義
 		const float SE_Volume = 1.0f;

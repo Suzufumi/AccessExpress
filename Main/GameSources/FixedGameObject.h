@@ -15,6 +15,7 @@ namespace basecross {
 		virtual ~Wall() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
+		virtual void OnDraw();
 	};
 	//--------------------------------------------------------------------------------------------------------------
 	// アンテナ
@@ -26,7 +27,8 @@ namespace basecross {
 	public:
 		Antenna(const shared_ptr<Stage>& stagePtr, Vec3 pos, Quat quat, Vec3 scale);
 		virtual ~Antenna() {};
-		virtual void OnCreate();
+		virtual void OnCreate() override;
+		virtual void OnDraw() override;
 	};
 	//--------------------------------------------------------------------------------------------------------------
 	// 背景用のスプライトを作成
@@ -61,6 +63,7 @@ namespace basecross {
 		virtual ~MailObject() {};
 		virtual void OnCreate();
 		virtual void OnUpdate();
+		virtual void OnDraw();
 		void ArriveMail();
 		void RotateMail();
 		bool GetIsArrive() { return m_isArrive; }

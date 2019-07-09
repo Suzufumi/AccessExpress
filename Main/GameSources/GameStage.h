@@ -38,6 +38,9 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		// Xmlファイルからデータを読み込む
 		void LoadXmlParam(IXMLDOMNodePtr pNode, Vec3& pos, Quat& quat, Vec3& scale);
+		// モデルの行列を設定する
+		Mat4x4 SetModelMatrix(const Vec3& scale, const Vec3& rotOrigin, const Vec3& rot, const Vec3& pos);
+
 	};
 
 

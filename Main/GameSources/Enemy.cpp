@@ -10,7 +10,7 @@ namespace basecross {
 		if (stage)
 		{
 			// XmlからEnemyのパラメータを取得
-			stage->LoadXmlParam(pNode,m_pos, m_quat, m_scale);
+			stage->LoadXmlParam(pNode, m_position, m_quat, m_scale);
 		}
 
 		auto type = XmlDocReader::GetAttribute(pNode, L"DroneType");
@@ -31,8 +31,6 @@ namespace basecross {
 			m_roopDir = Wave;
 		}
 
-		auto chainStr = XmlDocReader::GetAttribute(pNode, L"Chain");
-
 	}
 	void Drone::OnCreate() {
 		if (m_roopDir >= ClockWise && m_roopDir <= CounterClockwise) {
@@ -49,22 +47,9 @@ namespace basecross {
 		}
 
 		auto transComp = GetComponent<Transform>();
-		transComp->SetWorldPosition(m_pos);
+		transComp->SetWorldPosition(m_position);
 		transComp->SetQuaternion(m_quat);
 		transComp->SetScale(m_scale);
-
-		Mat4x4 spanMat; // モデルとトランスフォームの間の差分行列
-		spanMat.affineTransformation(
-			Vec3(1.0f, 1.0f, 1.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f),
-			Vec3(0.0f, 0.0f, 0.0f)
-		);
-
-		auto drawComp = AddComponent<PNTStaticDraw>();
-		drawComp->SetMeshResource(L"ENEMY_MODEL");
-		drawComp->SetTextureResource(L"ENEMY_TX");
-		drawComp->SetMeshToTransformMatrix(spanMat);
 
 		GetStage()->GetSharedObjectGroup(L"Drone")->IntoGroup(GetThis<Drone>());
 		SetDrawLayer(-1);
@@ -80,6 +65,22 @@ namespace basecross {
 		if (sparkPtr){
 			sparkPtr->InsertSpark(GetComponent<Transform>()->GetWorldPosition());
 		}
+	}
+	//-------------------------------------------------------------------------------
+	// 描画
+	//-------------------------------------------------------------------------------
+	void Drone::OnDraw()
+	{
+		auto stage = GetTypeStage<GameStage>();
+		// モデルの変換行列を設定
+		auto spanMat = stage->SetModelMatrix(Vec3(1.0f), Vec3(0.0f), Vec3(0.0f), Vec3(0.0f));
+
+		auto drawComp = AddComponent<PNTStaticDraw>();
+		drawComp->SetMeshResource(L"ENEMY_MODEL");
+		drawComp->SetTextureResource(L"ENEMY_TX");
+		drawComp->SetMeshToTransformMatrix(spanMat);
+
+		GameObject::OnDraw();
 	}
 	//-------------------------------------------------------------------------------
 	//ベジエ曲線の経過を更新する

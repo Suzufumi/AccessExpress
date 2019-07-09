@@ -21,6 +21,7 @@ namespace basecross
 
 	void GetEffect::OnUpdate()
 	{
+		MultiParticle::OnUpdate();
 	}
 
 	void GetEffect::InsertGetEffect(const Vec3& pos)
