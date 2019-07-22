@@ -25,16 +25,43 @@ namespace basecross {
 
 
 	}
+	//----------------------------------------------------------------
+	//	Xmlファイルの情報を読み込む
+	//----------------------------------------------------------------
+	template<typename T>
+	void GameStage::ImportXmlStatus(const wstring&  nodeName)
+	{
+		GameObjecttXMLBuilder builder;
+		builder.Register<T>(nodeName);
+		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/" + nodeName);
+	}
+
+	//----------------------------------------------------------------
+	//ゲームマネージャーのパラメータ設定
+	//----------------------------------------------------------------
+	void GameStage::ResetGameManagerParam()
+	{
+		auto& gm = GameManager::GetInstance();
+		//ゲームが始まっているフラグを切る
+		gm.SetGameStart(false);
+		//スローフラグをオフにしておく
+		gm.SetOnSlow(false);
+		//スコアを初期化する
+		gm.ResetNowScore();
+		//マックスチェイン初期化
+		gm.ResetMaxChain();
+		//メール数初期化
+		gm.ResetMail();
+		// 最大メール数の初期化
+		gm.ResetMaxMail();
+	}
 
 	//----------------------------------------------------------------
 	//プレイヤー関係の作成
 	//----------------------------------------------------------------
 	void GameStage::CreatePlayerRelationship() {
-		GameObjecttXMLBuilder builder;
-		// プレイヤーをXmlに登録
-		builder.Register<Player>(L"Player");
-		// XmlファイルからL"Player"を探す
-		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Player");
+		// XmlからPlayerを読み込んでステージへ配置する
+		ImportXmlStatus<Player>(L"Player");
 
 		//プレイヤー関連
 		AddGameObject<ViewChainLetter>();
@@ -45,83 +72,65 @@ namespace basecross {
 
 	void GameStage::CreateBill()
 	{
-		GameObjecttXMLBuilder builder;
-		// WallをXmlに登録
-		builder.Register<Wall>(L"Wall");
-		// XmlファイルからWallを探す
-		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Wall");
+		// Xmlから建物を読み込んでステージへ配置する
+		ImportXmlStatus<Wall>(L"Wall");
 	}
 
 	void GameStage::CreateLinkObject()
 	{
-		GameObjecttXMLBuilder builder;
-		// LinkObjectをXmlに登録
-		builder.Register<LinkObject>(L"RadioTower");
-		// XmlファイルからRadioTowerを探す
-		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/RadioTower");
+		// Xmlから電波塔を読み込んでステージへ配置する
+		ImportXmlStatus<LinkObject>(L"RadioTower");
+
 	}
 
 	void GameStage::CreateDrone()
 	{
-		GameObjecttXMLBuilder builder;
-		// EnemyをXmlに登録
-		builder.Register<Drone>(L"Enemy");
-		// XmlファイルからEnemyを探す
-		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Enemy");
+		// Xmlからドローンを読み込んでステージへ配置する
+		ImportXmlStatus<Drone>(L"Enemy");
 	}
 
 	void GameStage::CreateMail()
 	{
-		GameObjecttXMLBuilder builder;
-		// MainをXmlに登録
-		builder.Register<MailObject>(L"Mail");
-		// XmlファイルからMailsを探す
-		builder.Build(GetThis<Stage>(), m_stageXmlPath, L"GameStage/Mails");
+		// Xmlからメールを読み込んでステージへ配置する
+		ImportXmlStatus<MailObject>(L"Mail");
 	}
 
 	void GameStage::CreateEffect()
 	{
-	auto multiEfkPtr = AddGameObject<GetEffect>();
-	//共有オブジェクトにエフェクトを登録
-	SetSharedGameObject(L"GetEffect", multiEfkPtr);
-	auto bonusEfkPtr = AddGameObject<BonusEffect>();
-	SetSharedGameObject(L"BonusEffect", bonusEfkPtr);
-	auto multiSparkPtr = AddGameObject<SparkEffect>();
-	SetSharedGameObject(L"SparkEffect", multiSparkPtr);
+		auto multiEfkPtr = AddGameObject<GetEffect>();
+		//共有オブジェクトにエフェクトを登録
+		SetSharedGameObject(L"GetEffect", multiEfkPtr);
+		auto bonusEfkPtr = AddGameObject<BonusEffect>();
+		SetSharedGameObject(L"BonusEffect", bonusEfkPtr);
+		auto multiSparkPtr = AddGameObject<SparkEffect>();
+		SetSharedGameObject(L"SparkEffect", multiSparkPtr);
 	}
 
 
 	void GameStage::OnCreate() {
 		try {
 			wstring dataDir;
+			// シーンのポインタを取得
 			auto scenePtr = App::GetApp()->GetScene<Scene>();
+			// mediaディレクトリを取得
 			App::GetApp()->GetDataDirectory(dataDir);
+			// Stageディレクトリを参照できるようにする
+			dataDir += L"Stage\\";
 			switch (scenePtr->GetStageNum())
 			{
 			case 1:
-				m_stageXmlPath = dataDir + L"Stage\\" + L"1.xml";
+				m_stageXmlPath = dataDir + L"1.xml";
 				break;
 			case 2:
-				m_stageXmlPath = dataDir + L"Stage\\" + L"2.xml";
+				m_stageXmlPath = dataDir + L"2.xml";
 				break;
 			default:
 				break;
 			}
-			auto& gm = GameManager::GetInstance();
-
 			XmlDocReader xmlReader(m_stageXmlPath);
-			//ゲームが始まっているフラグを切る
-			gm.SetGameStart(false);
-			//スローフラグをオフにしておく
-			gm.SetOnSlow(false);
-			//スコアを初期化する
-			gm.ResetNowScore();
-			//マックスチェイン初期化
-			gm.ResetMaxChain();
-			//メール数初期化
-			gm.ResetMail();
-			// 最大メール数の初期化
-			gm.ResetMaxMail();
+			// ゲームマネージャの値初期化
+			ResetGameManagerParam();
+
 			CreateSharedObjectGroup(L"Link");
 			CreateSharedObjectGroup(L"Drone");
 			CreateSharedObjectGroup(L"Mails");
@@ -129,7 +138,6 @@ namespace basecross {
 			SetPhysicsActive(true);
 			//ビューとライトの作成
 			CreateViewLight();
-			//床
 			//プレイヤー関係
 			CreatePlayerRelationship();
 			// 建物の配置
