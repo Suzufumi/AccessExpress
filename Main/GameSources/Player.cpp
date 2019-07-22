@@ -675,7 +675,9 @@ namespace basecross {
 		GetComponent<Transform>()->SetWorldPosition(pos);
 		m_nesting = NULL;
 	}
-
+	///-------------------------------------------------------------------------------
+	// ï\èÓêÿÇËë÷Ç¶
+	///-------------------------------------------------------------------------------
 	void Player::FaceChanger(FaceState beforeFace, FaceState afterFace)
 	{
 		auto drawComp = GetComponent<PNTBoneModelDraw>();

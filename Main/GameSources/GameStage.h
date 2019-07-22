@@ -14,19 +14,24 @@ namespace basecross {
 	class GameStage : public Stage {
 		// ステージのパスを保存する
 		wstring m_stageXmlPath;
-		//weak_ptr<FadeInOut> m_fade;
 		//ビューの作成
 		void CreateViewLight();
-		//床の作成
-		void CreateFloor();
+		// ゲームマネージャーの値の設定
+		void ResetGameManagerParam();
 		//プレイヤーとプレイヤー回り
 		void CreatePlayerRelationship();
-
+		// 建物の作成
 		void CreateBill();
+		// 電波塔の作成
 		void CreateLinkObject();
+		// ドローンの作成
 		void CreateDrone();
+		// Mailの作成
 		void CreateMail();
+		// エフェクトの作成
 		void CreateEffect();
+		template<typename T>
+		void ImportXmlStatus(const wstring& nodeName);	// Xmlファイルからノードを取りだす
 
 		float m_timeOver;
 	public:
